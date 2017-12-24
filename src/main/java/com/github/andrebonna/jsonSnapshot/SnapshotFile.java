@@ -1,4 +1,4 @@
-package com.bonna.jsonSnapshot;
+package com.github.andrebonna.jsonSnapshot;
 
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;

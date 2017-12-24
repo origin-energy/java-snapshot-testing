@@ -1,4 +1,4 @@
-package com.bonna.jsonSnapshot;
+package com.github.andrebonna.jsonSnapshot;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.bonna</groupId>
     <artifactId>json-snapshot</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>json-snapshot</name>
@@ -28,19 +28,15 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/andrebonna/json-snapshot.git</connection>
-        <developerConnection>scm:git:ssh://github.com:andrebonna/json-snapshot.git</developerConnection>
-        <url>http://github.com/andrebonna/json-snapshot/tree/master</url>
+        <connection>scm:git:https://github.com/andrebonna/json-snapshot.git</connection>
+        <developerConnection>scm:git:https://github.com/andrebonna/json-snapshot.git</developerConnection>
+        <url>http://github.com/andrebonna/json-snapshot</url>
     </scm>
 
     <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
         <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <id>nexus-releases</id>
+            <url>https://oss.sonatype.org/content/repositories/releases</url>
         </repository>
     </distributionManagement>
 
@@ -128,6 +124,33 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <serverId>nexus</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <skipStaging>true</skipStaging>
+                </configuration>
             </plugin>
         </plugins>
     </build>
