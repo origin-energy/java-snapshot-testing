@@ -47,7 +47,7 @@ public class SnapshotMatcher {
             }
         }
         if (unusedRawSnapshots.size() > 0) {
-            log.warn("All unused Snapshots: " + StringUtils.join(unusedRawSnapshots, "\n") + ". Consider running with update flag!");
+            log.warn("All unused Snapshots: " + StringUtils.join(unusedRawSnapshots, "\n") + ". Consider deleting the snapshot file to recreate it!");
         }
     }
 
