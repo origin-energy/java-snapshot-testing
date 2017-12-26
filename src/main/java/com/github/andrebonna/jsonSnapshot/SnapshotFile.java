@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 public class SnapshotFile {
 
-    private static final String SPLIT_STRING = "\n-------\n";
+    private static final String SPLIT_STRING = "\n\n\n";
     private static final String FILE_PATH = "src/test/java/";
 
     private String fileName;

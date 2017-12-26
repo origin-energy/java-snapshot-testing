@@ -9,7 +9,7 @@ Add to your pom.xml dependencies section:
 <dependency>
   <groupId>com.github.andrebonna</groupId>
   <artifactId>json-snapshot</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
 </dependency>
 ```
 

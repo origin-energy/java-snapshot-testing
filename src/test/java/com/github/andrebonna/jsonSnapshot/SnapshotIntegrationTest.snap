@@ -1,0 +1,25 @@
+com.github.andrebonna.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotThree=[
+  {
+    "id": "anyId3",
+    "value": 3,
+    "name": "anyName3"
+  }
+]
+
+
+com.github.andrebonna.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotOne=[
+  {
+    "id": "anyId1",
+    "value": 1,
+    "name": "anyName1"
+  }
+]
+
+
+com.github.andrebonna.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotTwo=[
+  {
+    "id": "anyId2",
+    "value": 2,
+    "name": "anyName2"
+  }
+]
