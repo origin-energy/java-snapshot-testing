@@ -2,9 +2,16 @@ package com.github.andrebonna.jsonSnapshot;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import static org.hamcrest.CoreMatchers.startsWith;
 
 public class SnapshotIntegrationTest {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @BeforeClass
     public static void beforeAll() {
@@ -34,5 +41,13 @@ public class SnapshotIntegrationTest {
     @Test
     public void shouldMatchSnapshotFour() {
         SnapshotMatcher.expect(FakeObject.builder().id("anyId4").value(4).name("any\n\n\nName4").build()).toMatchSnapshot();
+    }
+
+    @Test
+    public void shouldMatchSnapshotFive() {
+        expectedException.expect(SnapshotMatchException.class);
+        expectedException.expectMessage(startsWith("Error on: \n" +
+                "com.github.andrebonna.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotFive=["));
+        SnapshotMatcher.expect(FakeObject.builder().id("anyId5").value(6).name("anyName5").build()).toMatchSnapshot();
     }
 }

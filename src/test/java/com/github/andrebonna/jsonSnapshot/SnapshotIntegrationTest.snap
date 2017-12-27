@@ -33,3 +33,13 @@ com.github.andrebonna.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSna
     "name": "any\n\n\nName4"
   }
 ]
+
+
+
+com.github.andrebonna.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotFive=[
+  {
+    "id": "anyId5",
+    "value": 5,
+    "name": "anyName5"
+  }
+]

@@ -2,8 +2,11 @@ package com.github.andrebonna.jsonSnapshot;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.assertj.core.util.diff.DiffUtils;
+import org.assertj.core.util.diff.Patch;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 public class Snapshot {
@@ -18,7 +21,7 @@ public class Snapshot {
 
     private Object[] current;
 
-    Snapshot(SnapshotFile snapshotFile, Class clazz, Method method, Object ...current) {
+    Snapshot(SnapshotFile snapshotFile, Class clazz, Method method, Object... current) {
         this.current = current;
         this.snapshotFile = snapshotFile;
         this.clazz = clazz;
@@ -37,13 +40,23 @@ public class Snapshot {
         // Match Snapshot
         if (rawSnapshot != null) {
             if (!rawSnapshot.trim().equals(currentObject.trim())) {
-                throw new SnapshotMatchException(rawSnapshot + "\n is different than \n " + currentObject);
+                throw generateDiffError(rawSnapshot, currentObject);
             }
         }
         // Create New Snapshot
         else {
             snapshotFile.push(currentObject);
         }
+    }
+
+    private SnapshotMatchException generateDiffError(String rawSnapshot, String currentObject) {
+        //compute the patch: this is the diffutils part
+        Patch<String> patch =
+                DiffUtils.diff(
+                        Arrays.asList(rawSnapshot.trim().split("\n")),
+                        Arrays.asList(currentObject.trim().split("\n")));
+        String error = "Error on: \n" + currentObject.trim() + "\n\n" + patch.getDeltas().stream().map(delta -> delta.toString() + "\n").reduce(String::concat).get();
+        return new SnapshotMatchException(error);
     }
 
     private String getRawSnapshot(List<String> rawSnapshots) {
