@@ -1,5 +1,19 @@
 # json-snapshot
-Snapshot Testing for Java. [Understand the hype!](https://facebook.github.io/jest/docs/en/snapshot-testing.html)
+Snapshot Testing for Java. 
+
+#### Purpose of Snapshot Testing
+Snapshots help figuring out whether the output of the modules covered by tests is changed, without doing tons of asserts!
+
+#### When is it usefull?
+
+It's usefull for deterministic tests. That is, running the same tests multiple times on a component that has not changed 
+should produce the same results every time. You're responsible for making sure your generated snapshots do not include 
+platform specific or other non-deterministic data. 
+
+A Json Snapshot test does not assert Java types. You can continue doing that with any other testing framework.
+
+
+Based on [facebook's Jest framework](https://facebook.github.io/jest/docs/en/snapshot-testing.html)
 
 #### How to install using Maven
 
