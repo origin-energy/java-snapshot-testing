@@ -1,4 +1,4 @@
-package com.github.andrebonna.jsonSnapshot;
+package io.github.jsonSnapshot;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.*;
@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SnapshotMatcherTest {
 
-    private static final String FILE_PATH = "src/test/java/com/github/andrebonna/jsonSnapshot/SnapshotMatcherTest.snap";
+    private static final String FILE_PATH = "src/test/java/io/github/jsonSnapshot/SnapshotMatcherTest.snap";
 
     @BeforeClass
     public static void beforeAll() {
@@ -41,7 +41,7 @@ public class SnapshotMatcherTest {
         SnapshotMatcher.expect("any type of object").toMatchSnapshot();
 
         assertThat(StringUtils.join(Files.readAllLines(f.toPath()), "\n")).
-                isEqualTo("com.github.andrebonna.jsonSnapshot.SnapshotMatcherTest| with |should1ShowSnapshotSuccessfully=[\n" +
+                isEqualTo("io.github.jsonSnapshot.SnapshotMatcherTest| with |should1ShowSnapshotSuccessfully=[\n" +
                         "  \"any type of object\"\n" +
                         "]");
 
@@ -58,10 +58,10 @@ public class SnapshotMatcherTest {
         SnapshotMatcher.expect("any second type of object", "any third type of object").toMatchSnapshot();
 
         assertThat(StringUtils.join(Files.readAllLines(f.toPath()), "\n")).
-                isEqualTo("com.github.andrebonna.jsonSnapshot.SnapshotMatcherTest| with |should1ShowSnapshotSuccessfully=[\n" +
+                isEqualTo("io.github.jsonSnapshot.SnapshotMatcherTest| with |should1ShowSnapshotSuccessfully=[\n" +
                         "  \"any type of object\"\n" +
                         "]\n\n\n" +
-                        "com.github.andrebonna.jsonSnapshot.SnapshotMatcherTest| with |should2SecondSnapshotExecutionSuccessfully=[\n" +
+                        "io.github.jsonSnapshot.SnapshotMatcherTest| with |should2SecondSnapshotExecutionSuccessfully=[\n" +
                         "  \"any second type of object\",\n" +
                         "  \"any third type of object\"\n" +
                         "]");

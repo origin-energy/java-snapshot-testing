@@ -1,4 +1,4 @@
-package com.github.andrebonna.jsonSnapshot;
+package io.github.jsonSnapshot;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

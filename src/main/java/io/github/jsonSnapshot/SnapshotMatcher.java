@@ -1,4 +1,4 @@
-package com.github.andrebonna.jsonSnapshot;
+package io.github.jsonSnapshot;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;

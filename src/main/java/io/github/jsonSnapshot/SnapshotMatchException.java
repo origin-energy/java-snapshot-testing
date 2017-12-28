@@ -1,4 +1,4 @@
-package com.github.andrebonna.jsonSnapshot;
+package io.github.jsonSnapshot;
 
 public class SnapshotMatchException extends RuntimeException {
 

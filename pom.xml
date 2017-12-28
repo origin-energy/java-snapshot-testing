@@ -3,14 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.andrebonna</groupId>
+    <groupId>io.github.json-snapshot</groupId>
     <artifactId>json-snapshot</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <packaging>jar</packaging>
 
     <name>json-snapshot</name>
     <description>Snapshot Testing for Java</description>
-    <url>http://github.com/andrebonna/json-snapshot</url>
+    <url>https://github.com/json-snapshot/json-snapshot.github.io</url>
 
     <licenses>
         <license>
@@ -28,9 +28,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/andrebonna/json-snapshot.git</connection>
-        <developerConnection>scm:git:https://github.com/andrebonna/json-snapshot.git</developerConnection>
-        <url>http://github.com/andrebonna/json-snapshot</url>
+        <connection>scm:git:https://github.com/json-snapshot/json-snapshot.github.io.git</connection>
+        <developerConnection>scm:git:https://github.com/json-snapshot/json-snapshot.github.io.git</developerConnection>
+        <url>https://github.com/json-snapshot/json-snapshot.github.io</url>
     </scm>
 
     <distributionManagement>

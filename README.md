@@ -21,9 +21,9 @@ Add to your pom.xml dependencies section:
 
 ```xml
 <dependency>
-  <groupId>com.github.andrebonna</groupId>
-  <artifactId>json-snapshot</artifactId>
-  <version>0.0.2</version>
+    <groupId>io.github.json-snapshot</groupId>
+    <artifactId>json-snapshot</artifactId>
+    <version>0.0.4</version>
 </dependency>
 ```
 
@@ -56,7 +56,7 @@ public class ExampleTest {
 When the test runs for the first time, the framework will create a snapshot file named `ExampleTest.snap` alongside with your test class. It should look like this:
 ```text
 com.example.ExampleTest| with |shouldShowSnapshotExample=[
-  "<any type of object>"
+    "<any type of object>"
 ]
 ```
 

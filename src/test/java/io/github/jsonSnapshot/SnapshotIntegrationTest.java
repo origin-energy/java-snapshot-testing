@@ -1,4 +1,4 @@
-package com.github.andrebonna.jsonSnapshot;
+package io.github.jsonSnapshot;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -47,7 +47,7 @@ public class SnapshotIntegrationTest {
     public void shouldMatchSnapshotFive() {
         expectedException.expect(SnapshotMatchException.class);
         expectedException.expectMessage(startsWith("Error on: \n" +
-                "com.github.andrebonna.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotFive=["));
+                "io.github.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotFive=["));
         SnapshotMatcher.expect(FakeObject.builder().id("anyId5").value(6).name("anyName5").build()).toMatchSnapshot();
     }
 }
