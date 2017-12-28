@@ -1,5 +1,3 @@
-<a href="https://github.com/json-snapshot/json-snapshot.github.io"><img src="https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png" width="80"></a>
-
 #### Purpose of Snapshot Testing
 Snapshots help figuring out whether the output of the modules covered by tests is changed, without doing tons of asserts!
 
@@ -13,6 +11,12 @@ A Json Snapshot test does not assert Java types. You can continue doing that wit
 
 
 Based on [facebook's Jest framework](https://facebook.github.io/jest/docs/en/snapshot-testing.html)
+
+#### GitHub Repository
+<a href="https://github.com/json-snapshot/json-snapshot.github.io"><img src="https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png" width="80"></a>
+
+
+
 
 #### How to install using Maven
 
