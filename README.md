@@ -1,5 +1,4 @@
-# json-snapshot
-Snapshot Testing for Java. 
+# [json-snapshot](https://github.com/json-snapshot/json-snapshot.github.io)
 
 #### Purpose of Snapshot Testing
 Snapshots help figuring out whether the output of the modules covered by tests is changed, without doing tons of asserts!
