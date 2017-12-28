@@ -33,22 +33,22 @@ Add to your pom.xml dependencies section:
 ```java
 package com.example;
 
-import com.github.andrebonna.jsonSnapshot.*;
+import static io.github.jsonSnapshot.SnapshotMatcher.*;
 
 public class ExampleTest {
     @BeforeClass
     public static void beforeAll() {
-        SnapshotMatcher.start();
+        start();
     }
     
     @AfterClass
     public static void afterAll() {
-        SnapshotMatcher.validateSnapshots();
+        validateSnapshots();
     }
     
     @Test
     public void shouldShowSnapshotExample() {
-        SnapshotMatcher.expect("<any type of object>").toMatchSnapshot();
+        expect("<any type of object>").toMatchSnapshot();
     }
 }
 ```
