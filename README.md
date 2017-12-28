@@ -1,4 +1,4 @@
-# [json-snapshot](https://github.com/json-snapshot/json-snapshot.github.io)
+<a href="https://github.com/json-snapshot/json-snapshot.github.io"><img src="https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png" width="80"></a>
 
 #### Purpose of Snapshot Testing
 Snapshots help figuring out whether the output of the modules covered by tests is changed, without doing tons of asserts!
