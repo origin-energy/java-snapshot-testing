@@ -45,10 +45,23 @@ public class SnapshotIntegrationTest {
     }
 
     @Test
-    public void shouldMatchSnapshotFive() {
+    public void shouldThrowSnapshotMatchException() {
         expectedException.expect(SnapshotMatchException.class);
         expectedException.expectMessage(startsWith("Error on: \n" +
-                "io.github.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotFive=["));
+                "io.github.jsonSnapshot.SnapshotIntegrationTest| with |shouldThrowSnapshotMatchException=["));
         expect(FakeObject.builder().id("anyId5").value(6).name("anyName5").build()).toMatchSnapshot();
+    }
+
+    @Test
+    public void shouldThrowStackOverflowError() {
+        expectedException.expect(StackOverflowError.class);
+
+        // Create cycle JSON
+        FakeObject fakeObject1 = FakeObject.builder().id("anyId1").value(1).name("anyName1").build();
+        FakeObject fakeObject2 = FakeObject.builder().id("anyId2").value(2).name("anyName2").build();
+        fakeObject1.setFakeObject(fakeObject2);
+        fakeObject2.setFakeObject(fakeObject1);
+
+        expect(fakeObject1).toMatchSnapshot();
     }
 }

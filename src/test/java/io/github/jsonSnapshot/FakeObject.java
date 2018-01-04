@@ -1,6 +1,7 @@
 package io.github.jsonSnapshot;
 
 import lombok.Builder;
+import lombok.Setter;
 
 @Builder
 public class FakeObject {
@@ -10,5 +11,8 @@ public class FakeObject {
     private Integer value;
 
     private String name;
+
+    @Setter
+    private FakeObject fakeObject;
 
 }

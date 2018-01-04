@@ -18,7 +18,9 @@ Based on [facebook's Jest framework](https://facebook.github.io/jest/docs/en/sna
 
 
 
-#### How to install using Maven
+#### How to install using [Maven](https://mvnrepository.com/artifact/io.github.json-snapshot/json-snapshot/0.0.1)
+
+
 
 Add to your pom.xml dependencies section:
 
