@@ -1,17 +1,17 @@
+io.github.jsonSnapshot.SnapshotIntegrationTest.shouldThrowSnapshotMatchException=[
+  {
+    "id": "anyId5",
+    "value": 5,
+    "name": "anyName5"
+  }
+]
+
+
 io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotThree=[
   {
     "id": "anyId3",
     "value": 3,
     "name": "anyName3"
-  }
-]
-
-
-io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotFive=[
-  {
-    "id": "anyId5",
-    "value": 5,
-    "name": "anyName5"
   }
 ]
 
