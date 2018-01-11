@@ -60,7 +60,7 @@ public class ExampleTest {
 
 When the test runs for the first time, the framework will create a snapshot file named `ExampleTest.snap` alongside with your test class. It should look like this:
 ```text
-com.example.ExampleTest| with |shouldShowSnapshotExample=[
+com.example.ExampleTest.shouldShowSnapshotExample=[
     "<any type of object>"
 ]
 ```
