@@ -74,6 +74,6 @@ public class Snapshot {
     }
 
     public String getSnapshotName() {
-        return clazz.getName() + "| with |" + method.getName() + "=";
+        return clazz.getName() + "." + method.getName() + "=";
     }
 }

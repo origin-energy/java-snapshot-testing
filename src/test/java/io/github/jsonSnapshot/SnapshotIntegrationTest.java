@@ -48,7 +48,7 @@ public class SnapshotIntegrationTest {
     public void shouldMatchSnapshotFive() {
         expectedException.expect(SnapshotMatchException.class);
         expectedException.expectMessage(startsWith("Error on: \n" +
-                "io.github.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotFive=["));
+                "io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotFive=["));
         expect(FakeObject.builder().id("anyId5").value(6).name("anyName5").build()).toMatchSnapshot();
     }
 }

@@ -15,8 +15,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SnapshotTest {
 
     private static final String FILE_PATH = "src/test/java/anyFilePath";
-    private static final String SNAPSHOT_NAME = "java.lang.String| with |toString=";
-    private static final String SNAPSHOT = "java.lang.String| with |toString=[\n  \"anyObject\"\n]";
+    private static final String SNAPSHOT_NAME = "java.lang.String.toString=";
+    private static final String SNAPSHOT = "java.lang.String.toString=[\n  \"anyObject\"\n]";
 
     private SnapshotFile snapshotFile;
 

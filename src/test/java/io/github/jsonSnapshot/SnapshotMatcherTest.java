@@ -41,7 +41,7 @@ public class SnapshotMatcherTest {
         SnapshotMatcher.expect("any type of object").toMatchSnapshot();
 
         assertThat(StringUtils.join(Files.readAllLines(f.toPath()), "\n")).
-                isEqualTo("io.github.jsonSnapshot.SnapshotMatcherTest| with |should1ShowSnapshotSuccessfully=[\n" +
+                isEqualTo("io.github.jsonSnapshot.SnapshotMatcherTest.should1ShowSnapshotSuccessfully=[\n" +
                         "  \"any type of object\"\n" +
                         "]");
 
@@ -58,10 +58,10 @@ public class SnapshotMatcherTest {
         SnapshotMatcher.expect("any second type of object", "any third type of object").toMatchSnapshot();
 
         assertThat(StringUtils.join(Files.readAllLines(f.toPath()), "\n")).
-                isEqualTo("io.github.jsonSnapshot.SnapshotMatcherTest| with |should1ShowSnapshotSuccessfully=[\n" +
+                isEqualTo("io.github.jsonSnapshot.SnapshotMatcherTest.should1ShowSnapshotSuccessfully=[\n" +
                         "  \"any type of object\"\n" +
                         "]\n\n\n" +
-                        "io.github.jsonSnapshot.SnapshotMatcherTest| with |should2SecondSnapshotExecutionSuccessfully=[\n" +
+                        "io.github.jsonSnapshot.SnapshotMatcherTest.should2SecondSnapshotExecutionSuccessfully=[\n" +
                         "  \"any second type of object\",\n" +
                         "  \"any third type of object\"\n" +
                         "]");

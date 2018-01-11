@@ -1,4 +1,4 @@
-io.github.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotThree=[
+io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotThree=[
   {
     "id": "anyId3",
     "value": 3,
@@ -7,7 +7,7 @@ io.github.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotThree=[
 ]
 
 
-io.github.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotFive=[
+io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotFive=[
   {
     "id": "anyId5",
     "value": 5,
@@ -16,7 +16,7 @@ io.github.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotFive=[
 ]
 
 
-io.github.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotFour=[
+io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotFour=[
   {
     "id": "anyId4",
     "value": 4,
@@ -25,7 +25,7 @@ io.github.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotFour=[
 ]
 
 
-io.github.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotOne=[
+io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotOne=[
   {
     "id": "anyId1",
     "value": 1,
@@ -34,7 +34,7 @@ io.github.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotOne=[
 ]
 
 
-io.github.jsonSnapshot.SnapshotIntegrationTest| with |shouldMatchSnapshotTwo=[
+io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotTwo=[
   {
     "id": "anyId2",
     "value": 2,
