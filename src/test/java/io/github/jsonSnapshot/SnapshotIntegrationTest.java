@@ -1,14 +1,17 @@
 package io.github.jsonSnapshot;
 
+import org.hamcrest.core.StringStartsWith;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static io.github.jsonSnapshot.SnapshotMatcher.*;
-import static org.hamcrest.CoreMatchers.startsWith;
 
+@RunWith(MockitoJUnitRunner.class)
 public class SnapshotIntegrationTest {
 
     @Rule
@@ -47,7 +50,7 @@ public class SnapshotIntegrationTest {
     @Test
     public void shouldThrowSnapshotMatchException() {
         expectedException.expect(SnapshotMatchException.class);
-        expectedException.expectMessage(startsWith("Error on: \n" +
+        expectedException.expectMessage(StringStartsWith.startsWith("Error on: \n" +
                 "io.github.jsonSnapshot.SnapshotIntegrationTest.shouldThrowSnapshotMatchException=["));
         expect(FakeObject.builder().id("anyId5").value(6).name("anyName5").build()).toMatchSnapshot();
     }
