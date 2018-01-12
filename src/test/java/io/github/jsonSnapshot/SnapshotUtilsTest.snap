@@ -1,0 +1,21 @@
+io.github.jsonSnapshot.SnapshotUtilsTest.shouldExtractArgsFromMethod=[
+  {
+    "FakeObject.fakeMethod": [
+      {
+        "arg0": "test1",
+        "arg1": 1,
+        "arg2": [
+          "listTest1"
+        ]
+      },
+      {
+        "arg0": "test2",
+        "arg1": 2,
+        "arg2": [
+          "listTest1",
+          "listTest2"
+        ]
+      }
+    ]
+  }
+]

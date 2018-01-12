@@ -3,6 +3,8 @@ package io.github.jsonSnapshot;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,6 +14,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(MockitoJUnitRunner.class)
 public class SnapshotTest {
 
     private static final String FILE_PATH = "src/test/java/anyFilePath";

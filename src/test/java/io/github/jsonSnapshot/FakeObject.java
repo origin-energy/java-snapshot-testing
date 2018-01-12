@@ -3,6 +3,8 @@ package io.github.jsonSnapshot;
 import lombok.Builder;
 import lombok.Setter;
 
+import java.util.List;
+
 @Builder
 public class FakeObject {
 
@@ -14,5 +16,10 @@ public class FakeObject {
 
     @Setter
     private FakeObject fakeObject;
+
+
+    public void fakeMethod(String fakeName, Long fakeNumber, List<String> fakeList) {
+
+    }
 
 }
