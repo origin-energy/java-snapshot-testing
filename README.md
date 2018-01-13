@@ -38,6 +38,17 @@ Add to your pom.xml dependencies section:
 ```java
 package com.example;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
 import static io.github.jsonSnapshot.SnapshotMatcher.*;
 import static io.github.jsonSnapshot.SnapshotUtils.*;
 
