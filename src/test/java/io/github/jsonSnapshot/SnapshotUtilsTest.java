@@ -33,7 +33,7 @@ public class SnapshotUtilsTest {
 
 
     @Test
-    public void shouldExtractArgsFromMethod() throws NoSuchMethodException {
+    public void shouldExtractArgsFromMethod() {
 
         fakeObject.fakeMethod("test1", 1L, Arrays.asList("listTest1"));
         fakeObject.fakeMethod("test2", 2L, Arrays.asList("listTest1", "listTest2"));

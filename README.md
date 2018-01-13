@@ -39,8 +39,14 @@ Add to your pom.xml dependencies section:
 package com.example;
 
 import static io.github.jsonSnapshot.SnapshotMatcher.*;
+import static io.github.jsonSnapshot.SnapshotUtils.*;
 
 public class ExampleTest {
+
+    @Mock
+    private FakeObject fakeObject;
+
+
     @BeforeClass
     public static void beforeAll() {
         start();
@@ -51,9 +57,31 @@ public class ExampleTest {
         validateSnapshots();
     }
     
-    @Test
+    @Test // Snapshot any object
     public void shouldShowSnapshotExample() {
         expect("<any type of object>").toMatchSnapshot();
+    }
+
+    @Test // Snapshot arguments passed to mocked object
+    public void shouldExtractArgsFromMethod() {
+
+        fakeObject.fakeMethod("test1", 1L, Arrays.asList("listTest1"));
+        fakeObject.fakeMethod("test2", 2L, Arrays.asList("listTest1", "listTest2"));
+
+        expect(extractArgs(fakeObject, "fakeMethod", String.class, Long.class, List.class)).toMatchSnapshot();
+
+    }
+    
+    class FakeObject {
+        private String id;
+
+        private Integer value;
+
+        private String name;
+
+        void fakeMethod(String fakeName, Long fakeNumber, List<String> fakeList) {
+
+        }
     }
 }
 ```
@@ -62,6 +90,29 @@ When the test runs for the first time, the framework will create a snapshot file
 ```text
 com.example.ExampleTest.shouldShowSnapshotExample=[
     "<any type of object>"
+]
+
+
+com.example.ExampleTest.shouldExtractArgsFromMethod=[
+  {
+    "FakeObject.fakeMethod": [
+      {
+        "arg0": "test1",
+        "arg1": 1,
+        "arg2": [
+          "listTest1"
+        ]
+      },
+      {
+        "arg0": "test2",
+        "arg1": 2,
+        "arg2": [
+          "listTest1",
+          "listTest2"
+        ]
+      }
+    ]
+  }
 ]
 ```
 
