@@ -41,6 +41,7 @@ package com.example;
 import static io.github.jsonSnapshot.SnapshotMatcher.*;
 import static io.github.jsonSnapshot.SnapshotUtils.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ExampleTest {
 
     @Mock
@@ -62,14 +63,12 @@ public class ExampleTest {
         expect("<any type of object>").toMatchSnapshot();
     }
 
-    @Test // Snapshot arguments passed to mocked object
+    @Test // Snapshot arguments passed to mocked object (from Mockito library)
     public void shouldExtractArgsFromMethod() {
-
         fakeObject.fakeMethod("test1", 1L, Arrays.asList("listTest1"));
         fakeObject.fakeMethod("test2", 2L, Arrays.asList("listTest1", "listTest2"));
 
         expect(extractArgs(fakeObject, "fakeMethod", String.class, Long.class, List.class)).toMatchSnapshot();
-
     }
     
     class FakeObject {
