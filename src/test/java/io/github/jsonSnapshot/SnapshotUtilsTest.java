@@ -39,7 +39,8 @@ public class SnapshotUtilsTest {
         fakeObject.fakeMethod("test2", 2L, Arrays.asList("listTest1", "listTest2"));
 
         HashMap<?, ?> fakeMethodArgs = SnapshotUtils.extractArgs(fakeObject, "fakeMethod", String.class, Long.class, List.class);
-        expect(fakeMethodArgs).toMatchSnapshot();
+        expect(fakeMethodArgs)
+                .toMatchSnapshot();
 
     }
 

@@ -46,7 +46,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import static io.github.jsonSnapshot.SnapshotMatcher.*;
@@ -79,7 +78,8 @@ public class ExampleTest {
         fakeObject.fakeMethod("test1", 1L, Arrays.asList("listTest1"));
         fakeObject.fakeMethod("test2", 2L, Arrays.asList("listTest1", "listTest2"));
 
-        expect(extractArgs(fakeObject, "fakeMethod", String.class, Long.class, List.class)).toMatchSnapshot();
+        expect(extractArgs(fakeObject, "fakeMethod", String.class, Long.class, List.class))
+                .toMatchSnapshot();
     }
     
     class FakeObject {
