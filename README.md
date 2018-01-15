@@ -28,7 +28,7 @@ Add to your pom.xml dependencies section:
 <dependency>
     <groupId>io.github.json-snapshot</groupId>
     <artifactId>json-snapshot</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 </dependency>
 ```
 
@@ -129,4 +129,58 @@ com.example.ExampleTest.shouldExtractArgsFromMethod=[
 Whenever it runs again, the `expect` method argument will be automatically validated with the `.snap` file. That is why you should commit every `.snap` file created.
 
 
+#### Inheritance
 
+Test classes inheritance becames usefull with snapshot testing due to the fact that the assertions are variable following snasphots, instead of code. 
+To make usage of this benefit you should be aware of the following:
+
+Start SnapshotMatcher on child classes only:
+
+```java
+package com.example;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+
+import static io.github.jsonSnapshot.SnapshotMatcher.start;
+import static io.github.jsonSnapshot.SnapshotMatcher.validateSnapshots;
+
+public class SnapshotChildClassTest extends SnapshotSuperClassTest {
+
+    @BeforeClass
+    public static void beforeAll() {
+        start();
+    }
+
+    @AfterClass
+    public static void afterAll() {
+        validateSnapshots();
+    }
+    
+    @Override
+    public String getName() {
+        return "anyName";
+    }
+}
+```
+
+Super classes can have @Test defined, but you should make the class abstract.
+
+```java
+package com.example;
+
+import org.junit.Test;
+
+import static io.github.jsonSnapshot.SnapshotMatcher.expect;
+
+public abstract class SnapshotSuperClassTest {
+
+    public abstract String getName();
+
+    @Test
+    public void shouldMatchSnapshotOne() {
+        expect(getName()).toMatchSnapshot();
+    }
+
+}
+```

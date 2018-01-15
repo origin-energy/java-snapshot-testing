@@ -88,7 +88,7 @@ public class SnapshotMatcher {
     private static Method getMethod(StackTraceElement testClass, Class clazz) {
         Method method;
         try {
-            method = clazz.getDeclaredMethod(testClass.getMethodName());
+            method = clazz.getMethod(testClass.getMethodName());
         } catch (NoSuchMethodException e) {
             throw new SnapshotMatchException("Please annotate your test method with @Test and make it without any parameters!");
         }
