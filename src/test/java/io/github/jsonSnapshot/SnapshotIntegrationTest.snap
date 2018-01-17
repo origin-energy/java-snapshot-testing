@@ -41,3 +41,13 @@ io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotTwo=[
     "name": "anyName2"
   }
 ]
+
+
+
+io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotInsidePrivateMethod=[
+  {
+    "id": "anyPrivate",
+    "value": 5,
+    "name": "anyPrivate"
+  }
+]

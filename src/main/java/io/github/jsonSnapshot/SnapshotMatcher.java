@@ -3,6 +3,8 @@ package io.github.jsonSnapshot;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Arrays;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.verification.VerificationMode;
 import org.slf4j.Logger;
@@ -100,8 +102,25 @@ public class SnapshotMatcher {
 
         int i = 1; // Start after stackTrace
         while (i < stackTraceElements.length &&
-                SnapshotMatcher.class.equals(Class.forName(stackTraceElements[i].getClassName()))) {
+                SnapshotMatcher.class.equals(Class.forName(stackTraceElements[i].getClassName()))) { //TODO
             i++;
+        }
+
+        for (int j = i; j < stackTraceElements.length; j++) {
+
+            try {
+                Class clazz = Class.forName(stackTraceElements[j].getClassName());
+                Method method = clazz.getMethod(stackTraceElements[j].getMethodName());
+
+                // Navigate into stack until Test class/method level
+                if (method.isAnnotationPresent(Test.class) || method.isAnnotationPresent(BeforeClass.class)) {
+                    i = j;
+                    break;
+                }
+            }
+            catch(NoSuchMethodException ignored) {
+
+            }
         }
 
         return stackTraceElements[i];

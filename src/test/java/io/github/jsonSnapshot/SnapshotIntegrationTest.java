@@ -48,6 +48,15 @@ public class SnapshotIntegrationTest {
     }
 
     @Test
+    public void shouldMatchSnapshotInsidePrivateMethod() {
+        matchInsidePrivate();
+    }
+
+    private void matchInsidePrivate() {
+        expect(FakeObject.builder().id("anyPrivate").value(5).name("anyPrivate").build()).toMatchSnapshot();
+    }
+
+    @Test
     public void shouldThrowSnapshotMatchException() {
         expectedException.expect(SnapshotMatchException.class);
         expectedException.expectMessage(StringStartsWith.startsWith("Error on: \n" +
