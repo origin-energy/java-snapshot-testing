@@ -14,14 +14,36 @@ import static org.mockito.Mockito.verify;
 public class SnapshotUtils {
 
     public static <T> HashMap<String, List<LinkedHashMap<String, Object>>> extractArgs(T object, String methodName,
-                                                                                       Class... classes) {
+                                                                                       SnapshotCaptor... snapshotCaptors) {
         List<ArgumentCaptor> captors = new ArrayList<>();
-        HashMap<String, List<LinkedHashMap<String, Object>>> result = new HashMap<>();
+        Class[] classes = new Class[snapshotCaptors.length];
+
+        int i = 0;
+        for (SnapshotCaptor snapshotCaptor : snapshotCaptors) {
+            classes[i] = snapshotCaptor.getParameterClass();
+            captors.add(ArgumentCaptor.forClass(snapshotCaptor.getParameterClass()));
+            i++;
+        }
+
+        return process(object, methodName, captors, classes, snapshotCaptors);
+    }
+
+    public static <T> HashMap<String, List<LinkedHashMap<String, Object>>> extractArgs(T object, String methodName,
+                                                                                       Class<?>... classes) {
+        List<ArgumentCaptor> captors = new ArrayList<>();
 
         for (Class clazz : classes) {
             captors.add(ArgumentCaptor.forClass(clazz));
         }
 
+        return process(object, methodName, captors, classes, null);
+    }
+
+    private static <T> HashMap<String, List<LinkedHashMap<String, Object>>> process(T object, String methodName,
+                                                                                    List<ArgumentCaptor> captors,
+                                                                                    Class[] classes,
+                                                                                    SnapshotCaptor[] snapshotCaptors) {
+        HashMap<String, List<LinkedHashMap<String, Object>>> result = new HashMap<>();
         try {
             Parameter[] parameters = object.getClass().getMethod(methodName, classes).getParameters();
 
@@ -42,7 +64,11 @@ public class SnapshotUtils {
 
                     int j = 0;
                     for (ArgumentCaptor captor : captors) {
-                        objectMap.put(parameters[j].getName(), captor.getAllValues().get(i));
+                        Object value = captor.getAllValues().get(i);
+                        if (snapshotCaptors != null) {
+                            value = snapshotCaptors[j].removeIgnored(value);
+                        }
+                        objectMap.put(parameters[j].getName(), value);
                         j++;
                     }
                     extractedObjects.add(objectMap);
@@ -51,7 +77,7 @@ public class SnapshotUtils {
 
             result.put(object.getClass().getSuperclass().getSimpleName() + "." + methodName, extractedObjects);
         } catch (Exception e) {
-            throw new SnapshotMatchException(e.getMessage());
+            throw new SnapshotMatchException(e.getMessage(), e.getCause());
         }
 
         return result;
