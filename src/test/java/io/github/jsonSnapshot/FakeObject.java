@@ -1,11 +1,12 @@
 package io.github.jsonSnapshot;
 
-import lombok.Builder;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FakeObject {
 
     private String id;
@@ -17,9 +18,15 @@ public class FakeObject {
     @Setter
     private FakeObject fakeObject;
 
-
     public void fakeMethod(String fakeName, Long fakeNumber, List<String> fakeList) {
 
     }
 
+    public void fakeMethodWithComplexObject(Object fakeObj) {
+
+    }
+
+    public void fakeMethodWithComplexFakeObject(FakeObject fakeObj) {
+
+    }
 }
