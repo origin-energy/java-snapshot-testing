@@ -85,7 +85,9 @@ public class ExampleTest {
     
     @Test // Snapshot arguments passed to mocked object support ignore of fields
     public void shouldExtractArgsFromFakeMethodWithComplexObject() {
-        FakeObject fake = new FakeObject.FakeObjectBuilder().id("idMock").name("nameMock").build();
+        FakeObject fake = new FakeObject();
+        fake.setId("idMock");
+        fake.setName("nameMock");
 
         //With Ignore
         fakeObject.fakeMethodWithComplexObject(fake);
@@ -105,6 +107,7 @@ public class ExampleTest {
     }
     
     class FakeObject {
+        
         private String id;
 
         private Integer value;
@@ -117,6 +120,14 @@ public class ExampleTest {
         
         void fakeMethodWithComplexObject(Object fakeObj) {
         
+        }
+        
+        void setId(String id) {
+            this.id = id;
+        }
+        
+        void setName(String name) {
+            this.name = name;
         }
     }
 }
