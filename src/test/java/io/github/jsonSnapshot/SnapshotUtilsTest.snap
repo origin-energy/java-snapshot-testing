@@ -1,4 +1,50 @@
-io.github.jsonSnapshot.SnapshotUtilsTest.shouldExtractArgsFromMethod=[
+io.github.jsonSnapshot.SnapshotUtilsTest.shouldExtractArgsFromFakeMethodWithComplexFakeObject=[
+  {
+    "FakeObject.fakeMethodWithComplexObject": [
+      {
+        "arg0": {
+          "id": "idMock"
+        }
+      }
+    ]
+  },
+  {
+    "FakeObject.fakeMethodWithComplexObject": [
+      {
+        "arg0": {
+          "id": "idMock",
+          "name": "nameMock"
+        }
+      }
+    ]
+  }
+]
+
+
+io.github.jsonSnapshot.SnapshotUtilsTest.shouldExtractArgsFromFakeMethodWithComplexObject=[
+  {
+    "FakeObject.fakeMethodWithComplexFakeObject": [
+      {
+        "arg0": {
+          "id": "idMock"
+        }
+      }
+    ]
+  },
+  {
+    "FakeObject.fakeMethodWithComplexFakeObject": [
+      {
+        "arg0": {
+          "id": "idMock",
+          "name": "nameMock"
+        }
+      }
+    ]
+  }
+]
+
+
+io.github.jsonSnapshot.SnapshotUtilsTest.shouldExtractArgsFromFakeMethod=[
   {
     "FakeObject.fakeMethod": [
       {
