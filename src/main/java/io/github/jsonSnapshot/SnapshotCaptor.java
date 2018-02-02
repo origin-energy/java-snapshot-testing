@@ -34,7 +34,12 @@ public class SnapshotCaptor {
                 try {
                     Field field = this.argumentClass.getDeclaredField(each);
                     field.setAccessible(true);
-                    field.set(newValue, null);
+                    if (field.getType().isPrimitive()) {
+                        field.setByte(newValue, Integer.valueOf(0).byteValue());
+                    }
+                    else {
+                        field.set(newValue, null);
+                    }
                 } catch (IllegalAccessException | NoSuchFieldException e) {
                     throw new SnapshotMatchException("Invalid Ignore value " + each, e.getCause());
                 }
