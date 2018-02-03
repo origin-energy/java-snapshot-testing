@@ -9,6 +9,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,7 +48,7 @@ public class SnapshotTest {
     @Test
     public void shouldMatchSnapshotSuccessfully() {
         snapshot.toMatchSnapshot();
-        assertThat(snapshotFile.getRawSnapshots()).isEqualTo(Stream.of(SNAPSHOT).collect(Collectors.toList()));
+        assertThat(snapshotFile.getRawSnapshots()).isEqualTo(Stream.of(SNAPSHOT).collect(Collectors.toCollection(TreeSet::new)));
     }
 
     @Test(expected = SnapshotMatchException.class)

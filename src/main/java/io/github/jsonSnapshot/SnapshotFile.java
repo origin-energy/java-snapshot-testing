@@ -6,6 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -17,7 +20,7 @@ public class SnapshotFile {
     private String fileName;
 
     @Getter
-    private List<String> rawSnapshots;
+    private Set<String> rawSnapshots;
 
     SnapshotFile(String fileName) throws IOException {
 
@@ -35,14 +38,15 @@ public class SnapshotFile {
 
             String fileText = fileContent.toString();
             if (StringUtils.isNotBlank(fileText)) {
-                rawSnapshots = Stream.of(fileContent.toString().split(SPLIT_STRING)).collect(Collectors.toList());
+                rawSnapshots = Stream.of(fileContent.toString().split(SPLIT_STRING)).map(String::trim).collect(Collectors.toCollection(
+                        TreeSet::new));
             }
             else {
-                rawSnapshots = new ArrayList<>();
+                rawSnapshots = new TreeSet<>();
             }
         } catch (IOException e) {
             createFile(this.fileName);
-            rawSnapshots = new ArrayList<>();
+            rawSnapshots = new TreeSet<>();
         }
     }
 

@@ -17,6 +17,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.atLeastOnce;
@@ -41,7 +42,7 @@ public class SnapshotMatcher {
     }
 
     public static void validateSnapshots() {
-        List<String> rawSnapshots = snapshotFile.getRawSnapshots();
+        Set<String> rawSnapshots = snapshotFile.getRawSnapshots();
         List<String> snapshotNames = calledSnapshots.stream().map(Snapshot::getSnapshotName).collect(Collectors.toList());
         List<String> unusedRawSnapshots = new ArrayList<>();
 

@@ -7,7 +7,9 @@ import org.assertj.core.util.diff.Patch;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class Snapshot {
 
@@ -31,7 +33,7 @@ public class Snapshot {
 
     public void toMatchSnapshot() {
 
-        List<String> rawSnapshots = snapshotFile.getRawSnapshots();
+        Set<String> rawSnapshots = snapshotFile.getRawSnapshots();
 
         String rawSnapshot = getRawSnapshot(rawSnapshots);
 
@@ -59,7 +61,7 @@ public class Snapshot {
         return new SnapshotMatchException(error);
     }
 
-    private String getRawSnapshot(List<String> rawSnapshots) {
+    private String getRawSnapshot(Collection<String> rawSnapshots) {
         for (String rawSnapshot : rawSnapshots) {
 
             if (rawSnapshot.contains(getSnapshotName())) {

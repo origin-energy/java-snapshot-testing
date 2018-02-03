@@ -1,26 +1,17 @@
-io.github.jsonSnapshot.SnapshotIntegrationTest.shouldThrowSnapshotMatchException=[
-  {
-    "id": "anyId5",
-    "value": 5,
-    "name": "anyName5"
-  }
-]
-
-
-io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotThree=[
-  {
-    "id": "anyId3",
-    "value": 3,
-    "name": "anyName3"
-  }
-]
-
-
 io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotFour=[
   {
     "id": "anyId4",
     "value": 4,
     "name": "any\n\n\nName4"
+  }
+]
+
+
+io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotInsidePrivateMethod=[
+  {
+    "id": "anyPrivate",
+    "value": 5,
+    "name": "anyPrivate"
   }
 ]
 
@@ -34,6 +25,15 @@ io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotOne=[
 ]
 
 
+io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotThree=[
+  {
+    "id": "anyId3",
+    "value": 3,
+    "name": "anyName3"
+  }
+]
+
+
 io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotTwo=[
   {
     "id": "anyId2",
@@ -43,11 +43,10 @@ io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotTwo=[
 ]
 
 
-
-io.github.jsonSnapshot.SnapshotIntegrationTest.shouldMatchSnapshotInsidePrivateMethod=[
+io.github.jsonSnapshot.SnapshotIntegrationTest.shouldThrowSnapshotMatchException=[
   {
-    "id": "anyPrivate",
+    "id": "anyId5",
     "value": 5,
-    "name": "anyPrivate"
+    "name": "anyName5"
   }
 ]
