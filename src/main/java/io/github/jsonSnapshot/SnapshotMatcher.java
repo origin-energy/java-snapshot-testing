@@ -32,14 +32,14 @@ public class SnapshotMatcher {
     private static List<Snapshot> calledSnapshots = new ArrayList<>();
 
     public static void start() {
-        start(new Config());
+        start(new DefaultConfig());
     }
 
-    public static void start(Config config) {
+    public static void start(SnapshotConfig config) {
         try {
             StackTraceElement stackElement = findStackElement();
             clazz = Class.forName(stackElement.getClassName());
-            snapshotFile = new SnapshotFile(config.filePath,stackElement.getClassName().replaceAll("\\.", "/") + ".snap");
+            snapshotFile = new SnapshotFile(config.getFilePath(), stackElement.getClassName().replaceAll("\\.", "/") + ".snap");
         } catch (ClassNotFoundException | IOException e) {
             throw new SnapshotMatchException(e.getMessage());
         }
