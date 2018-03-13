@@ -1,7 +1,10 @@
 package io.github.jsonSnapshot;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.runners.MockitoJUnitRunner;
