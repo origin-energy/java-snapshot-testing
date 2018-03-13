@@ -15,16 +15,15 @@ import java.util.stream.Stream;
 public class SnapshotFile {
 
     private static final String SPLIT_STRING = "\n\n\n";
-    private static final String FILE_PATH = "src/test/java/";
 
     private String fileName;
 
     @Getter
     private Set<String> rawSnapshots;
 
-    SnapshotFile(String fileName) throws IOException {
+    SnapshotFile(String filePath, String fileName) throws IOException {
 
-        this.fileName = FILE_PATH + fileName;
+        this.fileName = filePath + fileName;
 
         StringBuilder fileContent = new StringBuilder();
 
