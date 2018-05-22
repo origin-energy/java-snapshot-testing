@@ -1,5 +1,6 @@
 package io.github.jsonSnapshot;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 public class SnapshotCaptor {
@@ -50,7 +51,8 @@ public class SnapshotCaptor {
 
     private Object shallowCopy(Object value) {
         try {
-            Object newValue = this.argumentClass.newInstance();
+            Object newValue = constructCopy(this.argumentClass);
+
             Field[] fields = this.argumentClass.getDeclaredFields();
 
             for (Field field: fields) {
@@ -67,5 +69,36 @@ public class SnapshotCaptor {
         catch (Exception e) {
             throw new SnapshotMatchException("Class "+ this.argumentClass.getSimpleName() + " must have a default empty constructor!");
         }
+    }
+
+    private Object constructCopy(Class<?> argumentClass)
+        throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
+
+        try {
+            return argumentClass.newInstance();
+        }
+        catch (Exception e) {
+            // Ignore - should log
+        }
+
+        Constructor[] constructors = argumentClass.getDeclaredConstructors();
+
+        if (constructors.length == 0) {
+            return argumentClass.newInstance();
+        }
+
+        int i = 0;
+        Class[] types = constructors[i].getParameterTypes();
+        Object[] paramValues = new Object[types.length];
+
+        for (int j = 0; j < types.length; j++) {
+            if (types[j].isPrimitive()) {
+                paramValues[j] = Integer.valueOf(0).byteValue();
+            }
+            else {
+                paramValues[j] = constructCopy(types[j]);
+            }
+        }
+        return constructors[i].newInstance(paramValues);
     }
 }
