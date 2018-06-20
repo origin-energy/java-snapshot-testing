@@ -1,7 +1,5 @@
 package io.github.jsonSnapshot;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.assertj.core.util.diff.DiffUtils;
 import org.assertj.core.util.diff.Patch;
 
@@ -9,6 +7,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
+import java.util.function.Function;
 
 public class Snapshot {
 
@@ -18,16 +17,16 @@ public class Snapshot {
 
     private Method method;
 
-    private Gson gson;
+    private Function<Object, String> jsonFunction;
 
     private Object[] current;
 
-    Snapshot(SnapshotFile snapshotFile, Class clazz, Method method, Object... current) {
+    Snapshot(SnapshotFile snapshotFile, Class clazz, Method method, Function<Object, String> jsonFunction, Object... current) {
         this.current = current;
         this.snapshotFile = snapshotFile;
         this.clazz = clazz;
         this.method = method;
-        gson = new GsonBuilder().setPrettyPrinting().create();
+        this.jsonFunction = jsonFunction;
     }
 
     public void toMatchSnapshot() {
@@ -71,7 +70,7 @@ public class Snapshot {
     }
 
     private String takeSnapshot() {
-        return getSnapshotName() + gson.toJson(current);
+        return getSnapshotName() + jsonFunction.apply(current);
     }
 
     public String getSnapshotName() {

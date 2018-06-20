@@ -1,5 +1,6 @@
 package io.github.jsonSnapshot;
 
+import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Arrays;
@@ -13,6 +14,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class SnapshotMatcher {
@@ -22,12 +25,22 @@ public class SnapshotMatcher {
     private static Class clazz = null;
     private static SnapshotFile snapshotFile = null;
     private static List<Snapshot> calledSnapshots = new ArrayList<>();
+    private static Function<Object, String> jsonFunction;
 
     public static void start() {
-        start(new DefaultConfig());
+        start(new DefaultConfig(), defaultJsonFunction());
     }
 
     public static void start(SnapshotConfig config) {
+        start(config, defaultJsonFunction());
+    }
+
+    public static void start(Function<Object, String> jsonFunction) {
+        start(new DefaultConfig(), jsonFunction);
+    }
+
+    public static void start(SnapshotConfig config, Function<Object, String> jsonFunction) {
+        SnapshotMatcher.jsonFunction = jsonFunction;
         try {
             StackTraceElement stackElement = findStackElement();
             clazz = Class.forName(stackElement.getClassName());
@@ -67,13 +80,17 @@ public class SnapshotMatcher {
             Object[] objects = mergeObjects(firstObject, others);
             StackTraceElement stackElement = findStackElement();
             Method method = getMethod(stackElement, clazz);
-            Snapshot snapshot = new Snapshot(snapshotFile, clazz, method, objects);
+            Snapshot snapshot = new Snapshot(snapshotFile, clazz, method, jsonFunction, objects);
             validateExpectCall(snapshot);
             calledSnapshots.add(snapshot);
             return snapshot;
         } catch (ClassNotFoundException e) {
             throw new SnapshotMatchException(e.getMessage());
         }
+    }
+
+    private static Function<Object, String> defaultJsonFunction() {
+        return (object) -> new GsonBuilder().setPrettyPrinting().create().toJson(object);
     }
 
     private static void validateExpectCall(Snapshot snapshot) {

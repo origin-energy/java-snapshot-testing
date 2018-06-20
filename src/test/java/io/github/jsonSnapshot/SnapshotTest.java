@@ -1,5 +1,6 @@
 package io.github.jsonSnapshot;
 
+import com.google.gson.GsonBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +33,8 @@ public class SnapshotTest {
     public void setUp() throws NoSuchMethodException, IOException {
         snapshotFile = new SnapshotFile(DEFAULT_CONFIG.getFilePath(), "anyFilePath");
         snapshot = new Snapshot(snapshotFile, String.class,
-                String.class.getDeclaredMethod("toString"), "anyObject");
+                String.class.getDeclaredMethod("toString"),
+                (object) -> new GsonBuilder().setPrettyPrinting().create().toJson(object),"anyObject");
     }
 
     @After
