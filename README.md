@@ -28,7 +28,7 @@ Add to your pom.xml dependencies section:
 <dependency>
     <groupId>io.github.json-snapshot</groupId>
     <artifactId>json-snapshot</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.12</version>
 </dependency>
 ```
 
