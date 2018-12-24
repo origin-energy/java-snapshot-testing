@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Arrays;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class SnapshotMatcher {
@@ -127,7 +127,8 @@ public class SnapshotMatcher {
                 Method method = clazz.getMethod(stackTraceElements[j].getMethodName());
 
                 // Navigate into stack until Test class/method level
-                if (method.isAnnotationPresent(Test.class) || method.isAnnotationPresent(BeforeClass.class)) {
+                if (method.isAnnotationPresent(Test.class) || method.isAnnotationPresent(BeforeClass.class) ||
+                        method.isAnnotationPresent(org.junit.jupiter.api.Test.class) || method.isAnnotationPresent(BeforeAll.class)) {
                     i = j;
                     break;
                 }

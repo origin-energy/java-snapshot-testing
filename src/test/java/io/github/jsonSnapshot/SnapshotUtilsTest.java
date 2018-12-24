@@ -1,12 +1,12 @@
 package io.github.jsonSnapshot;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,18 +14,18 @@ import java.util.List;
 import static io.github.jsonSnapshot.SnapshotMatcher.*;
 import static io.github.jsonSnapshot.SnapshotUtils.extractArgs;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SnapshotUtilsTest {
 
     @Mock
     private FakeObject fakeObject;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeAll() {
         start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterAll() {
         validateSnapshots();
     }

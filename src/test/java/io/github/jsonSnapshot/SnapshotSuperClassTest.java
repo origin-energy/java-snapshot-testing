@@ -1,6 +1,7 @@
 package io.github.jsonSnapshot;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import static io.github.jsonSnapshot.SnapshotMatcher.expect;
 

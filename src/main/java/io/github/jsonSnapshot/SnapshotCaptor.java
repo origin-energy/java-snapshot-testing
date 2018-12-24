@@ -72,10 +72,10 @@ public class SnapshotCaptor {
     }
 
     private Object constructCopy(Class<?> argumentClass)
-        throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
+            throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
 
         try {
-            return argumentClass.newInstance();
+            return argumentClass.getDeclaredConstructor().newInstance();
         }
         catch (Exception e) {
             // Ignore - should log
@@ -84,7 +84,7 @@ public class SnapshotCaptor {
         Constructor[] constructors = argumentClass.getDeclaredConstructors();
 
         if (constructors.length == 0) {
-            return argumentClass.newInstance();
+            return argumentClass.getDeclaredConstructor().newInstance();
         }
 
         int i = 0;

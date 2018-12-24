@@ -1,28 +1,23 @@
 package io.github.jsonSnapshot;
 
-import org.hamcrest.core.StringStartsWith;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static io.github.jsonSnapshot.SnapshotMatcher.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SnapshotIntegrationTest {
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-
-    @BeforeClass
+    @BeforeAll
     public static void beforeAll() {
         start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterAll() {
         validateSnapshots();
     }
@@ -58,22 +53,18 @@ public class SnapshotIntegrationTest {
 
     @Test
     public void shouldThrowSnapshotMatchException() {
-        expectedException.expect(SnapshotMatchException.class);
-        expectedException.expectMessage(StringStartsWith.startsWith("Error on: \n" +
-                "io.github.jsonSnapshot.SnapshotIntegrationTest.shouldThrowSnapshotMatchException=["));
-        expect(FakeObject.builder().id("anyId5").value(6).name("anyName5").build()).toMatchSnapshot();
+        assertThrows(SnapshotMatchException.class, expect(FakeObject.builder().id("anyId5").value(6).name("anyName5").build())::toMatchSnapshot, "Error on: \n" +
+                "io.github.jsonSnapshot.SnapshotIntegrationTest.shouldThrowSnapshotMatchException=[");
     }
 
     @Test
     public void shouldThrowStackOverflowError() {
-        expectedException.expect(StackOverflowError.class);
-
         // Create cycle JSON
         FakeObject fakeObject1 = FakeObject.builder().id("anyId1").value(1).name("anyName1").build();
         FakeObject fakeObject2 = FakeObject.builder().id("anyId2").value(2).name("anyName2").build();
         fakeObject1.setFakeObject(fakeObject2);
         fakeObject2.setFakeObject(fakeObject1);
 
-        expect(fakeObject1).toMatchSnapshot();
+        assertThrows(StackOverflowError.class, () -> expect(fakeObject1).toMatchSnapshot());
     }
 }

@@ -1,13 +1,11 @@
 package io.github.jsonSnapshot;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,20 +14,28 @@ import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@ExtendWith(MockitoExtension.class)
 public class SnapshotMatcherTest {
 
     private static final String FILE_PATH = "src/test/java/io/github/jsonSnapshot/SnapshotMatcherTest.snap";
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeAll() {
         SnapshotMatcher.start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterAll() throws IOException {
         SnapshotMatcher.validateSnapshots();
+        File f = new File(FILE_PATH);
+        assertThat(StringUtils.join(Files.readAllLines(f.toPath()), "\n")).
+                isEqualTo("io.github.jsonSnapshot.SnapshotMatcherTest.should1ShowSnapshotSuccessfully=[\n" +
+                        "  \"any type of object\"\n" +
+                        "]\n\n\n" +
+                        "io.github.jsonSnapshot.SnapshotMatcherTest.should2SecondSnapshotExecutionSuccessfully=[\n" +
+                        "  \"any second type of object\",\n" +
+                        "  \"any third type of object\"\n" +
+                        "]");
         Files.delete(Paths.get(FILE_PATH));
     }
 
@@ -41,16 +47,7 @@ public class SnapshotMatcherTest {
         if(!f.exists() || f.isDirectory()) {
             throw new RuntimeException("File should exist here");
         }
-
-        assertThat(StringUtils.join(Files.readAllLines(f.toPath()), "\n")).isEqualTo("");
-
         SnapshotMatcher.expect("any type of object").toMatchSnapshot();
-
-        assertThat(StringUtils.join(Files.readAllLines(f.toPath()), "\n")).
-                isEqualTo("io.github.jsonSnapshot.SnapshotMatcherTest.should1ShowSnapshotSuccessfully=[\n" +
-                        "  \"any type of object\"\n" +
-                        "]");
-
     }
 
     @Test
@@ -60,17 +57,6 @@ public class SnapshotMatcherTest {
         if(!f.exists() || f.isDirectory()) {
             throw new RuntimeException("File should exist here");
         }
-
         SnapshotMatcher.expect("any second type of object", "any third type of object").toMatchSnapshot();
-
-        assertThat(StringUtils.join(Files.readAllLines(f.toPath()), "\n")).
-                isEqualTo("io.github.jsonSnapshot.SnapshotMatcherTest.should1ShowSnapshotSuccessfully=[\n" +
-                        "  \"any type of object\"\n" +
-                        "]\n\n\n" +
-                        "io.github.jsonSnapshot.SnapshotMatcherTest.should2SecondSnapshotExecutionSuccessfully=[\n" +
-                        "  \"any second type of object\",\n" +
-                        "  \"any third type of object\"\n" +
-                        "]");
-
     }
 }

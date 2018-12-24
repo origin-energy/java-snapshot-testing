@@ -1,11 +1,11 @@
 package io.github.jsonSnapshot;
 
 import com.google.gson.GsonBuilder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,8 +15,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SnapshotTest {
 
     private static final SnapshotConfig DEFAULT_CONFIG = new DefaultConfig();
@@ -29,7 +30,7 @@ public class SnapshotTest {
     private Snapshot snapshot;
 
 
-    @Before
+    @BeforeEach
     public void setUp() throws NoSuchMethodException, IOException {
         snapshotFile = new SnapshotFile(DEFAULT_CONFIG.getFilePath(), "anyFilePath");
         snapshot = new Snapshot(snapshotFile, String.class,
@@ -37,7 +38,7 @@ public class SnapshotTest {
                 (object) -> new GsonBuilder().setPrettyPrinting().create().toJson(object),"anyObject");
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws IOException {
         Files.delete(Paths.get(FILE_PATH));
     }
@@ -54,10 +55,11 @@ public class SnapshotTest {
         assertThat(snapshotFile.getRawSnapshots()).isEqualTo(Stream.of(SNAPSHOT).collect(Collectors.toCollection(TreeSet::new)));
     }
 
-    @Test(expected = SnapshotMatchException.class)
+    @Test
     public void shouldMatchSnapshotWithException() {
         snapshotFile.push(SNAPSHOT_NAME + "anyWrongSnapshot");
-        snapshot.toMatchSnapshot();
+
+        assertThrows(SnapshotMatchException.class, snapshot::toMatchSnapshot);
     }
 
 }
