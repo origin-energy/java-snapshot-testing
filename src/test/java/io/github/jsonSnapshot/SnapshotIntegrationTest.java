@@ -65,6 +65,6 @@ public class SnapshotIntegrationTest {
         fakeObject1.setFakeObject(fakeObject2);
         fakeObject2.setFakeObject(fakeObject1);
 
-        assertThrows(StackOverflowError.class, () -> expect(fakeObject1).toMatchSnapshot());
+        assertThrows(SnapshotMatchException.class, () -> expect(fakeObject1).toMatchSnapshot());
     }
 }
