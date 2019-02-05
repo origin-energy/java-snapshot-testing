@@ -20,9 +20,11 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SnapshotMatcher {
 
@@ -80,19 +82,15 @@ public class SnapshotMatcher {
     public static Snapshot expect(Object firstObject, Object... others) {
 
         if (clazz == null) {
-            throw new SnapshotMatchException("SnapshotTester not yet started! Start it on @BeforeClass with SnapshotMatcher.start()");
+            throw new SnapshotMatchException("SnapshotTester not yet started! Start it on @BeforeClass/@BeforeAll with SnapshotMatcher.start()");
         }
-        try {
-            Object[] objects = mergeObjects(firstObject, others);
-            StackTraceElement stackElement = findStackElement();
-            Method method = getMethod(stackElement, clazz);
-            Snapshot snapshot = new Snapshot(snapshotFile, clazz, method, jsonFunction, objects);
-            validateExpectCall(snapshot);
-            calledSnapshots.add(snapshot);
-            return snapshot;
-        } catch (ClassNotFoundException e) {
-            throw new SnapshotMatchException(e.getMessage());
-        }
+        Object[] objects = mergeObjects(firstObject, others);
+        StackTraceElement stackElement = findStackElement();
+        Method method = getMethod(clazz, stackElement.getMethodName());
+        Snapshot snapshot = new Snapshot(snapshotFile, clazz, method, jsonFunction, objects);
+        validateExpectCall(snapshot);
+        calledSnapshots.add(snapshot);
+        return snapshot;
     }
 
     static Function<Object, String> defaultJsonFunction() {
@@ -144,45 +142,38 @@ public class SnapshotMatcher {
         }
     }
 
-    private static Method getMethod(StackTraceElement testClass, Class clazz) {
-        Method method;
+    private static Method getMethod(Class<?> clazz, String methodName) {
         try {
-            method = clazz.getMethod(testClass.getMethodName());
+            return clazz.getDeclaredMethod(methodName);
         } catch (NoSuchMethodException e) {
-            throw new SnapshotMatchException("Please annotate your test method with @Test and make it without any parameters!");
+            return Optional.ofNullable(clazz.getSuperclass())
+                    .map(superclass -> getMethod(superclass, methodName))
+                    .orElseThrow(() -> new SnapshotMatchException("Could not find method " + methodName + " on class " + clazz
+                            + "\nPlease annotate your test method with @Test and make it without any parameters!"));
         }
-        return method;
     }
 
-    private static StackTraceElement findStackElement() throws ClassNotFoundException {
+    private static StackTraceElement findStackElement() {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-
-        int i = 1; // Start after stackTrace
-        while (i < stackTraceElements.length &&
-                SnapshotMatcher.class.equals(Class.forName(stackTraceElements[i].getClassName()))) { //TODO
-            i++;
+        int elementsToSkip = 1; // Start after stackTrace
+        while (SnapshotMatcher.class.getName().equals(stackTraceElements[elementsToSkip].getClassName())) {
+            elementsToSkip++;
         }
 
-        for (int j = i; j < stackTraceElements.length; j++) {
-
-            try {
-                Class clazz = Class.forName(stackTraceElements[j].getClassName());
-                Method method = clazz.getMethod(stackTraceElements[j].getMethodName());
-
-                // Navigate into stack until Test class/method level
-                if (method.isAnnotationPresent(Test.class) || method.isAnnotationPresent(BeforeClass.class) ||
-                        method.isAnnotationPresent(org.junit.jupiter.api.Test.class) || method.isAnnotationPresent(BeforeAll.class)) {
-                    i = j;
-                    break;
-                }
-            }
-            catch(NoSuchMethodException ignored) {
-
-            }
-        }
-
-        return stackTraceElements[i];
+        return Stream.of(stackTraceElements)
+                .skip(elementsToSkip)
+                .filter(stackTraceElement -> hasTestAnnotation(getMethod(getClass(stackTraceElement.getClassName()), stackTraceElement.getMethodName())))
+                .findFirst()
+                .orElseThrow(() -> new SnapshotMatchException("Could not locate a method with one of supported test annotations"));
     }
+
+    private static boolean hasTestAnnotation(Method method) {
+        return method.isAnnotationPresent(Test.class)
+                || method.isAnnotationPresent(BeforeClass.class)
+                || method.isAnnotationPresent(org.junit.jupiter.api.Test.class)
+                || method.isAnnotationPresent(BeforeAll.class);
+    }
+
 
     private static Object[] mergeObjects(Object firstObject, Object[] others) {
         Object[] objects = new Object[1];
@@ -191,5 +182,13 @@ public class SnapshotMatcher {
             objects = ArrayUtils.addAll(objects, others);
         }
         return objects;
+    }
+
+    private static Class<?> getClass(String className) {
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }
