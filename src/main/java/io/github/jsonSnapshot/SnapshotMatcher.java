@@ -2,8 +2,10 @@ package io.github.jsonSnapshot;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter.Indenter;
 import com.fasterxml.jackson.core.util.Separators;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -99,7 +101,7 @@ public class SnapshotMatcher {
 
         ObjectMapper objectMapper = buildObjectMapper();
 
-        DefaultPrettyPrinter pp = buildDefaultPrettyPrinter();
+        PrettyPrinter pp = buildDefaultPrettyPrinter();
 
         return (object) -> {
             try {
@@ -110,7 +112,7 @@ public class SnapshotMatcher {
         };
     }
 
-    private static DefaultPrettyPrinter buildDefaultPrettyPrinter() {
+    private static PrettyPrinter buildDefaultPrettyPrinter() {
         DefaultPrettyPrinter pp = new DefaultPrettyPrinter(""){
             @Override
             public DefaultPrettyPrinter withSeparators(Separators separators) {
@@ -119,7 +121,9 @@ public class SnapshotMatcher {
                 return this;
             }
         };
-        pp.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+        Indenter lfOnlyIndenter = new DefaultIndenter("  ", "\n");
+        pp.indentArraysWith(lfOnlyIndenter);
+        pp.indentObjectsWith(lfOnlyIndenter);
         return pp;
     }
 
