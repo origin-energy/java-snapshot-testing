@@ -1,35 +1,28 @@
 package io.github.jsonSnapshot;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class FakeObject {
 
-    private String id;
+  private String id;
 
-    private Integer value;
+  private Integer value;
 
-    private String name;
+  private String name;
 
-    @Setter
-    private FakeObject fakeObject;
+  @Setter private FakeObject fakeObject;
 
-    public void fakeMethod(String fakeName, Long fakeNumber, List<String> fakeList) {
+  public void fakeMethod(String fakeName, Long fakeNumber, List<String> fakeList) {}
 
-    }
+  public void fakeMethodWithComplexObject(Object fakeObj) {}
 
-    public void fakeMethodWithComplexObject(Object fakeObj) {
-
-    }
-
-    public void fakeMethodWithComplexFakeObject(FakeObject fakeObj) {
-
-    }
+  public void fakeMethodWithComplexFakeObject(FakeObject fakeObj) {}
 }
