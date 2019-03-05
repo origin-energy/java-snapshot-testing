@@ -1,0 +1,49 @@
+io.github.jsonSnapshot.BackwardCompatilbleTest.shouldExtractArgsFromFakeMethodWithComplexObject=[
+  {
+    "FakeObject.fakeMethodWithComplexObject": [
+      {
+        "arg0": {
+          "id": "idMock"
+        }
+      }
+    ]
+  },
+  {
+    "FakeObject.fakeMethodWithComplexObject": [
+      {
+        "arg0": {
+          "id": "idMock",
+          "name": "nameMock"
+        }
+      }
+    ]
+  }
+]
+
+
+io.github.jsonSnapshot.BackwardCompatilbleTest.shouldExtractArgsFromMethod=[
+  {
+    "FakeObject.fakeMethod": [
+      {
+        "arg0": "test1",
+        "arg1": 1,
+        "arg2": [
+          "listTest1"
+        ]
+      },
+      {
+        "arg0": "test2",
+        "arg1": 2,
+        "arg2": [
+          "listTest1",
+          "listTest2"
+        ]
+      }
+    ]
+  }
+]
+
+
+io.github.jsonSnapshot.BackwardCompatilbleTest.shouldShowSnapshotExample=[
+  "<any type of object>"
+]

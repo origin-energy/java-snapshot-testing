@@ -47,11 +47,12 @@ public class SnapshotUtils {
       SnapshotCaptor[] snapshotCaptors) {
     HashMap<String, List<LinkedHashMap<String, Object>>> result = new HashMap<>();
     try {
-      Parameter[] parameters = object.getClass().getMethod(methodName, classes).getParameters();
+      Parameter[] parameters =
+          object.getClass().getDeclaredMethod(methodName, classes).getParameters();
 
       object
           .getClass()
-          .getMethod(methodName, classes)
+          .getDeclaredMethod(methodName, classes)
           .invoke(
               verify(object, atLeastOnce()),
               captors.stream().map(ArgumentCaptor::capture).toArray());

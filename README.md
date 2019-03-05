@@ -18,7 +18,7 @@ Based on [facebook's Jest framework](https://facebook.github.io/jest/docs/en/sna
 
 
 
-#### How to install using [Maven](https://mvnrepository.com/artifact/io.github.json-snapshot/json-snapshot/1.0.16)
+#### How to install using [Maven](https://mvnrepository.com/artifact/io.github.json-snapshot/json-snapshot/1.0.17)
 
 
 
@@ -28,7 +28,7 @@ Add to your pom.xml dependencies section:
 <dependency>
     <groupId>io.github.json-snapshot</groupId>
     <artifactId>json-snapshot</artifactId>
-    <version>1.0.16</version>
+    <version>1.0.17</version>
 </dependency>
 ```
 

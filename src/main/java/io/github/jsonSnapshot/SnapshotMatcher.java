@@ -162,7 +162,10 @@ public class SnapshotMatcher {
 
   private static Method getMethod(Class<?> clazz, String methodName) {
     try {
-      return clazz.getDeclaredMethod(methodName);
+      return Stream.of(clazz.getDeclaredMethods())
+          .filter(method -> method.getName().equals(methodName))
+          .findFirst()
+          .orElseThrow(() -> new NoSuchMethodException("Not Found"));
     } catch (NoSuchMethodException e) {
       return Optional.ofNullable(clazz.getSuperclass())
           .map(superclass -> getMethod(superclass, methodName))
