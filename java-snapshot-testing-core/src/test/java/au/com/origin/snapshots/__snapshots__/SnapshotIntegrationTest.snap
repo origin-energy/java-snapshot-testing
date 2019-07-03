@@ -1,0 +1,70 @@
+au.com.origin.snapshots.SnapshotIntegrationTest.matchInsidePrivate=[
+  {
+    "id": "anyPrivate",
+    "value": 5,
+    "name": "anyPrivate"
+  }
+]
+
+
+au.com.origin.snapshots.SnapshotIntegrationTest.shouldMatchSnapshotFour=[
+  {
+    "id": "anyId4",
+    "value": 4,
+    "name": "any\n\n\nName4"
+  }
+]
+
+
+au.com.origin.snapshots.SnapshotIntegrationTest.shouldMatchSnapshotInsidePrivateMethod=[
+  {
+    "id": "anyPrivate",
+    "value": 5,
+    "name": "anyPrivate"
+  }
+]
+
+
+au.com.origin.snapshots.SnapshotIntegrationTest.shouldMatchSnapshotOne=[
+  {
+    "id": "anyId1",
+    "value": 1,
+    "name": "anyName1"
+  }
+]
+
+
+au.com.origin.snapshots.SnapshotIntegrationTest.shouldMatchSnapshotThree=[
+  {
+    "id": "anyId3",
+    "value": 3,
+    "name": "anyName3"
+  }
+]
+
+
+au.com.origin.snapshots.SnapshotIntegrationTest.shouldMatchSnapshotTwo=[
+  {
+    "id": "anyId2",
+    "value": 2,
+    "name": "anyName2"
+  }
+]
+
+
+au.com.origin.snapshots.SnapshotIntegrationTest.shouldThrowSnapshotMatchException=[
+  {
+    "id": "anyId5",
+    "value": 5,
+    "name": "anyName5"
+  }
+]
+
+
+au.com.origin.snapshots.SnapshotIntegrationTest.shouldThrowSnapshotMatchException=[
+  {
+    "id": "anyId5",
+    "value": 6,
+    "name": "anyName5"
+  }
+]

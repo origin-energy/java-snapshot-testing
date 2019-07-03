@@ -1,0 +1,29 @@
+plugins {
+    id 'net.researchgate.release' version '2.6.0' apply false
+}
+
+subprojects { subproject ->
+
+    // FIXME this plugin is currently not working for multi-module projects
+    // Will need to release and TAG manually for now
+    subproject.apply plugin: 'net.researchgate.release'
+
+    subproject.apply plugin: 'java'
+
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    test { useTestNG() }
+
+    dependencies {
+        // Lombok
+        compileOnly 'org.projectlombok:lombok:1.18.8'
+        annotationProcessor 'org.projectlombok:lombok:1.18.8'
+        testCompileOnly 'org.projectlombok:lombok:1.18.8'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.8'
+    }
+}
