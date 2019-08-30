@@ -1,5 +1,7 @@
 package au.com.origin.snapshots;
 
+import java.lang.reflect.Method;
+
 /**
  *
  */
@@ -25,10 +27,18 @@ public interface SnapshotConfig {
     }
 
     /**
-     * Locate the current test file on the call stack.  This file wil control the
-     * name of the generated .snap file
+     * Optional - return the test class name
+     * @return
      */
-    StackTraceElement findStacktraceElement();
+    Class<?> getTestClass();
+
+    /**
+     * Optional - return the test method name
+     *
+     * @param testClass
+     * @return
+     */
+    Method getTestMethod(Class<?> testClass);
 
     /**
      * Should the snapshots be updated without verification

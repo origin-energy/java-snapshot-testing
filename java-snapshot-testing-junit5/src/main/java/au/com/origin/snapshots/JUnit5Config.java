@@ -1,5 +1,7 @@
 package au.com.origin.snapshots;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -8,43 +10,13 @@ import java.util.stream.Stream;
 public class JUnit5Config implements SnapshotConfig {
 
   @Override
-  public StackTraceElement findStacktraceElement() {
-    StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-    int elementsToSkip = 1; // Start after stackTrace
-    List<String> ignoredClasses = Arrays.asList(
-            SnapshotMatcher.class.getName(),
-            JUnit5Config.class.getName(),
-            SnapshotExtension.class.getName());
-    while (ignoredClasses.contains(stackTraceElements[elementsToSkip].getClassName())) {
-      elementsToSkip++;
-    }
-
-    return Stream.of(stackTraceElements)
-        .skip(elementsToSkip)
-        .filter(
-            stackTraceElement ->
-                hasTestAnnotation(
-                        ReflectionUtilities.getMethod(
-                        getClassForName(stackTraceElement.getClassName()),
-                        stackTraceElement.getMethodName())))
-        .findFirst()
-        .orElseThrow(
-            () ->
-                new SnapshotMatchException(
-                    "Could not locate a method with one of supported test annotations"));
+  public Class<?> getTestClass() {
+    throw new NotImplementedException("You forgot to implement the JUnit5 SnapshotExtension");
   }
 
-  protected boolean hasTestAnnotation(Method method) {
-    return method.isAnnotationPresent(org.junit.jupiter.params.ParameterizedTest.class)
-        || method.isAnnotationPresent(org.junit.jupiter.api.Test.class)
-        || method.isAnnotationPresent(org.junit.jupiter.api.BeforeAll.class);
+  @Override
+  public Method getTestMethod(Class<?> testClass) {
+    throw new NotImplementedException("You forgot to implement the JUnit5 SnapshotExtension");
   }
 
-  private Class<?> getClassForName(String className) {
-    try {
-      return Class.forName(className);
-    } catch (ClassNotFoundException e) {
-      throw new IllegalArgumentException(e);
-    }
-  }
 }

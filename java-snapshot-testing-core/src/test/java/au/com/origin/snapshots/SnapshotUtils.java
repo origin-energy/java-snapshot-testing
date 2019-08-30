@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import au.com.origin.snapshots.SnapshotCaptor;
+import au.com.origin.snapshots.SnapshotMatchException;
 import org.mockito.ArgumentCaptor;
 
 public class SnapshotUtils {

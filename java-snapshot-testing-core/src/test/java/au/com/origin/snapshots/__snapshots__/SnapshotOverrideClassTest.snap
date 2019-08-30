@@ -1,3 +1,8 @@
+au.com.origin.snapshots.SnapshotOverrideClassTest.beforeAll=[
+  "anyName"
+]
+
+
 au.com.origin.snapshots.SnapshotOverrideClassTest.shouldMatchSnapshotOne=[
   "anyName"
 ]

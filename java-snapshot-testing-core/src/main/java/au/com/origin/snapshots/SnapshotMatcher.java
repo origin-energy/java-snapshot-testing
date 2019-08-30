@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.function.Function;
 
 @Slf4j
@@ -13,13 +14,7 @@ public class SnapshotMatcher {
     private static final ThreadLocal<SnapshotVerifier> INSTANCES = new ThreadLocal<>();
 
     public static void start(SnapshotConfig config) {
-        try {
-            StackTraceElement stackElement = config.findStacktraceElement();
-            Class<?> clazz = Class.forName(stackElement.getClassName());
-            start(config, clazz);
-        } catch (ClassNotFoundException e) {
-            throw new SnapshotMatchException("Unable to locate test method");
-        }
+        start(config, config.getTestClass());
     }
 
     public static void start(SnapshotConfig config, Class<?> testClass) {
@@ -46,6 +41,10 @@ public class SnapshotMatcher {
         } catch (IOException e) {
             throw new SnapshotMatchException(e.getMessage());
         }
+    }
+
+    public static void setMethod(Method method) {
+        INSTANCES.get().setMethod(method);
     }
 
     public static void validateSnapshots() {

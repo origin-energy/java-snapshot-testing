@@ -1,52 +1,19 @@
 package au.com.origin.snapshots;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Stream;
+import org.apache.commons.lang3.NotImplementedException;
 
+import java.lang.reflect.Method;
 
 public class JUnit4Config implements SnapshotConfig {
 
   @Override
-  public StackTraceElement findStacktraceElement() {
-    StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-    int elementsToSkip = 1; // Start after stackTrace
-    List<String> ignoredClasses = Arrays.asList(
-            SnapshotMatcher.class.getName(),
-            JUnit4Config.class.getName(),
-            SnapshotRule.class.getName());
-    while (ignoredClasses.contains(stackTraceElements[elementsToSkip].getClassName())) {
-      elementsToSkip++;
-    }
-
-    return Stream.of(stackTraceElements)
-        .skip(elementsToSkip)
-        .filter(
-            stackTraceElement ->
-                hasTestAnnotation(
-                    ReflectionUtilities.getMethod(
-                        getClassForName(stackTraceElement.getClassName()),
-                        stackTraceElement.getMethodName())))
-        .findFirst()
-        .orElseThrow(
-            () ->
-                new SnapshotMatchException(
-                    "Could not locate a method with one of supported test annotations"));
+  public Class<?> getTestClass() {
+    throw new NotImplementedException("You forgot to implement the @ClassRule for SnapshotClassRule");
   }
 
-  protected boolean hasTestAnnotation(Method method) {
-    return
-    // Junit 4
-    method.isAnnotationPresent(org.junit.Test.class)
-        || method.isAnnotationPresent(org.junit.BeforeClass.class);
+  @Override
+  public Method getTestMethod(Class<?> testClass) {
+    throw new NotImplementedException("You forgot to implement the @Rule for SnapshotRule");
   }
 
-  private Class<?> getClassForName(String className) {
-    try {
-      return Class.forName(className);
-    } catch (ClassNotFoundException e) {
-      throw new IllegalArgumentException(e);
-    }
-  }
 }

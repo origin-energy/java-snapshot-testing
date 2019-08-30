@@ -1,6 +1,7 @@
 package au.com.origin.snapshots;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,21 +26,14 @@ public class SnapshotVerifier {
 
     private final List<Snapshot> calledSnapshots = new ArrayList<>();
 
-    /**
-     * @param firstObject
-     * @param others
-     * @return
-     */
+    @Setter
+    private Method method = null;
+
     public Snapshot expectCondition(Object firstObject, Object... others) {
-        if (clazz == null) {
-            throw new SnapshotMatchException(
-                    "SnapshotTester not yet started! Start it on @BeforeClass/@BeforeAll with SnapshotMatcher.start()");
-        }
         Object[] objects = mergeObjects(firstObject, others);
-        StackTraceElement stackElement = config.findStacktraceElement();
-        Method method = ReflectionUtilities.getMethod(clazz, stackElement.getMethodName());
+        Method resolvedMethod = method == null ? config.getTestMethod(clazz) : method;
         Snapshot snapshot =
-                new Snapshot(config, snapshotFile, clazz, method, serializer, objects);
+                new Snapshot(config, snapshotFile, clazz, resolvedMethod, serializer, objects);
         validateExpectCall(snapshot);
         calledSnapshots.add(snapshot);
         return snapshot;
