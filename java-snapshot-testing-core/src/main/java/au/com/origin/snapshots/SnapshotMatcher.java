@@ -13,14 +13,22 @@ public class SnapshotMatcher {
     private static final ThreadLocal<SnapshotVerifier> INSTANCES = new ThreadLocal<>();
 
     public static void start(SnapshotConfig config) {
-        start(config, new JacksonSerializer().getSerializer());
-    }
-
-    public static void start(SnapshotConfig config, Function<Object, String> serializer) {
         try {
             StackTraceElement stackElement = config.findStacktraceElement();
             Class<?> clazz = Class.forName(stackElement.getClassName());
-            String testFilename = stackElement.getClassName().replaceAll("\\.", File.separator) + ".snap";
+            start(config, clazz);
+        } catch (ClassNotFoundException e) {
+            throw new SnapshotMatchException("Unable to locate test method");
+        }
+    }
+
+    public static void start(SnapshotConfig config, Class<?> testClass) {
+        start(config, testClass, new JacksonSerializer().getSerializer());
+    }
+
+    public static void start(SnapshotConfig config, Class<?> testClass, Function<Object, String> serializer) {
+        try {
+            String testFilename = testClass.getName().replaceAll("\\.", File.separator) + ".snap";
 
             File fileUnderTest = new File(testFilename);
             File snapshotDir = new File(fileUnderTest.getParentFile(), config.getSnapshotFolder());
@@ -29,19 +37,23 @@ public class SnapshotMatcher {
                 new SnapshotFile(config.getTestSrcDir(), snapshotDir.getPath() + File.separator + fileUnderTest.getName());
 
             SnapshotVerifier snapshotVerifier = new SnapshotVerifier(
-                clazz,
+                testClass,
                 snapshotFile,
                 serializer,
                 config
             );
             INSTANCES.set(snapshotVerifier);
-        } catch (ClassNotFoundException | IOException e) {
+        } catch (IOException e) {
             throw new SnapshotMatchException(e.getMessage());
         }
     }
 
     public static void validateSnapshots() {
-        INSTANCES.get().validateSnapshots();
+        SnapshotVerifier snapshotVerifier = INSTANCES.get();
+        if (snapshotVerifier == null) {
+            throw new SnapshotMatchException("Could not find Snapshot Verifier for this thread");
+        }
+        snapshotVerifier.validateSnapshots();
     }
 
     public static Snapshot expect(Object firstObject, Object... objects) {

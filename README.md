@@ -69,22 +69,48 @@ com.example.ExampleTest.shouldExtractArgsFromFakeMethodWithComplexObject=[
 ]
 ```
 
-# Integrating with your testing framework
+# Usage Examples
+## JUnit 5
+```java
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-1. Before all the tests in a single file execute (`@BeforeAll, @BeforeClass, setupSpec())
-```java
-  SnapshotMatcher.start(new JUnit5Config());
+// Ensure you extend your test class with the SnapshotExtension
+@ExtendWith(SnapshotExtension.class)
+public class SnapshotExtensionUsedTest {
+
+    @Test
+    public void shouldUseExtension() {
+        // Verify your snapshot
+        SnapshotMatcher.expect("Hello Wolrd").toMatchSnapshot();
+    }
+
+    @Test
+    public void exampleSnapshot() {
+        SnapshotMatcher.expect("Hello Wolrd Again").toMatchSnapshot();
+    }
+}
 ```
-1. After all the tests in a single file execute  (`@AfterAll, @AfterClass, cleanupSpec())
+## JUnit 4
 ```java
-  SnapshotMatcher.validateSnapshots();
-```
-1. In each test method you can validate the snapshot
-```java
-SnapshotMatcher.expect(something).toMatchSnapshot()
+import org.junit.ClassRule;
+import org.junit.Test;
+
+public class SnapshotRuleUsedTest {
+
+    // Ensure you instantiate a class rule
+    @ClassRule
+    public static SnapshotRule snapshotRule = new SnapshotRule();
+
+    @Test
+    public void exampleSnapshot() {
+        // Verify your snapshot
+        SnapshotMatcher.expect("Hello Wolrd").toMatchSnapshot();
+    }
+}
 ```
 
-## Spock Example
+## Spock
 ```groovy
 package specs
 import static io.github.jsonSnapshot.SnapshotMatcher.expect
@@ -117,19 +143,29 @@ class MySpec extends Specification {
     }
 }
 ```
+# Custom Framework
+1. implement the interface `au.com.origin.snapshots.SnapshotConfig`
+```java
+public class MyCustomSnapshotConfig implements SnapshotConfig {
+    // your custom implementation
+}
+```
+1. Before all the tests in a single file execute
+```java
+  SnapshotMatcher.start(new MyCustomSnapshotConfig());
+```
+1. After all the tests in a single file execute
+```java
+  SnapshotMatcher.validateSnapshots();
+```
+1. In test methods setup your expectations (only one allowed per method)
+```java
+SnapshotMatcher.expect(something).toMatchSnapshot()
+```
 
 # Parameterized tests
 In cases where the same test runs multiple times with different parameters you need to set the `scenario`
 
 ```java
 SnapshotMatcher.expect(something).scenario(params).toMatchSnapshot();
-```
-
-## Custom Configuration
-If the default libraries don't work for you - you can implement your own
-
-```java
-public class MyCustomConfig implements SnapshotConfig {
-    // your custom implementation
-}
 ```

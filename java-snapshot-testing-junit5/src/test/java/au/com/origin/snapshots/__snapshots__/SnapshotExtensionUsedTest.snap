@@ -1,0 +1,8 @@
+au.com.origin.snapshots.SnapshotExtensionUsedTest.shouldUseExtension=[
+  "Hello Wolrd"
+]
+
+
+au.com.origin.snapshots.SnapshotExtensionUsedTest.shouldUseExtensionAgain=[
+  "Hello Wolrd Again"
+]
