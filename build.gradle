@@ -4,7 +4,7 @@ plugins {
 
 subprojects { subproject ->
 
-    // FIXME this plugin is currently not working for multi-module projects
+    // FIXME this plugin is currently not working for multi-module projects even when defined at the top level only
     // Will need to release and TAG manually for now
     subproject.apply plugin: 'net.researchgate.release'
 
