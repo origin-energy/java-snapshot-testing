@@ -17,8 +17,6 @@ subprojects { subproject ->
         mavenCentral()
     }
 
-    test { useTestNG() }
-
     dependencies {
         // Lombok
         compileOnly 'org.projectlombok:lombok:1.18.8'

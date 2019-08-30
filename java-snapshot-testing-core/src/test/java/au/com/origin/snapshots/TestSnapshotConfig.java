@@ -10,14 +10,8 @@ public class TestSnapshotConfig implements SnapshotConfig {
     public StackTraceElement findStacktraceElement() {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
         int elementsToSkip = 1; // Start after stackTrace
-        while (TestSnapshotConfig.class
-                .getName()
-                .equals(stackTraceElements[elementsToSkip].getClassName())) {
-            elementsToSkip++;
-        }
-        while (SnapshotMatcher.class
-                .getName()
-                .equals(stackTraceElements[elementsToSkip].getClassName())) {
+        while (stackTraceElements[elementsToSkip].getClassName()
+                .contains(".Snapshot")) {
             elementsToSkip++;
         }
 
@@ -37,7 +31,9 @@ public class TestSnapshotConfig implements SnapshotConfig {
     }
 
     protected boolean hasTestAnnotation(Method method) {
-        return true;
+        return method.isAnnotationPresent(org.junit.jupiter.params.ParameterizedTest.class)
+                || method.isAnnotationPresent(org.junit.jupiter.api.Test.class)
+                || method.isAnnotationPresent(org.junit.jupiter.api.BeforeAll.class);
     }
 
     private Class<?> getClassForName(String className) {

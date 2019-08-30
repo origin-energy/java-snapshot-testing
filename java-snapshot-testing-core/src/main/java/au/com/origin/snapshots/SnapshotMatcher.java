@@ -45,6 +45,10 @@ public class SnapshotMatcher {
     }
 
     public static Snapshot expect(Object firstObject, Object... objects) {
-        return INSTANCES.get().expectCondition(firstObject, objects);
+        SnapshotVerifier instance = INSTANCES.get();
+        if (instance == null) {
+            throw new SnapshotMatchException("Unable to locate snapshot - has SnapshotMatcher.start() been called?");
+        }
+        return instance.expectCondition(firstObject, objects);
     }
 }

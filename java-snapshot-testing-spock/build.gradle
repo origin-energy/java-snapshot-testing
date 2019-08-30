@@ -8,3 +8,5 @@ dependencies {
     testCompile 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
     testCompile 'org.junit.jupiter:junit-jupiter-params:5.3.2'
 }
+
+test { useJUnitPlatform() }
