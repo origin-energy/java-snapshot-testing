@@ -58,7 +58,7 @@ class Snapshot {
         String currentObject = takeSnapshot();
 
         // Match Snapshot
-        if (rawSnapshot != null && !snapshotConfig.shouldUpdateSnapshot()) {
+        if (rawSnapshot != null && !shouldUpdateSnapshot()) {
             if (!rawSnapshot.trim().equals(currentObject.trim())) {
                 throw generateDiffError(rawSnapshot, currentObject);
             }
@@ -66,6 +66,14 @@ class Snapshot {
         // Create New Snapshot
         else {
             snapshotFile.push(currentObject);
+        }
+    }
+
+    private boolean shouldUpdateSnapshot() {
+        if (snapshotConfig.updateSnapshot().isPresent()) {
+            return getSnapshotName().contains(snapshotConfig.updateSnapshot().get());
+        } else {
+            return false;
         }
     }
 

@@ -1,26 +1,3 @@
-au.com.origin.snapshots.SnapshotUtilsTest.beforeAll=[
-  {
-    "FakeObject.fakeMethodWithComplexObject": [
-      {
-        "arg0": {
-          "id": "idMock"
-        }
-      }
-    ]
-  },
-  {
-    "FakeObject.fakeMethodWithComplexObject": [
-      {
-        "arg0": {
-          "id": "idMock",
-          "name": "nameMock"
-        }
-      }
-    ]
-  }
-]
-
-
 au.com.origin.snapshots.SnapshotUtilsTest.shouldExtractArgsFromFakeMethod=[
   {
     "FakeObject.fakeMethod": [

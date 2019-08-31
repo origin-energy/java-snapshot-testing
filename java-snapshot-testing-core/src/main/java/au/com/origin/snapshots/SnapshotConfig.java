@@ -1,12 +1,13 @@
 package au.com.origin.snapshots;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 /**
  *
  */
 public interface SnapshotConfig {
-    String JVM_UPDATE_SNAPSHOTS_PARAMETER = "update-snapshots";
+    String JVM_UPDATE_SNAPSHOTS_PARAMETER = "updateSnapshot";
 
     /**
      * The directory containing the src files
@@ -41,12 +42,14 @@ public interface SnapshotConfig {
     Method getTestMethod(Class<?> testClass);
 
     /**
-     * Should the snapshots be updated without verification
-     *
-     * @return if true will replace snapshots without verification
+     * Will determine what snapshots should be updated automatically without verification
      */
-    default boolean shouldUpdateSnapshot() {
+    default Optional<String> updateSnapshot() {
         String value = System.getProperty(JVM_UPDATE_SNAPSHOTS_PARAMETER);
-        return value != null && value.toUpperCase().startsWith("T");
+        if ( value != null) {
+            return Optional.of(value);
+        } else {
+            return Optional.empty();
+        }
     }
 }

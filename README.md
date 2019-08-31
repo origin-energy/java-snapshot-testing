@@ -41,6 +41,13 @@ However, any JVM testing framework should work if you correctly implement the `S
 1. If you have introduced a regression you will need to fix your code
 1. If you have intentionally changed the output you can manually modify the `.snap` file to make it pass or delete it and it will be generated again from scratch
 
+## Updating all snapshots and generating a new baseline
+Often - after analysing each snapshot an verifying it is correct - you will need to generate a new baseline for the snapshots.
+
+Instead of deleting or manually modifying each snapshot you can pass `-PupdateSnapshot="pattern` which is equivalent to the `--updateUnapshot` flag in Jest
+
+This will update all snapshots containing the text passed as the value
+
 ## What is a Snapshot
 A text (usually json) representation of your java object.
 

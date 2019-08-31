@@ -5,7 +5,7 @@ import spock.lang.*
 class SpockConfigSpec extends Specification {
 
     def setupSpec() {
-        System.setProperty(SnapshotConfig.JVM_UPDATE_SNAPSHOTS_PARAMETER, "")
+        System.clearProperty(SnapshotConfig.JVM_UPDATE_SNAPSHOTS_PARAMETER);
     }
 
     def "Should not update snapshot when not passed"() {
@@ -13,28 +13,18 @@ class SpockConfigSpec extends Specification {
         def snapshotConfig = new SpockConfig()
 
         then:
-        !snapshotConfig.shouldUpdateSnapshot()
+        !snapshotConfig.updateSnapshot().isPresent()
     }
 
     def "Should update snapshot when true"() {
         given:
-        System.setProperty(SnapshotConfig.JVM_UPDATE_SNAPSHOTS_PARAMETER, "true")
+        System.setProperty(SnapshotConfig.JVM_UPDATE_SNAPSHOTS_PARAMETER, 'example')
 
         when:
         def snapshotConfig = new SpockConfig()
 
         then:
-        snapshotConfig.shouldUpdateSnapshot()
+        snapshotConfig.updateSnapshot().get() == 'example'
     }
 
-    void "Should update snapshot when false"() {
-        given:
-        System.setProperty(SnapshotConfig.JVM_UPDATE_SNAPSHOTS_PARAMETER, "false")
-
-        when:
-        def snapshotConfig = new SpockConfig()
-
-        then:
-        !snapshotConfig.shouldUpdateSnapshot()
-    }
 }
