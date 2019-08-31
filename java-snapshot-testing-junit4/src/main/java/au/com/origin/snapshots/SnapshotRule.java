@@ -10,7 +10,7 @@ public class SnapshotRule implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                SnapshotMatcher.setMethod(description.getTestClass().getMethod(description.getMethodName()));
+                SnapshotMatcher.setTestMethod(description.getTestClass().getMethod(description.getMethodName()));
                 base.evaluate();
             }
         };

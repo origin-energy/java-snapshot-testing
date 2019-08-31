@@ -13,14 +13,23 @@ public class SnapshotMatcher {
 
     private static final ThreadLocal<SnapshotVerifier> INSTANCES = new ThreadLocal<>();
 
+    /**
+     * Execute before any tests have run for a given class
+     */
     public static void start(SnapshotConfig config) {
         start(config, config.getTestClass());
     }
 
+    /**
+     * Execute before any tests have run for a given class
+     */
     public static void start(SnapshotConfig config, Class<?> testClass) {
         start(config, testClass, new JacksonSerializer().getSerializer());
     }
 
+    /**
+     * Execute before any tests have run for a given class
+     */
     public static void start(SnapshotConfig config, Class<?> testClass, Function<Object, String> serializer) {
         try {
             String testFilename = testClass.getName().replaceAll("\\.", File.separator) + ".snap";
@@ -43,10 +52,16 @@ public class SnapshotMatcher {
         }
     }
 
-    public static void setMethod(Method method) {
-        INSTANCES.get().setMethod(method);
+    /**
+     * Used to update the current test method being executed
+     */
+    public static void setTestMethod(Method method) {
+        INSTANCES.get().setTestMethod(method);
     }
 
+    /**
+     * Execute after all tests have run for a given class
+     */
     public static void validateSnapshots() {
         SnapshotVerifier snapshotVerifier = INSTANCES.get();
         if (snapshotVerifier == null) {
@@ -55,6 +70,12 @@ public class SnapshotMatcher {
         snapshotVerifier.validateSnapshots();
     }
 
+    /**
+     * Make an assertion on the given input parameters
+     *
+     * @param firstObject first snapshot object
+     * @param objects other snapshot objects
+     */
     public static Snapshot expect(Object firstObject, Object... objects) {
         SnapshotVerifier instance = INSTANCES.get();
         if (instance == null) {

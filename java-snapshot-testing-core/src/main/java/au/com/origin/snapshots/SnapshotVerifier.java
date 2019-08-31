@@ -19,7 +19,7 @@ import static org.assertj.core.util.Arrays.isNullOrEmpty;
 @RequiredArgsConstructor
 public class SnapshotVerifier {
 
-    private final Class clazz;
+    private final Class testClass;
     private final SnapshotFile snapshotFile;
     private final Function<Object, String> serializer;
     private final SnapshotConfig config;
@@ -27,13 +27,13 @@ public class SnapshotVerifier {
     private final List<Snapshot> calledSnapshots = new ArrayList<>();
 
     @Setter
-    private Method method = null;
+    private Method testMethod = null;
 
     public Snapshot expectCondition(Object firstObject, Object... others) {
         Object[] objects = mergeObjects(firstObject, others);
-        Method resolvedMethod = method == null ? config.getTestMethod(clazz) : method;
+        Method resolvedTestMethod = testMethod == null ? config.getTestMethod(testClass) : testMethod;
         Snapshot snapshot =
-                new Snapshot(config, snapshotFile, clazz, resolvedMethod, serializer, objects);
+                new Snapshot(config, snapshotFile, testClass, resolvedTestMethod, serializer, objects);
         validateExpectCall(snapshot);
         calledSnapshots.add(snapshot);
         return snapshot;

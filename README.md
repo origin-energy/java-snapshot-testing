@@ -112,37 +112,20 @@ public class SnapshotRuleUsedTest {
 
 ## Spock
 ```groovy
-package specs
-import static io.github.jsonSnapshot.SnapshotMatcher.expect
-import io.github.jsonSnapshot.SnapshotMatcher
-import io.github.jsonSnapshot.SpockConfig
-import spock.lang.Specification
+// Ensure you enable snapshot testing support
+@EnableSnapshots
+class SpockExtensionUsedSpec extends Specification {
+    def "Should use extension"() {
+        when:
+        def helloWorld = "Hello World";
 
-class MySpec extends Specification {
-
-    def setupSpec() {
-        // Start snapshot testing before any tests have run passing in the appropriate environment configuration
-        SnapshotMatcher.start(new SpockConfig())
-    }
-
-    def cleanupSpec() {
-        // Validate the snapshots after all tests have executed
-        SnapshotMatcher.validateSnapshots()
-    }
-
-    def 'Convert #scenario to uppercase'() {
-        when: 'I convert to uppercase'
-        def result = MyUtility.toUpperCase(value)
-        then: 'Should convert letters to uppercase'
-        // Check you snapshot against your output
-        expect(uppercase).scenario(scenario).toMatchSnapshot()
-        where:
-        scenario | value
-        'letter' | 'a'
-        'number' | '1'
+        then:
+        // Verify your snapshot
+        SnapshotMatcher.expect(helloWorld).toMatchSnapshot()
     }
 }
 ```
+
 # Custom Framework
 1. implement the interface `au.com.origin.snapshots.SnapshotConfig`
 ```java
@@ -164,8 +147,27 @@ SnapshotMatcher.expect(something).toMatchSnapshot()
 ```
 
 # Parameterized tests
-In cases where the same test runs multiple times with different parameters you need to set the `scenario`
+In cases where the same test runs multiple times with different parameters you need to set the `scenario` and it must be unique for each run
 
 ```java
 SnapshotMatcher.expect(something).scenario(params).toMatchSnapshot();
+```
+
+## Scenario Example
+```groovy
+@EnableSnapshots
+class MySpec extends Specification {
+
+    def 'Convert #scenario to uppercase'() {
+        when: 'I convert to uppercase'
+        def result = MyUtility.toUpperCase(value)
+        then: 'Should convert letters to uppercase'
+        // Check you snapshot against your output using a unique scenario
+        expect(uppercase).scenario(scenario).toMatchSnapshot()
+        where:
+        scenario | value
+        'letter' | 'a'
+        'number' | '1'
+    }
+}
 ```

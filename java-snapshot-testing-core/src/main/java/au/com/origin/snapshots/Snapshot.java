@@ -14,8 +14,8 @@ class Snapshot {
 
     private final SnapshotConfig snapshotConfig;
     private final SnapshotFile snapshotFile;
-    private final Class clazz;
-    private final Method method;
+    private final Class testClass;
+    private final Method testMethod;
     private final Function<Object, String> jsonFunction;
     private final Object[] current;
 
@@ -24,18 +24,26 @@ class Snapshot {
     Snapshot(
             SnapshotConfig snapshotConfig,
             SnapshotFile snapshotFile,
-            Class clazz,
-            Method method,
+            Class testClass,
+            Method testMethod,
             Function<Object, String> jsonFunction,
             Object... current) {
         this.snapshotConfig = snapshotConfig;
         this.current = current;
         this.snapshotFile = snapshotFile;
-        this.clazz = clazz;
-        this.method = method;
+        this.testClass = testClass;
+        this.testMethod = testMethod;
         this.jsonFunction = jsonFunction;
     }
 
+    /**
+     * Normally a snapshot can be applied only once to a test method.
+     *
+     * For Parameterized tests where the same method is executed multiple times you can supply
+     * the scenario() to overcome this restriction.  Ensure each scenario is unique.
+     *
+     * @param scenario - unique scenario description
+     */
     public Snapshot scenario(String scenario) {
         this.scenario = scenario;
         return this;
@@ -94,8 +102,8 @@ class Snapshot {
         return getSnapshotName() + jsonFunction.apply(current);
     }
 
-    public String getSnapshotName() {
+    String getSnapshotName() {
         String scenarioFormat = StringUtils.isBlank(scenario) ? "" : "[" + scenario + "]";
-        return clazz.getName() + "." + method.getName() + scenarioFormat + "=";
+        return testClass.getName() + "." + testMethod.getName() + scenarioFormat + "=";
     }
 }

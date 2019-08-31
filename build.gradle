@@ -8,7 +8,7 @@ subprojects { subproject ->
     // Will need to release and TAG manually for now
     subproject.apply plugin: 'net.researchgate.release'
 
-    subproject.apply plugin: 'java'
+    subproject.apply plugin: 'java-library'
 
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
@@ -23,5 +23,13 @@ subprojects { subproject ->
         annotationProcessor 'org.projectlombok:lombok:1.18.8'
         testCompileOnly 'org.projectlombok:lombok:1.18.8'
         testAnnotationProcessor 'org.projectlombok:lombok:1.18.8'
+    }
+
+    // Adds verbose logging for TravisCI
+    test {
+        testLogging {
+            events "passed", "skipped", "failed"
+            exceptionFormat "full"
+        }
     }
 }
