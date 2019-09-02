@@ -203,3 +203,7 @@ Below are the required classes to override for each framework
 |--------|--------------------------------------------------|
 | Junit5 | au.com.origin.snapshots.junit5.SnapshotExtension |
 | Spock  | au.com.origin.snapshots.spock.SnapshotExtension  |
+
+# Contributing
+
+see `CONTRIBUTING.md`
