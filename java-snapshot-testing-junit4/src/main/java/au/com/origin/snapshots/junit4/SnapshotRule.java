@@ -1,5 +1,6 @@
-package au.com.origin.snapshots;
+package au.com.origin.snapshots.junit4;
 
+import au.com.origin.snapshots.SnapshotMatcher;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;

@@ -1,9 +1,8 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.junit4.JUnit4Config;
 import org.junit.After;
 import org.junit.Test;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,5 +1,6 @@
-package au.com.origin.snapshots
+package au.com.origin.snapshots.spock
 
+import au.com.origin.snapshots.SnapshotConfig
 import org.apache.commons.lang3.NotImplementedException
 
 import java.lang.reflect.Method

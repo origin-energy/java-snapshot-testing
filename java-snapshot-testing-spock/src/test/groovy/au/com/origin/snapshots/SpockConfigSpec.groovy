@@ -1,5 +1,6 @@
 package au.com.origin.snapshots
 
+import au.com.origin.snapshots.spock.SpockConfig
 import spock.lang.*
 
 class SpockConfigSpec extends Specification {

@@ -1,16 +1,19 @@
-package au.com.origin.snapshots;
+package au.com.origin.snapshots.junit4;
 
+import au.com.origin.snapshots.SnapshotConfig;
+import au.com.origin.snapshots.SnapshotConfigInjector;
+import au.com.origin.snapshots.SnapshotMatcher;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-public class SnapshotClassRule implements TestRule {
+public class SnapshotClassRule implements TestRule, SnapshotConfigInjector {
     @Override
     public Statement apply(Statement base, Description description) {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                SnapshotMatcher.start(new JUnit4Config(), description.getTestClass());
+                SnapshotMatcher.start(getSnapshotConfig(), description.getTestClass());
                 try {
                     base.evaluate();
                 } finally {
@@ -18,5 +21,10 @@ public class SnapshotClassRule implements TestRule {
                 }
             }
         };
+    }
+
+    @Override
+    public SnapshotConfig getSnapshotConfig() {
+        return new JUnit4Config();
     }
 }

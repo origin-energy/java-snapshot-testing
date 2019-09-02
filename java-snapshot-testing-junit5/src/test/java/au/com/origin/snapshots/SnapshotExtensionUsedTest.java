@@ -1,5 +1,6 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.junit5.SnapshotExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 

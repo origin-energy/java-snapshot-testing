@@ -1,5 +1,6 @@
 package au.com.origin.snapshots
 
+import au.com.origin.snapshots.spock.EnableSnapshots
 import spock.lang.Specification
 
 @EnableSnapshots

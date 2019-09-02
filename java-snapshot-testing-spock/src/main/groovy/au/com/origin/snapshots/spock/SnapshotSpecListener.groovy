@@ -1,5 +1,6 @@
-package au.com.origin.snapshots
+package au.com.origin.snapshots.spock
 
+import au.com.origin.snapshots.SnapshotMatcher
 import org.spockframework.runtime.AbstractRunListener;
 import org.spockframework.runtime.model.*;
 

@@ -178,3 +178,28 @@ class MySpec extends Specification {
     }
 }
 ```
+
+## Supplying a custom `SnapshotConfig`
+You can override the `getSnapshotConfig()` method for your framework and supply your own configuration
+
+JUnit5 Example, You should then be annotating your class with `@ExtendWith(MySnapshotExtension.class)` instead of `@ExtendWith(SnapshotExtension.class)`
+```java
+import au.com.origin.snapshots.SnapshotConfig;
+
+public class MySnapshotExtension extends SnapshotExtension {
+
+    @Override
+    public SnapshotConfig getSnapshotConfig() {
+        return new SnapshotConfig() {
+            // Override methods
+        }
+    }
+}
+```
+
+Below are the required classes to override for each framework
+
+| Junit4 | au.com.origin.snapshots.junit4.SnapshotClassRule |
+|--------|--------------------------------------------------|
+| Junit5 | au.com.origin.snapshots.junit5.SnapshotExtension |
+| Spock  | au.com.origin.snapshots.spock.SnapshotExtension  |

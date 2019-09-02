@@ -1,9 +1,8 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.junit5.JUnit5Config;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

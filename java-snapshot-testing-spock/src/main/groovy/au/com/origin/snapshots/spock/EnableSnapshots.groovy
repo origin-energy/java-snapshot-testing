@@ -1,4 +1,4 @@
-package au.com.origin.snapshots
+package au.com.origin.snapshots.spock
 
 import java.lang.annotation.*
 import org.spockframework.runtime.extension.ExtensionAnnotation
