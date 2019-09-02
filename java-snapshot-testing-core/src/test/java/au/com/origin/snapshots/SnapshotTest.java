@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -106,7 +107,7 @@ class SnapshotTest {
   @Test
   void shouldOverwriteSnapshotsWhenParamIsPassed() {
     SnapshotConfig mockConfig = Mockito.mock(SnapshotConfig.class);
-    Mockito.when(mockConfig.shouldUpdateSnapshot()).thenReturn(true);
+    Mockito.when(mockConfig.updateSnapshot()).thenReturn(Optional.of(""));
     SnapshotFile snapshotFile = Mockito.mock(SnapshotFile.class);
     Set<String> set = new HashSet<>();
     set.add("java.lang.String.toString[hello world]=[{" + "\"a\": \"b\"" + "}]");

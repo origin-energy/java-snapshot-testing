@@ -41,6 +41,13 @@ However, any JVM testing framework should work if you correctly implement the `S
 1. If you have introduced a regression you will need to fix your code
 1. If you have intentionally changed the output you can manually modify the `.snap` file to make it pass or delete it and it will be generated again from scratch
 
+## Updating all snapshots and generating a new baseline
+Often - after analysing each snapshot an verifying it is correct - you will need to generate a new baseline for the snapshots.
+
+Instead of deleting or manually modifying each snapshot you can pass `-PupdateSnapshot="pattern` which is equivalent to the `--updateUnapshot` flag in Jest
+
+This will update all snapshots containing the text passed as the value
+
 ## What is a Snapshot
 A text (usually json) representation of your java object.
 
@@ -69,46 +76,100 @@ com.example.ExampleTest.shouldExtractArgsFromFakeMethodWithComplexObject=[
 ]
 ```
 
-# Integrating with your testing framework
-
-1. Before all the tests in a single file execute (`@BeforeAll, @BeforeClass, setupSpec())
+# Usage Examples
+## JUnit 5
 ```java
-  SnapshotMatcher.start(new JUnit5Config());
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+// Ensure you extend your test class with the SnapshotExtension
+@ExtendWith(SnapshotExtension.class)
+public class SnapshotExtensionUsedTest {
+
+    @Test
+    public void shouldUseExtension() {
+        // Verify your snapshot
+        SnapshotMatcher.expect("Hello Wolrd").toMatchSnapshot();
+    }
+
+    @Test
+    public void exampleSnapshot() {
+        SnapshotMatcher.expect("Hello Wolrd Again").toMatchSnapshot();
+    }
+}
 ```
-1. After all the tests in a single file execute  (`@AfterAll, @AfterClass, cleanupSpec())
+## JUnit 4
+```java
+import org.junit.ClassRule;
+import org.junit.Test;
+
+public class SnapshotRuleUsedTest {
+
+    // Ensure you instantiate a class rule
+    @ClassRule
+    public static SnapshotRule snapshotRule = new SnapshotRule();
+
+    @Test
+    public void exampleSnapshot() {
+        // Verify your snapshot
+        SnapshotMatcher.expect("Hello Wolrd").toMatchSnapshot();
+    }
+}
+```
+
+## Spock
+```groovy
+// Ensure you enable snapshot testing support
+@EnableSnapshots
+class SpockExtensionUsedSpec extends Specification {
+    def "Should use extension"() {
+        when:
+        def helloWorld = "Hello World";
+
+        then:
+        // Verify your snapshot
+        SnapshotMatcher.expect(helloWorld).toMatchSnapshot()
+    }
+}
+```
+
+# Custom Framework
+1. implement the interface `au.com.origin.snapshots.SnapshotConfig`
+```java
+public class MyCustomSnapshotConfig implements SnapshotConfig {
+    // your custom implementation
+}
+```
+1. Before all the tests in a single file execute
+```java
+  SnapshotMatcher.start(new MyCustomSnapshotConfig());
+```
+1. After all the tests in a single file execute
 ```java
   SnapshotMatcher.validateSnapshots();
 ```
-1. In each test method you can validate the snapshot
+1. In test methods setup your expectations (only one allowed per method)
 ```java
 SnapshotMatcher.expect(something).toMatchSnapshot()
 ```
 
-## Spock Example
+# Parameterized tests
+In cases where the same test runs multiple times with different parameters you need to set the `scenario` and it must be unique for each run
+
+```java
+SnapshotMatcher.expect(something).scenario(params).toMatchSnapshot();
+```
+
+## Scenario Example
 ```groovy
-package specs
-import static io.github.jsonSnapshot.SnapshotMatcher.expect
-import io.github.jsonSnapshot.SnapshotMatcher
-import io.github.jsonSnapshot.SpockConfig
-import spock.lang.Specification
-
+@EnableSnapshots
 class MySpec extends Specification {
-
-    def setupSpec() {
-        // Start snapshot testing before any tests have run passing in the appropriate environment configuration
-        SnapshotMatcher.start(new SpockConfig())
-    }
-
-    def cleanupSpec() {
-        // Validate the snapshots after all tests have executed
-        SnapshotMatcher.validateSnapshots()
-    }
 
     def 'Convert #scenario to uppercase'() {
         when: 'I convert to uppercase'
         def result = MyUtility.toUpperCase(value)
         then: 'Should convert letters to uppercase'
-        // Check you snapshot against your output
+        // Check you snapshot against your output using a unique scenario
         expect(uppercase).scenario(scenario).toMatchSnapshot()
         where:
         scenario | value
@@ -118,18 +179,27 @@ class MySpec extends Specification {
 }
 ```
 
-# Parameterized tests
-In cases where the same test runs multiple times with different parameters you need to set the `scenario`
+## Supplying a custom `SnapshotConfig`
+You can override the `getSnapshotConfig()` method for your framework and supply your own configuration
 
+JUnit5 Example, You should then be annotating your class with `@ExtendWith(MySnapshotExtension.class)` instead of `@ExtendWith(SnapshotExtension.class)`
 ```java
-SnapshotMatcher.expect(something).scenario(params).toMatchSnapshot();
-```
+import au.com.origin.snapshots.SnapshotConfig;
 
-## Custom Configuration
-If the default libraries don't work for you - you can implement your own
+public class MySnapshotExtension extends SnapshotExtension {
 
-```java
-public class MyCustomConfig implements SnapshotConfig {
-    // your custom implementation
+    @Override
+    public SnapshotConfig getSnapshotConfig() {
+        return new SnapshotConfig() {
+            // Override methods
+        }
+    }
 }
 ```
+
+Below are the required classes to override for each framework
+
+| Junit4 | au.com.origin.snapshots.junit4.SnapshotClassRule |
+|--------|--------------------------------------------------|
+| Junit5 | au.com.origin.snapshots.junit5.SnapshotExtension |
+| Spock  | au.com.origin.snapshots.spock.SnapshotExtension  |

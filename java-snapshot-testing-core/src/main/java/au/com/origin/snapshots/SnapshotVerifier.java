@@ -1,6 +1,7 @@
 package au.com.origin.snapshots;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,28 +19,21 @@ import static org.assertj.core.util.Arrays.isNullOrEmpty;
 @RequiredArgsConstructor
 public class SnapshotVerifier {
 
-    private final Class clazz;
+    private final Class testClass;
     private final SnapshotFile snapshotFile;
     private final Function<Object, String> serializer;
     private final SnapshotConfig config;
 
     private final List<Snapshot> calledSnapshots = new ArrayList<>();
 
-    /**
-     * @param firstObject
-     * @param others
-     * @return
-     */
+    @Setter
+    private Method testMethod = null;
+
     public Snapshot expectCondition(Object firstObject, Object... others) {
-        if (clazz == null) {
-            throw new SnapshotMatchException(
-                    "SnapshotTester not yet started! Start it on @BeforeClass/@BeforeAll with SnapshotMatcher.start()");
-        }
         Object[] objects = mergeObjects(firstObject, others);
-        StackTraceElement stackElement = config.findStacktraceElement();
-        Method method = ReflectionUtilities.getMethod(clazz, stackElement.getMethodName());
+        Method resolvedTestMethod = testMethod == null ? config.getTestMethod(testClass) : testMethod;
         Snapshot snapshot =
-                new Snapshot(config, snapshotFile, clazz, method, serializer, objects);
+                new Snapshot(config, snapshotFile, testClass, resolvedTestMethod, serializer, objects);
         validateExpectCall(snapshot);
         calledSnapshots.add(snapshot);
         return snapshot;

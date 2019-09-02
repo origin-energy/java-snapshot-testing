@@ -59,8 +59,7 @@ public class SnapshotIntegrationTest {
   void shouldThrowSnapshotMatchException() {
     assertThrows(
         SnapshotMatchException.class,
-        expect(FakeObject.builder().id("anyId5").value(6).name("anyName5").build())
-            ::toMatchSnapshot,
+        expect(FakeObject.builder().id("anyId5").value(6).name("anyName5").build())::toMatchSnapshot,
         "Error on: \n"
             + "au.com.origin.snapshots.SnapshotIntegrationTest.shouldThrowSnapshotMatchException=[");
   }

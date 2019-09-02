@@ -1,10 +1,13 @@
 package au.com.origin.snapshots;
 
+import java.lang.reflect.Method;
+import java.util.Optional;
+
 /**
  *
  */
 public interface SnapshotConfig {
-    String JVM_UPDATE_SNAPSHOTS_PARAMETER = "update-snapshots";
+    String JVM_UPDATE_SNAPSHOTS_PARAMETER = "updateSnapshot";
 
     /**
      * The directory containing the src files
@@ -25,18 +28,28 @@ public interface SnapshotConfig {
     }
 
     /**
-     * Locate the current test file on the call stack.  This file wil control the
-     * name of the generated .snap file
+     * Optional - return the test class name
+     * @return
      */
-    StackTraceElement findStacktraceElement();
+    Class<?> getTestClass();
 
     /**
-     * Should the snapshots be updated without verification
+     * Optional - return the test method name
      *
-     * @return if true will replace snapshots without verification
+     * @param testClass
+     * @return
      */
-    default boolean shouldUpdateSnapshot() {
+    Method getTestMethod(Class<?> testClass);
+
+    /**
+     * Will determine what snapshots should be updated automatically without verification
+     */
+    default Optional<String> updateSnapshot() {
         String value = System.getProperty(JVM_UPDATE_SNAPSHOTS_PARAMETER);
-        return value != null && value.toUpperCase().startsWith("T");
+        if ( value != null) {
+            return Optional.of(value);
+        } else {
+            return Optional.empty();
+        }
     }
 }

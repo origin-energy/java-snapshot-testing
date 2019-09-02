@@ -1,0 +1,16 @@
+au.com.origin.snapshots.UpdateSnapshotPropertyTest.shouldNotUpdateSnapshot=[
+  {
+    "id": "ERROR",
+    "value": 1,
+    "name": "anyName1"
+  }
+]
+
+
+au.com.origin.snapshots.UpdateSnapshotPropertyTest.shouldUpdateSnapshot=[
+  {
+    "id": "ERROR",
+    "value": 1,
+    "name": "anyName1"
+  }
+]
