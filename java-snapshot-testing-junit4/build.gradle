@@ -3,6 +3,12 @@ apply from: "../gradle/publishing.gradle"
 dependencies {
     api project(':java-snapshot-testing-core')
 
-    implementation 'org.junit.platform:junit-platform-runner:1.2.0'
-    implementation 'org.junit.vintage:junit-vintage-engine:5.2.0'
+    // User supplied JUnit4 Version
+    compileOnly 'org.junit.platform:junit-platform-runner:1.2.0'
+    compileOnly 'org.junit.vintage:junit-vintage-engine:5.2.0'
+
+    // Testing
+    testImplementation 'org.junit.platform:junit-platform-runner:1.2.0'
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.2.0'
+    testImplementation 'org.assertj:assertj-core:3.11.1'
 }

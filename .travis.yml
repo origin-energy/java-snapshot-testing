@@ -6,6 +6,6 @@ dist: trusty
 jdk: oraclejdk8
 
 script:
-  - ./gradlew build
+  - ./gradlew shadowJar
 after_success:
   - ./deploy.sh

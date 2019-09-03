@@ -1,12 +1,11 @@
 dependencies {
 
-    api 'org.assertj:assertj-core:3.11.1'
-    api 'org.apache.commons:commons-lang3:3.8.1'
-    api 'org.slf4j:slf4j-api:1.8.0-beta4'
-
-    // FIXME Serializer should be configurable and not pollute classpath
-    api 'com.fasterxml.jackson.core:jackson-core:2.9.8'
-    api 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
+    // These libraries will be shadowed under the `shadow` namespace.
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.8'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
+    implementation 'org.assertj:assertj-core:3.11.1'
+    implementation 'org.apache.commons:commons-lang3:3.8.1'
+    implementation 'org.slf4j:slf4j-api:1.8.0-beta4'
 
     testImplementation 'org.mockito:mockito-junit-jupiter:2.23.0'
     testImplementation 'org.mockito:mockito-core:2.23.4'
