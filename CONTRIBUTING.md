@@ -2,7 +2,7 @@
 
 We welcome contributions to this project by both internal and external parties
 
-# How to contribute
+## How to contribute
 1. Fork the repository into your own github account (external contributors) or create a new branch (internal contributions)
 1. Make your code changes
 1. Ensure you commit message is descriptive as it acts as the changelog.  Mark any breaking changes with `BREAKING`. Include a rectification strategy if you introduce a `BREAKING` change.
@@ -13,6 +13,11 @@ We welcome contributions to this project by both internal and external parties
 1. Once merged into `master` a `SNAPSHOT` build will be available for consumption immediately [here](https://oss.sonatype.org/content/repositories/snapshots/io/github/origin-energy/). Note that snapshots change regularly and cannot be relied upon.
 1. Hard Releases will by made once enough features have been added. 
 
+## Building
+```java
+./gradlew shadowJar
+```
+
 # Deploying to maven central
 Gradle release plugin is not currently working so this is a manual process at the moment.
 
@@ -20,7 +25,7 @@ Gradle release plugin is not currently working so this is a manual process at th
 1. Create a branch `release/<VersionNumber>`
 1. Update `gradle.properties` and remove `-SNAPSHOT` from the version number
 1. Check this file into version control and push the branch to the remote
-1. run `./gradlew clean build signArchives uploadArchives -PossrhUsername=${SONAR_USERNAME} -PossrhPassword=${SONAR_PASSWORD} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_KEY_PASSPHRASE} -Psigning.secretKeyRingFile=${PATH_TO_SECRING_GPG}`
+1. run `./gradlew clean shadowJar signArchives uploadArchives -PossrhUsername=${SONAR_USERNAME} -PossrhPassword=${SONAR_PASSWORD} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_KEY_PASSPHRASE} -Psigning.secretKeyRingFile=${PATH_TO_SECRING_GPG}`
 
 ## Releasing
 1. Login to SONAR (https://oss.sonatype.org)
