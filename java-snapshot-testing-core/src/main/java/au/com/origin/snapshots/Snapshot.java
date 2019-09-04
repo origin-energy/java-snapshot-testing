@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.function.Function;
 
-class Snapshot {
+public class Snapshot {
 
     private final SnapshotConfig snapshotConfig;
     private final SnapshotFile snapshotFile;

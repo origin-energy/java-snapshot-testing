@@ -199,11 +199,23 @@ public class MySnapshotExtension extends SnapshotExtension {
 
 Below are the required classes to override for each framework
 
-| Framework | Class to override                                |
-|-----------|--------------------------------------------------|
-| Junit4    | au.com.origin.snapshots.junit4.SnapshotClassRule |
-| Junit5    | au.com.origin.snapshots.junit5.SnapshotExtension |
-| Spock     | au.com.origin.snapshots.spock.SnapshotExtension  |
+| Framework | Class to override                                                                |
+|-----------|----------------------------------------------------------------------------------|
+| Junit4    | au.com.origin.snapshots.junit4.SnapshotClassRule                                 |
+| Junit5    | au.com.origin.snapshots.junit5.SnapshotExtension                                 |
+| Spock     | au.com.origin.snapshots.spock.SnapshotExtension                                  |                               
+
+For *Spock* you will need to create a custom version of `@EnableSnapshots` too
+
+```groovy
+import java.lang.annotation.*
+import org.spockframework.runtime.extension.ExtensionAnnotation
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target([ElementType.TYPE, ElementType.METHOD])
+@ExtensionAnnotation(CustomSnapshotExtension) // <---- supply your configuration
+@interface CustomEnableSnapshots {} // <---- from now on annotate with your custom version
+```
 
 # Contributing
 
