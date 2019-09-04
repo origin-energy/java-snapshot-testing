@@ -135,23 +135,23 @@ class SpockExtensionUsedSpec extends Specification {
 
 # Custom Framework
 1. implement the interface `au.com.origin.snapshots.SnapshotConfig`
-```java
-public class MyCustomSnapshotConfig implements SnapshotConfig {
-    // your custom implementation
-}
-```
+    ```java
+    public class MyCustomSnapshotConfig implements SnapshotConfig {
+        // your custom implementation
+    }
+    ```
 1. Before all the tests in a single file execute
-```java
-  SnapshotMatcher.start(new MyCustomSnapshotConfig());
-```
+    ```java
+      SnapshotMatcher.start(new MyCustomSnapshotConfig());
+    ```
 1. After all the tests in a single file execute
-```java
-  SnapshotMatcher.validateSnapshots();
-```
+    ```java
+      SnapshotMatcher.validateSnapshots();
+    ```
 1. In test methods setup your expectations (only one allowed per method)
-```java
-SnapshotMatcher.expect(something).toMatchSnapshot()
-```
+    ```java
+    SnapshotMatcher.expect(something).toMatchSnapshot()
+    ```
 
 # Parameterized tests
 In cases where the same test runs multiple times with different parameters you need to set the `scenario` and it must be unique for each run
@@ -199,10 +199,11 @@ public class MySnapshotExtension extends SnapshotExtension {
 
 Below are the required classes to override for each framework
 
-| Junit4 | au.com.origin.snapshots.junit4.SnapshotClassRule |
-|--------|--------------------------------------------------|
-| Junit5 | au.com.origin.snapshots.junit5.SnapshotExtension |
-| Spock  | au.com.origin.snapshots.spock.SnapshotExtension  |
+| Framework | Class to override                                |
+|-----------|--------------------------------------------------|
+| Junit4    | au.com.origin.snapshots.junit4.SnapshotClassRule |
+| Junit5    | au.com.origin.snapshots.junit5.SnapshotExtension |
+| Spock     | au.com.origin.snapshots.spock.SnapshotExtension  |
 
 # Contributing
 

@@ -5,7 +5,7 @@ plugins {
 apply from: "../gradle/publishing.gradle"
 
 dependencies {
-    api project(':java-snapshot-testing-core')
+    implementation project(':java-snapshot-testing-core')
 
     // User supplied Spock Version
     compileOnly 'org.codehaus.groovy:groovy-all:2.5.8'
