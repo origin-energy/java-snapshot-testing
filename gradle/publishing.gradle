@@ -64,6 +64,11 @@ if (project.hasProperty("ossrhUsername") && project.hasProperty("ossrhPassword")
                         }
                     }
                 }
+
+                // We clear out all the dependencies because we have shadowed them inside the jar
+                pom.whenConfigured {
+                    p -> p.dependencies = []
+                }
             }
         }
     }

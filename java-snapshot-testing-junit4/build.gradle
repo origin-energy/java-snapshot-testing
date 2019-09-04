@@ -1,7 +1,7 @@
 apply from: "../gradle/publishing.gradle"
 
 dependencies {
-    api project(':java-snapshot-testing-core')
+    implementation project(':java-snapshot-testing-core')
 
     // User supplied JUnit4 Version
     compileOnly 'org.junit.platform:junit-platform-runner:1.2.0'
