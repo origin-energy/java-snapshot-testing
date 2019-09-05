@@ -79,6 +79,7 @@ com.example.ExampleTest.shouldExtractArgsFromFakeMethodWithComplexObject=[
 # Usage Examples
 ## JUnit 5
 ```java
+import au.com.origin.snapshots.junit5.SnapshotExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -100,35 +101,45 @@ public class SnapshotExtensionUsedTest {
 ```
 ## JUnit 4
 ```java
+import au.com.origin.snapshots.junit4.SnapshotClassRule;
+import au.com.origin.snapshots.junit4.SnapshotRule;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class SnapshotRuleUsedTest {
 
-    // Ensure you instantiate a class rule
-    @ClassRule
-    public static SnapshotRule snapshotRule = new SnapshotRule();
+    // Ensure you instantiate these rules
+    @ClassRule public static SnapshotClassRule snapshotClassRule = new SnapshotClassRule();
+    @Rule public SnapshotRule snapshotRule = new SnapshotRule();
 
     @Test
-    public void exampleSnapshot() {
+    public void shouldUseExtension() {
         // Verify your snapshot
         SnapshotMatcher.expect("Hello Wolrd").toMatchSnapshot();
+    }
+
+    @Test
+    public void shouldUseExtensionAgain() {
+        SnapshotMatcher.expect("Hello Wolrd Again").toMatchSnapshot();
     }
 }
 ```
 
 ## Spock
 ```groovy
+import au.com.origin.snapshots.spock.EnableSnapshots
+import spock.lang.Specification
+
 // Ensure you enable snapshot testing support
 @EnableSnapshots
 class SpockExtensionUsedSpec extends Specification {
     def "Should use extension"() {
         when:
-        def helloWorld = "Hello World";
+        SnapshotMatcher.expect("Hello Wolrd").toMatchSnapshot()
 
         then:
-        // Verify your snapshot
-        SnapshotMatcher.expect(helloWorld).toMatchSnapshot()
+        true
     }
 }
 ```
