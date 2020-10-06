@@ -19,7 +19,7 @@ platform specific or other non-deterministic data.
 
 ## Disadvantages of Snapshot Testing
 - Does not give great insight to why the snapshot failed
-- Can be difficult to to troll though large snapshot changes
+- Can be difficult to troll though large snapshot changes
 - Does not document the business rules the way a Unit test would
 
 A Snapshot test does not assert Java types. You can continue doing that with any other testing framework.
