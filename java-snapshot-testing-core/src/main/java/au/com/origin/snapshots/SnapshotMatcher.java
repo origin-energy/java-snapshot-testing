@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.function.Function;
+import java.util.regex.Matcher;
 
 @Slf4j
 public class SnapshotMatcher {
@@ -32,7 +33,7 @@ public class SnapshotMatcher {
      */
     public static void start(SnapshotConfig config, Class<?> testClass, Function<Object, String> serializer) {
         try {
-            String testFilename = testClass.getName().replaceAll("\\.", File.separator) + ".snap";
+            String testFilename = testClass.getName().replaceAll("\\.", Matcher.quoteReplacement(File.separator)) + ".snap";
 
             File fileUnderTest = new File(testFilename);
             File snapshotDir = new File(fileUnderTest.getParentFile(), config.getSnapshotFolder());
