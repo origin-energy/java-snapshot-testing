@@ -21,13 +21,32 @@ We welcome contributions to this project by both internal and external parties
 # Deploying to maven central
 Gradle release plugin is not currently working so this is a manual process at the moment.
 
+# Setup GPG on your machine
+1. copy the GPG Private key into a file `private.key`
+1. run
+```
+gpg --import private.key
+cd ~/.gnupg
+gpg -k
+gpg --export-secret-key YOUR_KEY_ID > ~/.gnupg/secring.gpg
+```
+
 ## Preparing
 1. Create a branch `release/<VersionNumber>`
 1. Update `gradle.properties` and remove `-SNAPSHOT` from the version number
 1. Check this file into version control and push the branch to the remote
-1. run `./gradlew clean shadowJar signArchives uploadArchives -PossrhUsername=${SONAR_USERNAME} -PossrhPassword=${SONAR_PASSWORD} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_KEY_PASSPHRASE} -Psigning.secretKeyRingFile=${PATH_TO_SECRING_GPG}`
+1. run
+```
+export SONAR_USERNAME=?
+export SONAR_PASSWORD=?
+export GPG_KEY_ID=?
+export GPG_KEY_PASSPHRASE=?
+export PATH_TO_SECRING_GPG=~/.gnupg/secring.gpg
 
-## Releasing
+./gradlew clean shadowJar signArchives uploadArchives -PossrhUsername=${SONAR_USERNAME} -PossrhPassword=${SONAR_PASSWORD} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_KEY_PASSPHRASE} -Psigning.secretKeyRingFile=${PATH_TO_SECRING_GPG}
+```
+
+## Releasing [Full Tutorial](https://central.sonatype.org/pages/ossrh-guide.html)
 1. Login to SONAR (https://oss.sonatype.org)
 1. Click 'Staging Repositories' and locate the 'iogithuborigin-energy' bundle
 1. Review artifacts are correct in the 'Content' tab
