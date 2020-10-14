@@ -43,7 +43,9 @@ export GPG_KEY_ID=?
 export GPG_KEY_PASSPHRASE=?
 export PATH_TO_SECRING_GPG=~/.gnupg/secring.gpg
 
-./gradlew clean shadowJar signArchives uploadArchives -PossrhUsername=${SONAR_USERNAME} -PossrhPassword=${SONAR_PASSWORD} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_KEY_PASSPHRASE} -Psigning.secretKeyRingFile=${PATH_TO_SECRING_GPG}
+# I found shadowed classes are not included if you don't separate the gradle operations
+./gradlew clean shadowJar
+./gradlew signArchives uploadArchives -PossrhUsername=${SONAR_USERNAME} -PossrhPassword=${SONAR_PASSWORD} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_KEY_PASSPHRASE} -Psigning.secretKeyRingFile=${PATH_TO_SECRING_GPG}
 ```
 
 ## Releasing [Full Tutorial](https://central.sonatype.org/pages/ossrh-guide.html)
