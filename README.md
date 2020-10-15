@@ -190,42 +190,67 @@ class MySpec extends Specification {
 }
 ```
 
-## Supplying a custom `SnapshotConfig`
-You can override the `getSnapshotConfig()` method for your framework and supply your own configuration
+## Supplying a custom SnapshotConfig
+You can override the snapshot configuration easily using the `@UseSnapshotConfig` annotation
 
-JUnit5 Example, You should then be annotating your class with `@ExtendWith(MySnapshotExtension.class)` instead of `@ExtendWith(SnapshotExtension.class)`
+JUnit5 Example
 ```java
-import au.com.origin.snapshots.SnapshotConfig;
+import au.com.origin.snapshots.junit5.SnapshotExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class MySnapshotExtension extends SnapshotExtension {
+@ExtendWith(SnapshotExtension.class)
+@UseSnapshotConfig(HibernateSnapshotConfig.class) // apply your custom snapshot configuration to this test class
+public class SnapshotExtensionUsedTest {
 
-    @Override
-    public SnapshotConfig getSnapshotConfig() {
-        return new SnapshotConfig() {
-            // Override methods
-        }
+    @Test
+    public void myTest() {
+        // ...
     }
 }
 ```
 
-Below are the required classes to override for each framework
+# Configuring Serialization
+Sometimes the default serialization doesn't work for you. An example is Hibernate serialization where you get infinite recursion on Lists/Sets.
 
-| Framework | Class to override                                                                |
-|-----------|----------------------------------------------------------------------------------|
-| Junit4    | au.com.origin.snapshots.junit4.SnapshotClassRule                                 |
-| Junit5    | au.com.origin.snapshots.junit5.SnapshotExtension                                 |
-| Spock     | au.com.origin.snapshots.spock.SnapshotExtension                                  |                               
+You can supply any serializer you like Gson, Jackson or something else by overriding the `getSerializer()` method.
 
-For *Spock* you will need to create a custom version of `@EnableSnapshots` too
+For example, here is a JUnit4 configuration that will exclude the rendering of Lists without changing the source code to include @JsonIgnore.
+This is good because you shouldn't need to add annotations to your source code for testing purposes only.
 
-```groovy
-import java.lang.annotation.*
-import org.spockframework.runtime.extension.ExtensionAnnotation
+```java
+public class HibernateSnapshotConfig extends JUnit4Config {
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target([ElementType.TYPE, ElementType.METHOD])
-@ExtensionAnnotation(CustomSnapshotExtension) // <---- supply your configuration
-@interface CustomEnableSnapshots {} // <---- from now on annotate with your custom version
+    @Override
+    public Function<Object, String> getSerializer() {
+        JacksonSerializer jacksonSerializer = new JacksonSerializer();
+
+        jacksonSerializer.configure(objectMapper -> {
+            // Ignore Hibernate Lists & Sets to prevent infinite recursion
+            objectMapper.addMixIn(List.class, IgnoreTypeMixin.class);
+            objectMapper.addMixIn(Set.class, IgnoreTypeMixin.class);
+
+            // Ignore Fields that Hibernate generates for us automatically, and thus are not reproducible between runs
+            objectMapper.addMixIn(BaseEntity.class, IgnoreHibernateEntityFields.class);
+        });
+
+        return jacksonSerializer.getSerializer();
+    }
+
+    @JsonIgnoreType
+    class IgnoreTypeMixin {}
+
+    abstract class IgnoreHibernateEntityFields {
+        @JsonIgnore
+        abstract Long getId();
+
+        @JsonIgnore
+        abstract Instant getCreatedDate();
+
+        @JsonIgnore
+        abstract Instant getLastModifiedDate();
+    }
+}
 ```
 
 # Contributing

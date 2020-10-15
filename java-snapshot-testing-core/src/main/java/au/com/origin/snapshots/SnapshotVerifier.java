@@ -21,7 +21,6 @@ public class SnapshotVerifier {
 
     private final Class testClass;
     private final SnapshotFile snapshotFile;
-    private final Function<Object, String> serializer;
     private final SnapshotConfig config;
 
     private final List<Snapshot> calledSnapshots = new ArrayList<>();
@@ -33,7 +32,7 @@ public class SnapshotVerifier {
         Object[] objects = mergeObjects(firstObject, others);
         Method resolvedTestMethod = testMethod == null ? config.getTestMethod(testClass) : testMethod;
         Snapshot snapshot =
-                new Snapshot(config, snapshotFile, testClass, resolvedTestMethod, serializer, objects);
+                new Snapshot(config, snapshotFile, testClass, resolvedTestMethod, objects);
         validateExpectCall(snapshot);
         calledSnapshots.add(snapshot);
         return snapshot;

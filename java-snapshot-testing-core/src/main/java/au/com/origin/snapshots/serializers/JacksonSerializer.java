@@ -10,15 +10,20 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter.Indenter;
 import com.fasterxml.jackson.core.util.Separators;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class JacksonSerializer implements Serializer {
 
+    private Consumer<ObjectMapper> customConfiguration = objectMapper -> {};
+
     @Override
     public Function<Object, String> getSerializer() {
         ObjectMapper objectMapper = buildObjectMapper();
-
+        customConfiguration.accept(objectMapper);
         PrettyPrinter pp = buildDefaultPrettyPrinter();
 
         return (object) -> {
@@ -30,9 +35,20 @@ public class JacksonSerializer implements Serializer {
         };
     }
 
+    public void configure(Consumer<ObjectMapper> customConfiguration) {
+        this.customConfiguration = customConfiguration;
+    }
+
     private PrettyPrinter buildDefaultPrettyPrinter() {
         DefaultPrettyPrinter pp =
             new DefaultPrettyPrinter("") {
+
+                // It's a requirement
+                // @see https://github.com/FasterXML/jackson-databind/issues/2203
+                public DefaultPrettyPrinter createInstance() {
+                    return new DefaultPrettyPrinter(this);
+                }
+
                 @Override
                 public DefaultPrettyPrinter withSeparators(Separators separators) {
                     this._separators = separators;
@@ -51,6 +67,9 @@ public class JacksonSerializer implements Serializer {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.registerModule(new Jdk8Module());
 
         objectMapper.setVisibility(
             objectMapper

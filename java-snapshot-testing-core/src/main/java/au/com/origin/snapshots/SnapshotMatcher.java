@@ -1,12 +1,10 @@
 package au.com.origin.snapshots;
 
-import au.com.origin.snapshots.serializers.JacksonSerializer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 
 @Slf4j
@@ -24,15 +22,11 @@ public class SnapshotMatcher {
     /**
      * Execute before any tests have run for a given class
      */
-    public static void start(SnapshotConfig config, Class<?> testClass) {
-        start(config, testClass, new JacksonSerializer().getSerializer());
-    }
-
-    /**
-     * Execute before any tests have run for a given class
-     */
-    public static void start(SnapshotConfig config, Class<?> testClass, Function<Object, String> serializer) {
+    public static void start(SnapshotConfig defaultConfig, Class<?> testClass) {
         try {
+            UseSnapshotConfig customConfig = testClass.getAnnotation(UseSnapshotConfig.class);
+            SnapshotConfig config = customConfig == null ? defaultConfig : customConfig.value().newInstance();
+
             String testFilename = testClass.getName().replaceAll("\\.", Matcher.quoteReplacement(File.separator)) + ".snap";
 
             File fileUnderTest = new File(testFilename);
@@ -44,11 +38,10 @@ public class SnapshotMatcher {
             SnapshotVerifier snapshotVerifier = new SnapshotVerifier(
                 testClass,
                 snapshotFile,
-                serializer,
                 config
             );
             INSTANCES.set(snapshotVerifier);
-        } catch (IOException e) {
+        } catch (IOException | InstantiationException | IllegalAccessException e) {
             throw new SnapshotMatchException(e.getMessage());
         }
     }

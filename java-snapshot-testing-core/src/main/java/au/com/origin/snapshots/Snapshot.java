@@ -16,7 +16,6 @@ public class Snapshot {
     private final SnapshotFile snapshotFile;
     private final Class testClass;
     private final Method testMethod;
-    private final Function<Object, String> jsonFunction;
     private final Object[] current;
 
     private String scenario = null;
@@ -26,14 +25,12 @@ public class Snapshot {
             SnapshotFile snapshotFile,
             Class testClass,
             Method testMethod,
-            Function<Object, String> jsonFunction,
             Object... current) {
         this.snapshotConfig = snapshotConfig;
         this.current = current;
         this.snapshotFile = snapshotFile;
         this.testClass = testClass;
         this.testMethod = testMethod;
-        this.jsonFunction = jsonFunction;
     }
 
     /**
@@ -107,7 +104,7 @@ public class Snapshot {
     }
 
     private String takeSnapshot() {
-        return getSnapshotName() + jsonFunction.apply(current);
+        return getSnapshotName() + snapshotConfig.getSerializer().apply(current);
     }
 
     String getSnapshotName() {
