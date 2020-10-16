@@ -1,8 +1,11 @@
 dependencies {
 
     // These libraries will be shadowed under the `shadow` namespace.
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.8'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
+
     implementation 'org.assertj:assertj-core:3.11.1'
     implementation 'org.apache.commons:commons-lang3:3.8.1'
     implementation 'org.slf4j:slf4j-api:1.8.0-beta4'

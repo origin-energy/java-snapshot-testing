@@ -17,3 +17,13 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.11.1'
     testImplementation 'org.slf4j:slf4j-api:1.8.0-beta4'
 }
+
+publishing {
+    publications {
+        myPublication(MavenPublication) {
+            artifact shadowJar
+            groupId 'io.github.origin-energy'
+            artifactId 'java-snapshot-testing-spock'
+        }
+    }
+}

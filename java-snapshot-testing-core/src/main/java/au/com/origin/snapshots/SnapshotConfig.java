@@ -1,12 +1,16 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.serializers.JacksonSerializer;
+import au.com.origin.snapshots.serializers.Serializer;
+
 import java.lang.reflect.Method;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  *
  */
-public interface SnapshotConfig {
+public interface SnapshotConfig extends Serializer {
     String JVM_UPDATE_SNAPSHOTS_PARAMETER = "updateSnapshot";
 
     /**
@@ -51,5 +55,14 @@ public interface SnapshotConfig {
         } else {
             return Optional.empty();
         }
+    }
+
+    /**
+     * Override to supply your own serializion function
+     * @return
+     */
+    default Function<Object, String> getSerializer() {
+        JacksonSerializer jacksonSerializer = new JacksonSerializer();
+        return jacksonSerializer.getSerializer();
     }
 }

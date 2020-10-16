@@ -1,7 +1,10 @@
 package au.com.origin.snapshots;
 
 
+import au.com.origin.snapshots.serializers.JacksonSerializer;
+
 import java.lang.reflect.Method;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class TestSnapshotConfig implements SnapshotConfig {
@@ -54,5 +57,10 @@ public class TestSnapshotConfig implements SnapshotConfig {
     public Method getTestMethod(Class<?> testClass) {
         StackTraceElement stackTraceElement = findStackTraceElement();
         return ReflectionUtilities.getMethod(testClass, stackTraceElement.getMethodName());
+    }
+
+    @Override
+    public Function<Object, String> getSerializer() {
+        return new JacksonSerializer().getSerializer();
     }
 }

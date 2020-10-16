@@ -44,7 +44,6 @@ class SnapshotTest {
             snapshotFile,
             String.class,
             String.class.getDeclaredMethod("toString"),
-                new JacksonSerializer().getSerializer(),
             "anyObject");
   }
 
@@ -108,6 +107,7 @@ class SnapshotTest {
   void shouldOverwriteSnapshotsWhenParamIsPassed() {
     SnapshotConfig mockConfig = Mockito.mock(SnapshotConfig.class);
     Mockito.when(mockConfig.updateSnapshot()).thenReturn(Optional.of(""));
+    Mockito.when(mockConfig.getSerializer()).thenReturn(new JacksonSerializer().getSerializer());
     SnapshotFile snapshotFile = Mockito.mock(SnapshotFile.class);
     Set<String> set = new HashSet<>();
     set.add("java.lang.String.toString[hello world]=[{" + "\"a\": \"b\"" + "}]");
@@ -119,7 +119,6 @@ class SnapshotTest {
             snapshotFile,
             String.class,
             String.class.getDeclaredMethod("toString"),
-                new JacksonSerializer().getSerializer(),
             "anyObject").scenario("hello world");
     snapshot.toMatchSnapshot();
     Mockito.verify(snapshotFile)

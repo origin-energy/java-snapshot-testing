@@ -18,6 +18,12 @@ We welcome contributions to this project by both internal and external parties
 ./gradlew shadowJar
 ```
 
+## Deploying locally and deploying to `.m2
+```
+./gradlew publishToMavenLocal
+```
+Ensure you add `mavenLocal()` to your consuming project and the dependency verison matches that in your local `.m2` folder
+
 # Deploying to maven central
 Gradle release plugin is not currently working so this is a manual process at the moment.
 

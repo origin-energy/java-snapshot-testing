@@ -14,3 +14,13 @@ dependencies {
 }
 
 test { useJUnitPlatform() }
+
+publishing {
+    publications {
+        myPublication(MavenPublication) {
+            artifact shadowJar
+            groupId 'io.github.origin-energy'
+            artifactId 'java-snapshot-testing-junit5'
+        }
+    }
+}

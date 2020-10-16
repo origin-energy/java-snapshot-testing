@@ -8,9 +8,9 @@ subprojects { subproject ->
     // FIXME this plugin is currently not working for multi-module projects even when defined at the top level only
     // Will need to release and TAG manually for now
     subproject.apply plugin: 'net.researchgate.release'
-
     subproject.apply plugin: 'java-library'
     subproject.apply plugin: 'com.github.johnrengelman.shadow'
+    subproject.apply plugin: 'maven-publish'
 
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'

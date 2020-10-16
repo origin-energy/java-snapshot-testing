@@ -12,3 +12,13 @@ dependencies {
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.2.0'
     testImplementation 'org.assertj:assertj-core:3.11.1'
 }
+
+publishing {
+    publications {
+        myPublication(MavenPublication) {
+            artifact shadowJar
+            groupId 'io.github.origin-energy'
+            artifactId 'java-snapshot-testing-junit4'
+        }
+    }
+}
