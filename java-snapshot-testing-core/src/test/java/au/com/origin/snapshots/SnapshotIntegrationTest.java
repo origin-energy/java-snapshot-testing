@@ -2,8 +2,9 @@ package au.com.origin.snapshots;
 
 import static au.com.origin.snapshots.SnapshotMatcher.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import au.com.origin.snapshots.config.TestSnapshotConfig;
+import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class SnapshotIntegrationTest {
 
-  private static final SnapshotConfig DEFAULT_CONFIG = new TestSnapshotConfig();
+  private static final SnapshotConfig DEFAULT_CONFIG = new BaseSnapshotConfig();
 
   @BeforeAll
   static void beforeAll() {

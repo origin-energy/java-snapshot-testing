@@ -1,6 +1,5 @@
 .gradle/
 build/
-src/test/java/au/com/origin/snapshots/serializers/__snapshots__/
 
 # Ignore Gradle GUI config
 gradle-app.setting

@@ -14,26 +14,10 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class JacksonSnapshotSerializer implements SnapshotSerializer {
 
     private Consumer<ObjectMapper> customConfiguration = objectMapper -> {};
-
-    @Override
-    public Function<Object[], String> getSerializer() {
-        ObjectMapper objectMapper = buildObjectMapper();
-        customConfiguration.accept(objectMapper);
-        PrettyPrinter pp = buildDefaultPrettyPrinter();
-
-        return (object) -> {
-            try {
-                return objectMapper.writer(pp).writeValueAsString(object);
-            } catch (Exception e) {
-                throw new SnapshotMatchException(e.getMessage());
-            }
-        };
-    }
 
     public void configure(Consumer<ObjectMapper> customConfiguration) {
         this.customConfiguration = customConfiguration;
@@ -80,5 +64,18 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
                 .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
         return objectMapper;
+    }
+
+    @Override
+    public String apply(Object[] objects) {
+        ObjectMapper objectMapper = buildObjectMapper();
+        customConfiguration.accept(objectMapper);
+        PrettyPrinter pp = buildDefaultPrettyPrinter();
+
+        try {
+            return objectMapper.writer(pp).writeValueAsString(objects);
+        } catch (Exception e) {
+            throw new SnapshotMatchException(e.getMessage());
+        }
     }
 }

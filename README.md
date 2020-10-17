@@ -1,5 +1,9 @@
 [![Build Status](https://img.shields.io/travis/origin-energy/java-snapshot-testing.svg)](https://travis-ci.org/origin-energy/java-snapshot-testing)
 
+## READ FIRST
+These docs are for the latest `.SNAPSHOT` version published to maven central.
+Select the branch `release/X.X.X` matching your maven dependency to get correct documentation for your version.
+
 ## Java Snapshot Testing
 - Inspired by [facebook's Jest framework](https://facebook.github.io/jest/docs/en/snapshot-testing.html)
 - Fork of [json-snapshot.github.io](https://github.com/json-snapshot/json-snapshot.github.io)
@@ -41,7 +45,7 @@ However, any JVM testing framework should work if you correctly implement the `S
 1. If you have introduced a regression you will need to fix your code
 1. If you have intentionally changed the output you can manually modify the `.snap` file to make it pass or delete it and it will be generated again from scratch
 
-## Updating all snapshots and generating a new baseline
+~~## Updating all snapshots and generating a new baseline~~ (Issue #15)
 Often - after analysing each snapshot an verifying it is correct - you will need to generate a new baseline for the snapshots.
 
 Instead of deleting or manually modifying each snapshot you can pass `-PupdateSnapshot="pattern` which is equivalent to the `--updateUnapshot` flag in Jest

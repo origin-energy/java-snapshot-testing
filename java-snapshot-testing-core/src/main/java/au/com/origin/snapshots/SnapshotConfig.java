@@ -5,12 +5,11 @@ import au.com.origin.snapshots.serializers.SnapshotSerializer;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  *
  */
-public interface SnapshotConfig extends SnapshotSerializer {
+public interface SnapshotConfig {
     String JVM_UPDATE_SNAPSHOTS_PARAMETER = "updateSnapshot";
 
     /**
@@ -61,8 +60,7 @@ public interface SnapshotConfig extends SnapshotSerializer {
      * Override to supply your own serializion function
      * @return
      */
-    default Function<Object[], String> getSerializer() {
-        JacksonSnapshotSerializer jacksonSerializer = new JacksonSnapshotSerializer();
-        return jacksonSerializer.getSerializer();
+    default SnapshotSerializer getSerializer() {
+        return new JacksonSnapshotSerializer();
     }
 }

@@ -13,7 +13,7 @@ public class SnapshotClassRule implements TestRule, SnapshotConfigInjector {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                SnapshotMatcher.start(getSnapshotConfig(), description.getTestClass());
+                SnapshotMatcher.start(getSnapshotConfig(), false, description.getTestClass());
                 try {
                     base.evaluate();
                 } finally {

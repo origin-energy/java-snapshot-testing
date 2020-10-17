@@ -5,12 +5,13 @@ import au.com.origin.snapshots.ReflectionUtilities;
 import au.com.origin.snapshots.SnapshotConfig;
 import au.com.origin.snapshots.SnapshotMatchException;
 import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
+import au.com.origin.snapshots.serializers.SnapshotSerializer;
 
 import java.lang.reflect.Method;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public class TestSnapshotConfig implements SnapshotConfig {
+public class BaseSnapshotConfig implements SnapshotConfig {
 
     protected boolean hasTestAnnotation(Method method) {
         return method.isAnnotationPresent(org.junit.jupiter.params.ParameterizedTest.class)
@@ -63,7 +64,7 @@ public class TestSnapshotConfig implements SnapshotConfig {
     }
 
     @Override
-    public Function<Object[], String> getSerializer() {
-        return new JacksonSnapshotSerializer().getSerializer();
+    public SnapshotSerializer getSerializer() {
+        return new JacksonSnapshotSerializer();
     }
 }

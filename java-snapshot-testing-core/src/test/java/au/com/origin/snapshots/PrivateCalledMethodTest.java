@@ -2,7 +2,7 @@ package au.com.origin.snapshots;
 
 import static au.com.origin.snapshots.SnapshotMatcher.expect;
 
-import au.com.origin.snapshots.config.TestSnapshotConfig;
+import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ class PrivateCalledMethodTest {
 
   @BeforeAll
   static void beforeAll() {
-    SnapshotMatcher.start(new TestSnapshotConfig());
+    SnapshotMatcher.start(new BaseSnapshotConfig());
   }
 
   @AfterAll

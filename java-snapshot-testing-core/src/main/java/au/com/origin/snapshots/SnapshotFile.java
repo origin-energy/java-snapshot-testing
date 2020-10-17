@@ -24,7 +24,7 @@ class SnapshotFile {
 
     SnapshotFile(String srcDirPath, String fileName) throws IOException {
 
-        this.fileName = srcDirPath + fileName;
+        this.fileName = srcDirPath + File.separator + fileName;
 
         StringBuilder fileContent = new StringBuilder();
 

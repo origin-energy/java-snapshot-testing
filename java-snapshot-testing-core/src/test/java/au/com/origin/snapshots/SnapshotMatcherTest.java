@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import au.com.origin.snapshots.config.TestSnapshotConfig;
+import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,11 +19,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class SnapshotMatcherTest {
 
   private static final String FILE_PATH =
-      "src/test/java/au/com/origin/snapshots//__snapshots__/SnapshotMatcherTest.snap";
+      "src/test/java/au/com/origin/snapshots/__snapshots__/SnapshotMatcherTest.snap";
 
   @BeforeAll
   static void beforeAll() {
-    SnapshotMatcher.start(new TestSnapshotConfig());
+    SnapshotMatcher.start(new BaseSnapshotConfig());
   }
 
   @AfterAll
