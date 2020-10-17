@@ -222,7 +222,7 @@ This is good because you shouldn't need to add annotations to your source code f
 public class HibernateSnapshotConfig extends JUnit4Config {
 
     @Override
-    public Function<Object, String> getSerializer() {
+    public Function<Object[], String> getSerializer() {
         JacksonSerializer jacksonSerializer = new JacksonSerializer();
 
         jacksonSerializer.configure(objectMapper -> {

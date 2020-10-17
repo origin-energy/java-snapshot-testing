@@ -16,12 +16,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class JacksonSerializer implements Serializer {
+public class JacksonSnapshotSerializer implements SnapshotSerializer {
 
     private Consumer<ObjectMapper> customConfiguration = objectMapper -> {};
 
     @Override
-    public Function<Object, String> getSerializer() {
+    public Function<Object[], String> getSerializer() {
         ObjectMapper objectMapper = buildObjectMapper();
         customConfiguration.accept(objectMapper);
         PrettyPrinter pp = buildDefaultPrettyPrinter();

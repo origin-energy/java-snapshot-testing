@@ -3,7 +3,11 @@ package au.com.origin.snapshots;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
+import java.io.IOException;
 import java.lang.reflect.Parameter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -11,6 +15,7 @@ import java.util.List;
 
 import au.com.origin.snapshots.SnapshotCaptor;
 import au.com.origin.snapshots.SnapshotMatchException;
+import org.apache.commons.io.FileUtils;
 import org.mockito.ArgumentCaptor;
 
 public class SnapshotUtils {
@@ -89,5 +94,17 @@ public class SnapshotUtils {
     }
 
     return result;
+  }
+
+  public static void copyTestSnapshots() {
+    try {
+      FileUtils.copyDirectory(
+              Paths.get("src/test/java/au/com/origin/snapshots/existing-snapshots").toFile(),
+              Paths.get("src/test/java/au/com/origin/snapshots/__snapshots__").toFile()
+      );
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new RuntimeException("Can't move files to __snapshots__ folder");
+    }
   }
 }

@@ -3,6 +3,7 @@ package au.com.origin.snapshots;
 import static au.com.origin.snapshots.SnapshotMatcher.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import au.com.origin.snapshots.config.TestSnapshotConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ public class SnapshotIntegrationTest {
 
   @BeforeAll
   static void beforeAll() {
+    SnapshotUtils.copyTestSnapshots();
     start(DEFAULT_CONFIG);
   }
 
