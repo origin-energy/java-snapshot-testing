@@ -100,7 +100,7 @@ public class SnapshotUtils {
     try {
       FileUtils.copyDirectory(
               Paths.get("src/test/java/au/com/origin/snapshots/existing-snapshots").toFile(),
-              Paths.get("src/test/java/au/com/origin/snapshots/__snapshots__").toFile()
+              Paths.get("src/test/java/au/com/origin/snapshots").toFile()
       );
     } catch (IOException e) {
       e.printStackTrace();

@@ -1,23 +1,20 @@
 package au.com.origin.snapshots;
 
-import au.com.origin.snapshots.annotations.UseSnapshotConfig;
 import au.com.origin.snapshots.annotations.UseSnapshotSerializer;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
-import au.com.origin.snapshots.config.ToStringSnapshotConfig;
+import au.com.origin.snapshots.serializers.LowercaseToStringSerializer;
 import au.com.origin.snapshots.serializers.UppercaseToStringSerializer;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static au.com.origin.snapshots.SnapshotMatcher.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@UseSnapshotConfig(ToStringSnapshotConfig.class)
+@UseSnapshotSerializer(LowercaseToStringSerializer.class)
 @ExtendWith(MockitoExtension.class)
-public class UseCustomConfigTest {
+public class UseCustomSerializerTest {
 
     private static final SnapshotConfig DEFAULT_CONFIG = new BaseSnapshotConfig();
 
@@ -26,13 +23,20 @@ public class UseCustomConfigTest {
         SnapshotUtils.copyTestSnapshots();
     }
 
+    @DisplayName("@SnapshotSerializer on a class")
     @Test
-    void canUseSnapshotConfigAnnotationAtClassLevel() {
+    void canUseSnapshotSerializerAnnotationAtClassLevel() {
         start(DEFAULT_CONFIG);
         expect(new TestObject()).toMatchSnapshot();
         validateSnapshots();
     }
 
+    @DisplayName("@SnapshotSerializer on a method")
+    @UseSnapshotSerializer(UppercaseToStringSerializer.class)
+    @Test
+    public void canUseSnapshotSerializerAnnotationAtMethodLevel() {
+        expect(new TestObject()).toMatchSnapshot();
+    }
 
     private class TestObject {
         @Override

@@ -24,6 +24,7 @@ public class SnapshotVerifier {
     private final Class testClass;
     private final SnapshotFile snapshotFile;
     private final SnapshotConfig config;
+    private final SnapshotSerializer snapshotSerializer;
     private final boolean failOnOrphans;
 
     private final List<Snapshot> calledSnapshots = new ArrayList<>();
@@ -35,10 +36,12 @@ public class SnapshotVerifier {
     public Snapshot expectCondition(Object firstObject, Object... others) {
         Object[] objects = mergeObjects(firstObject, others);
         Method resolvedTestMethod = testMethod == null ? config.getTestMethod(testClass) : testMethod;
+
         UseSnapshotSerializer methodLevelSnapshotSerializer = resolvedTestMethod.getAnnotation(UseSnapshotSerializer.class);
-        SnapshotSerializer snapshotSerializer = methodLevelSnapshotSerializer == null ? config.getSerializer() : methodLevelSnapshotSerializer.value().newInstance();
+        SnapshotSerializer resolvedSnapshotSerializer = methodLevelSnapshotSerializer == null ? snapshotSerializer : methodLevelSnapshotSerializer.value().newInstance();
+
         Snapshot snapshot =
-                new Snapshot(snapshotSerializer, snapshotFile, testClass, resolvedTestMethod, objects);
+                new Snapshot(resolvedSnapshotSerializer, snapshotFile, testClass, resolvedTestMethod, objects);
         validateExpectCall(snapshot);
         calledSnapshots.add(snapshot);
         return snapshot;

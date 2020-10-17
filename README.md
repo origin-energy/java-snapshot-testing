@@ -38,19 +38,12 @@ We currently support:
 However, any JVM testing framework should work if you correctly implement the `SnapshotConfig` interface and pass it into the `start()` method.
 
 ## How does it work
-1. When a test is run for the first time a `.snap` file is created in a `__snapshots__` subdirectory
+1. When a test runs for the first time a `.snap` file is created in a `__snapshots__` subdirectory
 1. On subsequent test runs the `.snap` file is compared with the one produced by the test
 1. If they don't match the test fails
 1. It is then your job to decide if you have introduced a regression or intentionally changed the output
 1. If you have introduced a regression you will need to fix your code
 1. If you have intentionally changed the output you can manually modify the `.snap` file to make it pass or delete it and it will be generated again from scratch
-
-~~## Updating all snapshots and generating a new baseline~~ (Issue #15)
-Often - after analysing each snapshot an verifying it is correct - you will need to generate a new baseline for the snapshots.
-
-Instead of deleting or manually modifying each snapshot you can pass `-PupdateSnapshot="pattern` which is equivalent to the `--updateUnapshot` flag in Jest
-
-This will update all snapshots containing the text passed as the value
 
 ## What is a Snapshot
 A text (usually json) representation of your java object.
@@ -194,6 +187,42 @@ class MySpec extends Specification {
 }
 ```
 
+## Supplying a custom SnapshotSerializer
+The serializer determines how a class gets converted into a string.
+
+Currently, we support two different serializers
+
+| Serializer                 | Description                                                                           |
+|----------------------------|---------------------------------------------------------------------------------------|
+| ToStringSnapshotSerializer | uses the toString() method                                                            | 
+| JacksonSnapshotSerializer  | uses [jackson](https://github.com/FasterXML/jackson) to convert a class to a snapshot |
+
+Serializers are pluggable, so you can write you own by implementing the `SnapshotSerializer` interface.
+
+There are three ways to override the Serializer and are resolved in the following order.
+- `@UseCustomSerializer` (method level)
+- `@UseCustomSerializer` (class level)
+- `@UseCustomConfig` (class level -`getSerializer()` method)
+- configured `SnapshotConfig` default for your test framework
+
+```
+@ExtendWith(SnapshotExtension.class)
+@UseSnapshotSerializer(ToStringSnapshotSerializer.class)
+public class SnapshotExtensionUsedTest {
+
+    @UseSnapshotSerializer(JacksonSnapshotSerializer.class)
+    @Test
+    public void test1() { 
+        // This will use the method level JacksonSnapshotSerializer to marshal into JSON
+    }
+
+    @Test
+    public void test1() {
+        // This will use the class level ToStringSnapshotSerializer
+    }
+}
+```
+
 ## Supplying a custom SnapshotConfig
 You can override the snapshot configuration easily using the `@UseSnapshotConfig` annotation
 
@@ -213,6 +242,13 @@ public class SnapshotExtensionUsedTest {
     }
 }
 ```
+
+## ~~Updating all snapshots and generating a new baseline~~ (Issue #15)
+Often - after analysing each snapshot an verifying it is correct - you will need to generate a new baseline for the snapshots.
+
+Instead of deleting or manually modifying each snapshot you can pass `-PupdateSnapshot="pattern` which is equivalent to the `--updateUnapshot` flag in Jest
+
+This will update all snapshots containing the text passed as the value
 
 # Configuring Serialization
 Sometimes the default serialization doesn't work for you. An example is Hibernate serialization where you get infinite recursion on Lists/Sets.
