@@ -1,5 +1,6 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.diff.DiffUtils;
 import org.assertj.core.util.diff.Patch;
@@ -12,7 +13,7 @@ import java.util.function.Function;
 
 public class Snapshot {
 
-    private final SnapshotConfig snapshotConfig;
+    private final SnapshotSerializer snapshotSerializer;
     private final SnapshotFile snapshotFile;
     private final Class testClass;
     private final Method testMethod;
@@ -21,12 +22,12 @@ public class Snapshot {
     private String scenario = null;
 
     Snapshot(
-            SnapshotConfig snapshotConfig,
+            SnapshotSerializer snapshotSerializer,
             SnapshotFile snapshotFile,
             Class testClass,
             Method testMethod,
             Object... current) {
-        this.snapshotConfig = snapshotConfig;
+        this.snapshotSerializer = snapshotSerializer;
         this.current = current;
         this.snapshotFile = snapshotFile;
         this.testClass = testClass;
@@ -67,11 +68,13 @@ public class Snapshot {
     }
 
     private boolean shouldUpdateSnapshot() {
-        if (snapshotConfig.updateSnapshot().isPresent()) {
-            return getSnapshotName().contains(snapshotConfig.updateSnapshot().get());
-        } else {
-            return false;
-        }
+        // FIXME #15
+//        if (snapshotConfig.updateSnapshot().isPresent()) {
+//            return getSnapshotName().contains(snapshotConfig.updateSnapshot().get());
+//        } else {
+//            return false;
+//        }
+        return false;
     }
 
     private SnapshotMatchException generateDiffError(String rawSnapshot, String currentObject) {
@@ -104,7 +107,7 @@ public class Snapshot {
     }
 
     private String takeSnapshot() {
-        return getSnapshotName() + snapshotConfig.getSerializer().apply(current);
+        return getSnapshotName() + snapshotSerializer.apply(current);
     }
 
     String getSnapshotName() {

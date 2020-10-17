@@ -17,7 +17,7 @@ public class SnapshotExtension implements AfterAllCallback, BeforeAllCallback, B
     public void beforeAll(ExtensionContext context) {
         Class<?> testClass = context.getTestClass()
                 .orElseThrow(() -> new SnapshotMatchException("Unable to locate Test class"));
-        SnapshotMatcher.start(getSnapshotConfig(), testClass);
+        SnapshotMatcher.start(getSnapshotConfig(), false, testClass);
     }
 
     @Override

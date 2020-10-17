@@ -1,5 +1,6 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.annotations.UseSnapshotConfig;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -12,33 +13,39 @@ public class SnapshotMatcher {
 
     private static final ThreadLocal<SnapshotVerifier> INSTANCES = new ThreadLocal<>();
 
-    /**
-     * Execute before any tests have run for a given class
-     */
     public static void start(SnapshotConfig config) {
-        start(config, config.getTestClass());
+        start(config, false, config.getTestClass());
+    }
+
+    public static void start(SnapshotConfig config, boolean failOnOrphans) {
+        start(config, failOnOrphans, config.getTestClass());
     }
 
     /**
      * Execute before any tests have run for a given class
      */
-    public static void start(SnapshotConfig defaultConfig, Class<?> testClass) {
+    public static void start(SnapshotConfig defaultConfig, boolean failOnOrphans, Class<?> testClass) {
         try {
             UseSnapshotConfig customConfig = testClass.getAnnotation(UseSnapshotConfig.class);
             SnapshotConfig config = customConfig == null ? defaultConfig : customConfig.value().newInstance();
 
+            // Matcher.quoteReplacement required for Windows
             String testFilename = testClass.getName().replaceAll("\\.", Matcher.quoteReplacement(File.separator)) + ".snap";
 
             File fileUnderTest = new File(testFilename);
             File snapshotDir = new File(fileUnderTest.getParentFile(), config.getSnapshotFolder());
 
+            // Support legacy trailing space syntax
+            String testSrcDir = config.getTestSrcDir();
+            String testSrcDirNoTrailing = testSrcDir.endsWith("/") ? config.getTestSrcDir().substring(0, testSrcDir.length()-1) : config.getTestSrcDir();
             SnapshotFile snapshotFile =
-                new SnapshotFile(config.getTestSrcDir(), snapshotDir.getPath() + File.separator + fileUnderTest.getName());
+                new SnapshotFile(testSrcDirNoTrailing, snapshotDir.getPath() + File.separator + fileUnderTest.getName());
 
             SnapshotVerifier snapshotVerifier = new SnapshotVerifier(
                 testClass,
                 snapshotFile,
-                config
+                config,
+                failOnOrphans
             );
             INSTANCES.set(snapshotVerifier);
         } catch (IOException | InstantiationException | IllegalAccessException e) {

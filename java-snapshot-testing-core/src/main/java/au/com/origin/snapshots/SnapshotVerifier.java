@@ -1,7 +1,10 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.annotations.UseSnapshotSerializer;
+import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -10,7 +13,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.util.Arrays.isNullOrEmpty;
@@ -22,17 +24,21 @@ public class SnapshotVerifier {
     private final Class testClass;
     private final SnapshotFile snapshotFile;
     private final SnapshotConfig config;
+    private final boolean failOnOrphans;
 
     private final List<Snapshot> calledSnapshots = new ArrayList<>();
 
     @Setter
     private Method testMethod = null;
 
+    @SneakyThrows
     public Snapshot expectCondition(Object firstObject, Object... others) {
         Object[] objects = mergeObjects(firstObject, others);
         Method resolvedTestMethod = testMethod == null ? config.getTestMethod(testClass) : testMethod;
+        UseSnapshotSerializer methodLevelSnapshotSerializer = resolvedTestMethod.getAnnotation(UseSnapshotSerializer.class);
+        SnapshotSerializer snapshotSerializer = methodLevelSnapshotSerializer == null ? config.getSerializer() : methodLevelSnapshotSerializer.value().newInstance();
         Snapshot snapshot =
-                new Snapshot(config, snapshotFile, testClass, resolvedTestMethod, objects);
+                new Snapshot(snapshotSerializer, snapshotFile, testClass, resolvedTestMethod, objects);
         validateExpectCall(snapshot);
         calledSnapshots.add(snapshot);
         return snapshot;
@@ -56,11 +62,15 @@ public class SnapshotVerifier {
             }
         }
         if (unusedRawSnapshots.size() > 0) {
-            log.error(
-                    "All unused Snapshots:\n"
-                            + StringUtils.join(unusedRawSnapshots, "\n")
-                            + ". Have you deleted tests? Have you renamed a test method?");
-            throw new SnapshotMatchException("ERROR: Found orphan snapshots");
+            String errorMessage = "All unused Snapshots:\n"
+                    + StringUtils.join(unusedRawSnapshots, "\n")
+                    + "\n\nHave you deleted tests? Have you renamed a test method?";
+            if (failOnOrphans) {
+                log.warn(errorMessage);
+                throw new SnapshotMatchException("ERROR: Found orphan snapshots");
+            } else {
+                log.warn(errorMessage);
+            }
         }
     }
 

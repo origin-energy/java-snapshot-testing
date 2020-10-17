@@ -1,12 +1,10 @@
 package au.com.origin.snapshots;
 
-import au.com.origin.snapshots.config.TestSnapshotConfig;
-import org.junit.jupiter.api.AfterAll;
+import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,17 +17,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OrphanSnapshotTest {
 
-    private static final SnapshotConfig DEFAULT_CONFIG = new TestSnapshotConfig();
+    private static final SnapshotConfig DEFAULT_CONFIG = new BaseSnapshotConfig();
 
     @BeforeAll
     static void beforeAll() {
         SnapshotUtils.copyTestSnapshots();
-        start(DEFAULT_CONFIG);
     }
 
-    @DisplayName("should fail the build when an orphan snapshot exists in the `.snap` file")
+    @DisplayName("should fail the build when failOnOrphans=true")
     @Test
     void orphanSnapshotsShouldFailTheBuild() throws IOException {
+        start(DEFAULT_CONFIG, true);
         FakeObject fakeObject1 = FakeObject.builder().id("anyId1").value(1).name("anyName1").build();
         final Path snapshotFile = Paths.get("src/test/java/au/com/origin/snapshots/__snapshots__/OrphanSnapshotTest.snap");
 
@@ -47,4 +45,24 @@ public class OrphanSnapshotTest {
         long bytesAfter = Files.size(snapshotFile);
         assertThat(bytesAfter).isGreaterThan(bytesBefore);
     }
+
+    @DisplayName("should not fail the build when failOnOrphans=false")
+    @Test
+    void orphanSnapshotsShouldNotFailTheBuild() throws IOException {
+        start(DEFAULT_CONFIG, false);
+        FakeObject fakeObject1 = FakeObject.builder().id("anyId1").value(1).name("anyName1").build();
+        final Path snapshotFile = Paths.get("src/test/java/au/com/origin/snapshots/__snapshots__/OrphanSnapshotTest.snap");
+
+        long bytesBefore = Files.size(snapshotFile);
+
+        expect(fakeObject1).toMatchSnapshot();
+
+        validateSnapshots();
+
+        // Ensure file has not changed
+        long bytesAfter = Files.size(snapshotFile);
+        assertThat(bytesAfter).isGreaterThan(bytesBefore);
+    }
+
+
 }
