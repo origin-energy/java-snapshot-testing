@@ -6,6 +6,7 @@ import static au.com.origin.snapshots.SnapshotUtils.extractArgs;
 import java.util.Arrays;
 import java.util.List;
 
+import au.com.origin.snapshots.config.TestSnapshotConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

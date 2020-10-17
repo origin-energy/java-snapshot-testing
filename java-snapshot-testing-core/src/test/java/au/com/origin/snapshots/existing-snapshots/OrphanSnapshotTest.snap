@@ -1,0 +1,5 @@
+au.com.origin.snapshots.OrphanSnapshotTest.orphanMethod=[
+  {
+    "message": "This orphan method should fail the test"
+  }
+]

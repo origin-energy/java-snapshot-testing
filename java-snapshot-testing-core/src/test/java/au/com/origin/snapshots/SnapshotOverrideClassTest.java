@@ -3,6 +3,7 @@ package au.com.origin.snapshots;
 import static au.com.origin.snapshots.SnapshotMatcher.start;
 import static au.com.origin.snapshots.SnapshotMatcher.validateSnapshots;
 
+import au.com.origin.snapshots.config.TestSnapshotConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 

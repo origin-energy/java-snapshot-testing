@@ -56,10 +56,11 @@ public class SnapshotVerifier {
             }
         }
         if (unusedRawSnapshots.size() > 0) {
-            log.warn(
-                    "All unused Snapshots: "
+            log.error(
+                    "All unused Snapshots:\n"
                             + StringUtils.join(unusedRawSnapshots, "\n")
-                            + ". Consider deleting the snapshot file to recreate it!");
+                            + ". Have you deleted tests? Have you renamed a test method?");
+            throw new SnapshotMatchException("ERROR: Found orphan snapshots");
         }
     }
 

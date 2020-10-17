@@ -13,7 +13,8 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import au.com.origin.snapshots.serializers.JacksonSerializer;
+import au.com.origin.snapshots.config.TestSnapshotConfig;
+import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
 import lombok.SneakyThrows;
 
 import org.junit.jupiter.api.AfterEach;
@@ -81,7 +82,7 @@ class SnapshotTest {
             snapshotFile,
             String.class,
             String.class.getDeclaredMethod("toString"),
-                new JacksonSerializer().getSerializer(),
+                new JacksonSnapshotSerializer().getSerializer(),
             "anyObject").scenario("hello world");
     assertThat(snapshotWithScenario.getSnapshotName())
         .isEqualTo("java.lang.String.toString[hello world]=");
@@ -97,7 +98,7 @@ class SnapshotTest {
             String.class,
             String.class.getDeclaredMethod("toString"),
             null,
-            new JacksonSerializer().getSerializer(),
+            new JacksonSnapshotSerializer().getSerializer(),
             "anyObject");
     assertThat(snapshotWithoutScenario.getSnapshotName()).isEqualTo("java.lang.String.toString=");
   }
@@ -107,7 +108,7 @@ class SnapshotTest {
   void shouldOverwriteSnapshotsWhenParamIsPassed() {
     SnapshotConfig mockConfig = Mockito.mock(SnapshotConfig.class);
     Mockito.when(mockConfig.updateSnapshot()).thenReturn(Optional.of(""));
-    Mockito.when(mockConfig.getSerializer()).thenReturn(new JacksonSerializer().getSerializer());
+    Mockito.when(mockConfig.getSerializer()).thenReturn(new JacksonSnapshotSerializer().getSerializer());
     SnapshotFile snapshotFile = Mockito.mock(SnapshotFile.class);
     Set<String> set = new HashSet<>();
     set.add("java.lang.String.toString[hello world]=[{" + "\"a\": \"b\"" + "}]");

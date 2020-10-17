@@ -1,7 +1,10 @@
-package au.com.origin.snapshots;
+package au.com.origin.snapshots.config;
 
 
-import au.com.origin.snapshots.serializers.JacksonSerializer;
+import au.com.origin.snapshots.ReflectionUtilities;
+import au.com.origin.snapshots.SnapshotConfig;
+import au.com.origin.snapshots.SnapshotMatchException;
+import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
 
 import java.lang.reflect.Method;
 import java.util.function.Function;
@@ -60,7 +63,7 @@ public class TestSnapshotConfig implements SnapshotConfig {
     }
 
     @Override
-    public Function<Object, String> getSerializer() {
-        return new JacksonSerializer().getSerializer();
+    public Function<Object[], String> getSerializer() {
+        return new JacksonSnapshotSerializer().getSerializer();
     }
 }

@@ -2,7 +2,7 @@ package au.com.origin.snapshots.serializers;
 
 import java.util.function.Function;
 
-public interface Serializer {
+public interface SnapshotSerializer {
 
-    Function<Object, String> getSerializer();
+    Function<Object[], String> getSerializer();
 }

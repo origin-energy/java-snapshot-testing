@@ -2,7 +2,7 @@ package au.com.origin.snapshots;
 
 import static au.com.origin.snapshots.SnapshotMatcher.expect;
 
-import au.com.origin.snapshots.SnapshotMatcher;
+import au.com.origin.snapshots.config.TestSnapshotConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
