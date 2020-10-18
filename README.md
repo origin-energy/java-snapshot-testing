@@ -1,7 +1,7 @@
 [![Build Status](https://img.shields.io/travis/origin-energy/java-snapshot-testing.svg)](https://travis-ci.org/origin-energy/java-snapshot-testing)
 
 ## READ FIRST
-These docs are for the latest `.SNAPSHOT` version published to maven central.
+These docs are for the latest `X.X.X-SNAPSHOT` version published to maven central.
 Select the branch `release/X.X.X` matching your maven dependency to get correct documentation for your version.
 
 ## Java Snapshot Testing

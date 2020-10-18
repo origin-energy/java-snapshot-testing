@@ -13,7 +13,9 @@ public class SnapshotClassRule implements TestRule, SnapshotConfigInjector {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                SnapshotMatcher.start(getSnapshotConfig(), false, description.getTestClass());
+                // don't fail if a test is run alone from the IDE for example
+                boolean failOnOrphans = description.getChildren().size() > 1;
+                SnapshotMatcher.start(getSnapshotConfig(), failOnOrphans, description.getTestClass());
                 try {
                     base.evaluate();
                 } finally {
