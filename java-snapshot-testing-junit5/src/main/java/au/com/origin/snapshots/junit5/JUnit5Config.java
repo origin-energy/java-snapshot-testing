@@ -8,12 +8,12 @@ public class JUnit5Config implements SnapshotConfig {
 
   @Override
   public Class<?> getTestClass() {
-    throw new RuntimeException("You forgot to implement the JUnit5 SnapshotExtension");
+    throw new RuntimeException("You forgot to add @ExtendWith(SnapshotExtension.class) to the class");
   }
 
   @Override
   public Method getTestMethod(Class<?> testClass) {
-    throw new RuntimeException("You forgot to implement the JUnit5 SnapshotExtension");
+    throw new RuntimeException("You forgot to add @ExtendWith(SnapshotExtension.class) to the class");
   }
 
 }
