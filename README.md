@@ -1,14 +1,14 @@
 [![Build Status](https://img.shields.io/travis/origin-energy/java-snapshot-testing.svg)](https://travis-ci.org/origin-energy/java-snapshot-testing)
 
-## READ FIRST
-These docs are for the latest `X.X.X-SNAPSHOT` version published to maven central.
-Select the branch `release/X.X.X` matching your maven dependency to get correct documentation for your version.
-
-## Java Snapshot Testing
+# Java Snapshot Testing
 - Inspired by [facebook's Jest framework](https://facebook.github.io/jest/docs/en/snapshot-testing.html)
 - Fork of [json-snapshot.github.io](https://github.com/json-snapshot/json-snapshot.github.io)
 
-# Jest Snapshot Testing for Java
+## READ FIRST
+These docs are for the latest `.SNAPSHOT` version published to maven central.
+Select the branch `release/X.X.X` matching your maven dependency to get correct documentation for your version.
+
+## Jest Snapshot Testing for the JVM
 The aim of this project is to port Jest Snapshot testing for jvm projects.
 
 ## Advantages of Snapshot Testing
@@ -50,27 +50,22 @@ A text (usually json) representation of your java object.
 
 As an example
 ```text
-com.example.ExampleTest.shouldExtractArgsFromFakeMethodWithComplexObject=[
+au.com.example.company.UserEndpointTest.shouldReturnCustomerData=[
   {
-    "FakeObject.fakeMethodWithComplexObject": [
-      {
-        "arg0": {
-          "id": "idMock"
-        }
-      }
-    ]
-  },
-  {
-    "FakeObject.fakeMethodWithComplexObject": [
-      {
-        "arg0": {
-          "id": "idMock",
-          "name": "nameMock"
-        }
-      }
-    ]
+    "id": "1",
+    "firstName": "John",
+    "lastName": "Smith",
+    "age": 34
   }
 ]
+
+
+au.com.example.company.UserEndpointTest.shouldRenderMITLicense=
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
 # Usage Examples
@@ -150,7 +145,7 @@ class SpockExtensionUsedSpec extends Specification {
     ```
 1. Before all the tests in a single file execute
     ```java
-      SnapshotMatcher.start(new MyCustomSnapshotConfig());
+        SnapshotMatcher.start(new MyCustomSnapshotConfig());
     ```
 1. After all the tests in a single file execute
     ```java
@@ -223,6 +218,46 @@ public class SnapshotExtensionUsedTest {
 }
 ```
 
+### Example: HibernateSerializer
+Sometimes the default serialization doesn't work for you. An example is Hibernate serialization where you get infinite recursion on Lists/Sets.
+
+You can supply any serializer you like Gson, Jackson or something else.
+
+For example,this following will exclude the rendering of Lists without changing the source code to include @JsonIgnore.
+This is good because you shouldn't need to add annotations to your source code for testing purposes only.
+
+```java
+public class HibernateSnapshotSerializer implements SnapshotSerializer {
+    @Override
+    public String apply(Object[] objects) {
+        JacksonSnapshotSerializer jacksonSerializer = new JacksonSnapshotSerializer();
+        jacksonSerializer.configure(objectMapper -> {
+            // Ignore Hibernate Lists to prevent infinite recursion
+            objectMapper.addMixIn(List.class, IgnoreTypeMixin.class);
+
+            // Ignore Fields that Hibernate generates for us automatically
+            objectMapper.addMixIn(BaseEntity.class, IgnoreHibernateEntityFields.class);
+        });
+
+        jacksonSerializer.apply(objects);
+    }
+
+    @JsonIgnoreType
+    class IgnoreTypeMixin {}
+
+    abstract class IgnoreHibernateEntityFields {
+        @JsonIgnore
+        abstract Long getId();
+
+        @JsonIgnore
+        abstract Instant getCreatedDate();
+
+        @JsonIgnore
+        abstract Instant getLastModifiedDate();
+    }
+}
+```
+
 ## Supplying a custom SnapshotConfig
 You can override the snapshot configuration easily using the `@UseSnapshotConfig` annotation
 
@@ -250,48 +285,6 @@ Instead of deleting or manually modifying each snapshot you can pass `-PupdateSn
 
 This will update all snapshots containing the text passed as the value
 
-# Configuring Serialization
-Sometimes the default serialization doesn't work for you. An example is Hibernate serialization where you get infinite recursion on Lists/Sets.
-
-You can supply any serializer you like Gson, Jackson or something else by overriding the `getSerializer()` method.
-
-For example, here is a JUnit4 configuration that will exclude the rendering of Lists without changing the source code to include @JsonIgnore.
-This is good because you shouldn't need to add annotations to your source code for testing purposes only.
-
-```java
-public class HibernateSnapshotConfig extends JUnit4Config {
-
-    @Override
-    public Function<Object[], String> getSerializer() {
-        JacksonSerializer jacksonSerializer = new JacksonSerializer();
-
-        jacksonSerializer.configure(objectMapper -> {
-            // Ignore Hibernate Lists & Sets to prevent infinite recursion
-            objectMapper.addMixIn(List.class, IgnoreTypeMixin.class);
-            objectMapper.addMixIn(Set.class, IgnoreTypeMixin.class);
-
-            // Ignore Fields that Hibernate generates for us automatically, and thus are not reproducible between runs
-            objectMapper.addMixIn(BaseEntity.class, IgnoreHibernateEntityFields.class);
-        });
-
-        return jacksonSerializer.getSerializer();
-    }
-
-    @JsonIgnoreType
-    class IgnoreTypeMixin {}
-
-    abstract class IgnoreHibernateEntityFields {
-        @JsonIgnore
-        abstract Long getId();
-
-        @JsonIgnore
-        abstract Instant getCreatedDate();
-
-        @JsonIgnore
-        abstract Instant getLastModifiedDate();
-    }
-}
-```
 
 # Contributing
 
