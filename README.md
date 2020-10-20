@@ -4,31 +4,8 @@
 - Inspired by [facebook's Jest framework](https://facebook.github.io/jest/docs/en/snapshot-testing.html)
 - Fork of [json-snapshot.github.io](https://github.com/json-snapshot/json-snapshot.github.io)
 
-## READ FIRST
-These docs are for the latest `-SNAPSHOT` version published to maven central.
-Select the branch `release/X.X.X` matching your maven dependency to get correct documentation for your version.
-
 ## Jest Snapshot Testing for the JVM
 The aim of this project is to port Jest Snapshot testing for jvm projects.
-
-## Using the latest SNAPSHOT
-Gradle
-```
-repositories {
-    // ...
-    maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
-}
-
-dependencies {
-    // ...
-
-    // Replace {FRAMEWORK} with you testing framework
-    // Replace {X.X.X} with the version number from `/gradle.properties`
-    testCompile "io.github.origin-energy:java-snapshot-testing-{FRAMEWORK}:{X.X.X}-SNAPSHOT"
-}
-```
 
 ## Advantages of Snapshot Testing
 It's useful for deterministic tests. That is, running the same tests multiple times on a component that has not changed 
@@ -55,6 +32,28 @@ We currently support:
 - [Spock](https://search.maven.org/search?q=a:java-snapshot-testing-spock)
 
 However, any JVM testing framework should work if you correctly implement the `SnapshotConfig` interface and pass it into the `start()` method.
+
+These docs are for the latest `-SNAPSHOT` version published to maven central.
+Select the branch `release/X.X.X` matching your maven dependency to get correct documentation for your version.
+
+### Using the latest SNAPSHOT
+Gradle
+```
+repositories {
+    // ...
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+
+dependencies {
+    // ...
+
+    // Replace {FRAMEWORK} with you testing framework
+    // Replace {X.X.X} with the version number from `/gradle.properties`
+    testCompile "io.github.origin-energy:java-snapshot-testing-{FRAMEWORK}:{X.X.X}-SNAPSHOT"
+}
+```
 
 ## How does it work
 1. When a test runs for the first time a `.snap` file is created in a `__snapshots__` subdirectory
