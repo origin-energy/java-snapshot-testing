@@ -1,0 +1,75 @@
+au.com.origin.snapshots.serializers.JacksonSnapshotSerializerTest.shouldSerializeDifferentTypesDeterministically=[
+  {
+    "anObject": { },
+    "aByte": 65,
+    "aShort": 32767,
+    "anInt": 2147483647,
+    "aLong": 9223372036854775807,
+    "aFloat": 0.1234567,
+    "aDouble": 1.123456789123456,
+    "aBoolean": true,
+    "aChar": "A",
+    "string": "Hello World",
+    "date": "2020-10-19T22:21:07.103+00:00",
+    "localDate": "2020-10-19",
+    "localDateTime": "2020-10-19T22:21:07.103",
+    "zonedDateTime": "2020-10-19T22:21:07.103+11:00[Australia/Melbourne]",
+    "anEnum": "A",
+    "stringArray": [
+      "f",
+      "a",
+      "d",
+      "e",
+      "g",
+      "b",
+      "c"
+    ],
+    "anEnumArray": [
+      "F",
+      "A",
+      "D",
+      "E",
+      "G",
+      "B",
+      "C"
+    ],
+    "arrayList": [
+      "f",
+      "a",
+      "d",
+      "e",
+      "g",
+      "b",
+      "c"
+    ],
+    "hashSet": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g"
+    ],
+    "treeSet": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g"
+    ],
+    "hashMap": {
+      "a": 1,
+      "b": 2,
+      "c": 3,
+      "d": 4,
+      "e": 5,
+      "f": 6,
+      "g": 7
+    },
+    "presentOptional": "Hello World",
+    "emptyOptional": null
+  }
+]
