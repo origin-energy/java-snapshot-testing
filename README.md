@@ -5,11 +5,30 @@
 - Fork of [json-snapshot.github.io](https://github.com/json-snapshot/json-snapshot.github.io)
 
 ## READ FIRST
-These docs are for the latest `.SNAPSHOT` version published to maven central.
+These docs are for the latest `-SNAPSHOT` version published to maven central.
 Select the branch `release/X.X.X` matching your maven dependency to get correct documentation for your version.
 
 ## Jest Snapshot Testing for the JVM
 The aim of this project is to port Jest Snapshot testing for jvm projects.
+
+## Using the latest SNAPSHOT
+Gradle
+```
+repositories {
+    // ...
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+
+dependencies {
+    // ...
+
+    // Replace {FRAMEWORK} with you testing framework
+    // Replace {X.X.X} with the version number from `/gradle.properties`
+    testCompile "io.github.origin-energy:java-snapshot-testing-{FRAMEWORK}:{X.X.X}-Beta7-SNAPSHOT"
+}
+```
 
 ## Advantages of Snapshot Testing
 It's useful for deterministic tests. That is, running the same tests multiple times on a component that has not changed 
