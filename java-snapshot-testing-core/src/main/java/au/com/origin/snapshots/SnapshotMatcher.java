@@ -2,7 +2,6 @@ package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.annotations.UseSnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
-import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -25,6 +24,9 @@ public class SnapshotMatcher {
 
     /**
      * Execute before any tests have run for a given class
+     * @param defaultConfig configuration to use
+     * @param failOnOrphans should the test break if snapshots exist with no matching method in the test class
+     * @param testClass     reference to class under test
      */
     public static void start(SnapshotConfig defaultConfig, boolean failOnOrphans, Class<?> testClass) {
         try {
@@ -38,8 +40,8 @@ public class SnapshotMatcher {
             File snapshotDir = new File(fileUnderTest.getParentFile(), resolvedConfig.getSnapshotFolder());
 
             // Support legacy trailing space syntax
-            String testSrcDir = resolvedConfig.getTestSrcDir();
-            String testSrcDirNoTrailing = testSrcDir.endsWith("/") ? resolvedConfig.getTestSrcDir().substring(0, testSrcDir.length()-1) : resolvedConfig.getTestSrcDir();
+            String testSrcDir = resolvedConfig.getOutputDir();
+            String testSrcDirNoTrailing = testSrcDir.endsWith("/") ? resolvedConfig.getOutputDir().substring(0, testSrcDir.length()-1) : resolvedConfig.getOutputDir();
             SnapshotFile snapshotFile =
                 new SnapshotFile(testSrcDirNoTrailing, snapshotDir.getPath() + File.separator + fileUnderTest.getName());
 
@@ -57,6 +59,7 @@ public class SnapshotMatcher {
 
     /**
      * Used to update the current test method being executed
+     * @param method under test
      */
     public static void setTestMethod(Method method) {
         INSTANCES.get().setTestMethod(method);
@@ -74,10 +77,11 @@ public class SnapshotMatcher {
     }
 
     /**
-     * Make an assertion on the given input parameters
+     * Make an assertion on the given input parameters againt what already exists
      *
      * @param firstObject first snapshot object
      * @param objects other snapshot objects
+     * @return snapshot
      */
     public static Snapshot expect(Object firstObject, Object... objects) {
         SnapshotVerifier instance = INSTANCES.get();

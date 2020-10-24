@@ -26,6 +26,8 @@ A Snapshot test does not assert Java types. You can continue doing that with any
 
 ## Installation [Maven](https://search.maven.org/search?q=java-snapshot-testing)
 
+- [Core](https://search.maven.org/search?q=a:java-snapshot-testing-core)
+
 We currently support:
 - [JUnit4](https://search.maven.org/search?q=a:java-snapshot-testing-junit4)
 - [JUnit5](https://search.maven.org/search?q=a:java-snapshot-testing-junit5)

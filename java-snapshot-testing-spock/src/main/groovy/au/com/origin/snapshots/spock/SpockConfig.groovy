@@ -7,7 +7,7 @@ import java.lang.reflect.Method
 class SpockConfig implements SnapshotConfig {
 
     @Override
-    String getTestSrcDir() {
+    String getOutputDir() {
         return "src/test/groovy/"
     }
 

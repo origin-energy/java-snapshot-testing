@@ -18,7 +18,7 @@ We welcome contributions to this project by both internal and external parties
 ./gradlew shadowJar
 ```
 
-## Deploying locally and deploying to `.m2
+## Deploying locally and deploying to `.m2/`
 ```
 ./gradlew publishToMavenLocal
 ```

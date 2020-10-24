@@ -7,18 +7,39 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 
 /**
+ *  Snapshot Configuration
+ *  ----------------------
+ *
+ *  Implement this interface when integrating `java-snapshot-testing` with a custom testing library
  *
  */
 public interface SnapshotConfig {
     String JVM_UPDATE_SNAPSHOTS_PARAMETER = "updateSnapshot";
 
     /**
-     * The directory containing the src files
+     * The base directory where files get written (excluding package directories)
+     * default: "src/test/java"
      *
+     * You might want to override if you have tests under "src/test/integration" for example
+     *
+     * @deprecated Use getOutputDir() instead
      * @return test src folder
      */
-    default String getTestSrcDir() {
-        return "src/test/java/";
+    @Deprecated
+    default String getTestDir() {
+        return getOutputDir();
+    }
+
+    /**
+     * The base directory where files get written (excluding package directories)
+     * default: "src/test/java"
+     *
+     * You might want to override if you have tests under "src/test/integration" for example
+     *
+     * @return snapshot output folder
+     */
+    default String getOutputDir() {
+        return "src/test/java";
     }
 
     /**
@@ -31,21 +52,28 @@ public interface SnapshotConfig {
     }
 
     /**
-     * Optional - return the test class name
-     * @return
+     * Optional
+     * Algorithm to discover what class is under test.  Frameworks often have a better way to access this via frameworks hooks.
+     * However, some don't and can use this method to discover it.
+     *
+     * @return class under test
      */
     Class<?> getTestClass();
 
     /**
-     * Optional - return the test method name
+     * Optional
+     * Algorithm to discover what class is under test.  Frameworks often have a better way to access this via frameworks hooks.
+     * However, some don't and can use this method to discover it.
      *
-     * @param testClass
-     * @return
+     * @param testClass class under test
+     * @return  method under tests
      */
     Method getTestMethod(Class<?> testClass);
 
     /**
-     * Will determine what snapshots should be updated automatically without verification
+     * Optional
+     *
+     * @return snapshots should be updated automatically without verification
      */
     default Optional<String> updateSnapshot() {
         String value = System.getProperty(JVM_UPDATE_SNAPSHOTS_PARAMETER);
@@ -57,8 +85,10 @@ public interface SnapshotConfig {
     }
 
     /**
-     * Override to supply your own serializion function
-     * @return
+     * Optional
+     * Override to supply your own custom serialization function
+     *
+     * @return custom serialization function
      */
     default SnapshotSerializer getSerializer() {
         return new JacksonSnapshotSerializer();
