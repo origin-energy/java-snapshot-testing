@@ -2,7 +2,7 @@ package au.com.origin.snapshots.spock
 
 import au.com.origin.snapshots.SnapshotMatcher
 import org.spockframework.runtime.AbstractRunListener
-import org.spockframework.runtime.model.*
+import org.spockframework.runtime.model.FeatureInfo
 
 class SnapshotSpecListener extends AbstractRunListener {
 

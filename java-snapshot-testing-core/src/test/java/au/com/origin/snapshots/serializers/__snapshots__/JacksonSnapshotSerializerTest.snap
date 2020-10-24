@@ -1,4 +1,4 @@
-au.com.origin.snapshots.serializers.JacksonSnapshotSerializerTest.shouldSerializeDifferentTypesDeterministically=[
+au.com.origin.snapshots.serializers.JacksonSnapshotSerializerTest.shouldSerializeDifferentTypes=[
   {
     "anObject": { },
     "aByte": 65,
@@ -15,6 +15,8 @@ au.com.origin.snapshots.serializers.JacksonSnapshotSerializerTest.shouldSerializ
     "localDateTime": "2020-10-19T22:21:07.103",
     "zonedDateTime": "2020-10-19T22:21:07.103+11:00[Australia/Melbourne]",
     "anEnum": "A",
+    "presentOptional": "Hello World",
+    "emptyOptional": null,
     "stringArray": [
       "f",
       "a",
@@ -33,7 +35,34 @@ au.com.origin.snapshots.serializers.JacksonSnapshotSerializerTest.shouldSerializ
       "B",
       "C"
     ],
-    "arrayList": [
+    "hashMap": {
+      "a": 97,
+      "b": 98,
+      "c": 99,
+      "d": 100,
+      "e": 101,
+      "f": 102,
+      "g": 103
+    },
+    "treeMap": {
+      "a": 97,
+      "b": 98,
+      "c": 99,
+      "d": 100,
+      "e": 101,
+      "f": 102,
+      "g": 103
+    },
+    "linkedHashMap": {
+      "a": 97,
+      "b": 98,
+      "c": 99,
+      "d": 100,
+      "e": 101,
+      "f": 102,
+      "g": 103
+    },
+    "linkedHashSet": [
       "f",
       "a",
       "d",
@@ -60,16 +89,52 @@ au.com.origin.snapshots.serializers.JacksonSnapshotSerializerTest.shouldSerializ
       "f",
       "g"
     ],
-    "hashMap": {
-      "a": 1,
-      "b": 2,
-      "c": 3,
-      "d": 4,
-      "e": 5,
-      "f": 6,
-      "g": 7
-    },
-    "presentOptional": "Hello World",
-    "emptyOptional": null
+    "arrayList": [
+      "f",
+      "a",
+      "d",
+      "e",
+      "g",
+      "b",
+      "c"
+    ],
+    "linkedList": [
+      "f",
+      "a",
+      "d",
+      "e",
+      "g",
+      "b",
+      "c"
+    ],
+    "listOfCollections": [
+      {
+        "a": 97,
+        "b": 98,
+        "c": 99,
+        "d": 100,
+        "e": 101,
+        "f": 102,
+        "g": 103
+      },
+      [
+        "f",
+        "a",
+        "d",
+        "e",
+        "g",
+        "b",
+        "c"
+      ],
+      [
+        "f",
+        "a",
+        "d",
+        "e",
+        "g",
+        "b",
+        "c"
+      ]
+    ]
   }
 ]

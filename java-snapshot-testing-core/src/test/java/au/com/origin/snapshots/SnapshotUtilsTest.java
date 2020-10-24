@@ -1,11 +1,5 @@
 package au.com.origin.snapshots;
 
-import static au.com.origin.snapshots.SnapshotMatcher.*;
-import static au.com.origin.snapshots.SnapshotUtils.extractArgs;
-
-import java.util.Arrays;
-import java.util.List;
-
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,6 +8,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static au.com.origin.snapshots.SnapshotMatcher.*;
+import static au.com.origin.snapshots.SnapshotUtils.extractArgs;
 
 @ExtendWith(MockitoExtension.class)
 class SnapshotUtilsTest {

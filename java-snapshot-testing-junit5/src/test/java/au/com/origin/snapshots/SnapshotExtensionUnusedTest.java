@@ -1,5 +1,6 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -7,8 +8,8 @@ public class SnapshotExtensionUnusedTest {
 
     @Test
     public void shouldUseExtension() {
-        Assertions.assertThrows(SnapshotMatchException.class, () -> {
-            SnapshotMatcher.expect("Hello Wolrd").toMatchSnapshot();
+        Assertions.assertThrows(SnapshotExtensionException.class, () -> {
+            SnapshotMatcher.expect("Hello World").toMatchSnapshot();
         });
     }
 }

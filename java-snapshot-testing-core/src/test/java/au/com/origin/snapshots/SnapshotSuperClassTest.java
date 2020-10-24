@@ -1,8 +1,8 @@
 package au.com.origin.snapshots;
 
-import static au.com.origin.snapshots.SnapshotMatcher.expect;
-
 import org.junit.jupiter.api.Test;
+
+import static au.com.origin.snapshots.SnapshotMatcher.expect;
 
 public abstract class SnapshotSuperClassTest {
 

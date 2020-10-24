@@ -2,7 +2,6 @@ package au.com.origin.snapshots.serializers;
 
 import au.com.origin.snapshots.SnapshotConfig;
 import au.com.origin.snapshots.SnapshotUtils;
-import au.com.origin.snapshots.UseCustomConfigTest;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import lombok.AllArgsConstructor;
 import lombok.Data;

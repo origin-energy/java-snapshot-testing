@@ -1,19 +1,14 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.annotations.UseSnapshotConfig;
-import au.com.origin.snapshots.annotations.UseSnapshotSerializer;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.config.ToStringSnapshotConfig;
-import au.com.origin.snapshots.serializers.UppercaseToStringSerializer;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static au.com.origin.snapshots.SnapshotMatcher.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @UseSnapshotConfig(ToStringSnapshotConfig.class)
 @ExtendWith(MockitoExtension.class)

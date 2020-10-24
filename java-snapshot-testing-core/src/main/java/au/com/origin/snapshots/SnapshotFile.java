@@ -1,13 +1,12 @@
 package au.com.origin.snapshots;
 
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -18,6 +17,10 @@ class SnapshotFile {
     private static final String SPLIT_STRING = "\n\n\n";
 
     private String fileName;
+
+    private String getDebugFilename() {
+        return this.fileName + ".debug";
+    }
 
     @Getter
     private Set<String> rawSnapshots;
@@ -49,6 +52,30 @@ class SnapshotFile {
             createFile(this.fileName);
             rawSnapshots = new TreeSet<>();
         }
+    }
+
+    public File createDebugFile(String snapshot) {
+        File file = null;
+        try {
+            file = new File(getDebugFilename());
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+
+            try (FileOutputStream fileStream = new FileOutputStream(file, false)) {
+                fileStream.write(snapshot.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return file;
+    }
+
+    @SneakyThrows
+    public void deleteDebugFile() {
+        Files.deleteIfExists(Paths.get(getDebugFilename()));
     }
 
     private File createFile(String fileName) throws IOException {

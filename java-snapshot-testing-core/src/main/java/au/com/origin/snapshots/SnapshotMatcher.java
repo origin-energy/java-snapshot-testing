@@ -2,6 +2,7 @@ package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.annotations.UseSnapshotConfig;
 import au.com.origin.snapshots.annotations.UseSnapshotSerializer;
+import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,7 +56,7 @@ public class SnapshotMatcher {
             );
             INSTANCES.set(snapshotVerifier);
         } catch (IOException | InstantiationException | IllegalAccessException e) {
-            throw new SnapshotMatchException(e.getMessage());
+            throw new SnapshotExtensionException(e.getMessage());
         }
     }
 
@@ -72,7 +73,7 @@ public class SnapshotMatcher {
     public static void validateSnapshots() {
         SnapshotVerifier snapshotVerifier = INSTANCES.get();
         if (snapshotVerifier == null) {
-            throw new SnapshotMatchException("Could not find Snapshot Verifier for this thread");
+            throw new SnapshotExtensionException("Could not find Snapshot Verifier for this thread");
         }
         snapshotVerifier.validateSnapshots();
     }
@@ -86,7 +87,7 @@ public class SnapshotMatcher {
     public static Snapshot expect(Object firstObject, Object... objects) {
         SnapshotVerifier instance = INSTANCES.get();
         if (instance == null) {
-            throw new SnapshotMatchException("Unable to locate snapshot - has SnapshotMatcher.start() been called?");
+            throw new SnapshotExtensionException("Unable to locate snapshot - has SnapshotMatcher.start() been called?");
         }
         return instance.expectCondition(firstObject, objects);
     }

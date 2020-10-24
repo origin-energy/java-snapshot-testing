@@ -2,17 +2,15 @@ package au.com.origin.snapshots.junit5;
 
 import au.com.origin.snapshots.SnapshotConfig;
 import au.com.origin.snapshots.SnapshotConfigInjector;
-import au.com.origin.snapshots.SnapshotMatchException;
 import au.com.origin.snapshots.SnapshotMatcher;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.extension.*;
-import org.junit.jupiter.engine.descriptor.ClassExtensionContext;
+import au.com.origin.snapshots.exceptions.SnapshotMatchException;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.engine.descriptor.ClassTestDescriptor;
-import org.junit.platform.engine.TestDescriptor;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class SnapshotExtension implements AfterAllCallback, BeforeAllCallback, BeforeEachCallback, SnapshotConfigInjector {

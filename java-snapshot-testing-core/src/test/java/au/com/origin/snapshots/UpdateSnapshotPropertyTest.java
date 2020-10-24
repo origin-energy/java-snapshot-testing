@@ -1,6 +1,7 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
+import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -8,9 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.File;
 import java.nio.file.Files;
 
-import static au.com.origin.snapshots.SnapshotMatcher.expect;
-import static au.com.origin.snapshots.SnapshotMatcher.start;
-import static au.com.origin.snapshots.SnapshotMatcher.validateSnapshots;
+import static au.com.origin.snapshots.SnapshotMatcher.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)

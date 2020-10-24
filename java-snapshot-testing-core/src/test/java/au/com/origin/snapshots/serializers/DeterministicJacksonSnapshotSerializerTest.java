@@ -12,12 +12,12 @@ import java.util.*;
 
 import static au.com.origin.snapshots.SnapshotMatcher.*;
 
-public class JacksonSnapshotSerializerTest {
+public class DeterministicJacksonSnapshotSerializerTest {
 
     private static final SnapshotConfig DEFAULT_CONFIG = new BaseSnapshotConfig() {
         @Override
         public SnapshotSerializer getSerializer() {
-            return new JacksonSnapshotSerializer();
+            return new DeterministicJacksonSnapshotSerializer();
         }
     };
 
@@ -63,30 +63,28 @@ public class JacksonSnapshotSerializerTest {
         private final Object[] anEnumArray = Arrays.stream(AnEnum.values()).toArray();
 
         // Maps
-        private final Map<String, Integer> hashMap = deterministicMap(new HashMap<>());
-        private final Map<String, Integer> treeMap = deterministicMap(new TreeMap<>());
-        private final Map<String, Integer> linkedHashMap = deterministicMap(new LinkedHashMap<>());
+        private final Map<String, Integer> hashMap = nonDeterministicMap(new HashMap<>());
+        private final Map<String, Integer> treeMap = nonDeterministicMap(new TreeMap<>());
+        private final Map<String, Integer> linkedHashMap = nonDeterministicMap(new LinkedHashMap<>());
 
         // Sets
-        private final Collection<String> linkedHashSet = deterministicCollection(new LinkedHashSet<>());
-        private final Collection<String> hashSet = deterministicCollection(new HashSet<>());
-        private final Collection<String> treeSet = deterministicCollection(new TreeSet<>());
+        private final Collection<String> linkedHashSet = nonDeterministicCollection(new LinkedHashSet<>());
+        private final Collection<String> hashSet = nonDeterministicCollection(new HashSet<>());
+        private final Collection<String> treeSet = nonDeterministicCollection(new TreeSet<>());
 
         // Lists
-        private final Collection<String> arrayList = deterministicCollection(new ArrayList<>());
-        private final Collection<String> linkedList = deterministicCollection(new LinkedList<>());
+        private final Collection<String> arrayList = nonDeterministicCollection(new ArrayList<>());
+        private final Collection<String> linkedList = nonDeterministicCollection(new LinkedList<>());
 
         // Mixed Maps, Sets, Lists
         private final Collection<Object> listOfCollections = new ArrayList<Object>() {{
-            add(deterministicMap(new LinkedHashMap<>()));
-            add(deterministicCollection(new LinkedHashSet<>()));
-            add(deterministicCollection(new LinkedList<>()));
+            add(nonDeterministicMap(new LinkedHashMap<>()));
+            add(nonDeterministicCollection(new LinkedHashSet<>()));
+            add(nonDeterministicCollection(new LinkedList<>()));
         }};
     }
 
-
-
-    private Map<String, Integer> deterministicMap(Map<String, Integer> target) {
+    private Map<String, Integer> nonDeterministicMap(Map<String, Integer> target) {
         final List<String> items = new ArrayList<String>() {{
             add("f");
             add("a");
@@ -96,11 +94,16 @@ public class JacksonSnapshotSerializerTest {
             add("b");
             add("c");
         }};
-        items.forEach(it -> target.put(it, (int) it.charAt(0)));
+
+        int size = items.size();
+        for(int i = 0; i < size; i++) {
+            String random = pluckRandom(items);
+            target.put(random, (int) random.charAt(0));
+        }
         return target;
     }
 
-    private Collection<String> deterministicCollection(Collection<String> target) {
+    private Collection<String> nonDeterministicCollection(Collection<String> target) {
         final List<String> items = new ArrayList<String>() {{
             add("f");
             add("a");
@@ -110,7 +113,17 @@ public class JacksonSnapshotSerializerTest {
             add("b");
             add("c");
         }};
-        target.addAll(items);
+
+        int size = items.size();
+        for(int i = 0; i < size; i++) {
+            target.add(pluckRandom(items));
+        }
+
         return target;
+    }
+
+    private String pluckRandom(List<String> array) {
+        int rnd = new Random().nextInt(array.size());
+        return array.remove(rnd);
     }
 }

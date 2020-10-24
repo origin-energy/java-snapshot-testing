@@ -1,6 +1,8 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.annotations.UseSnapshotSerializer;
+import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
+import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -80,7 +82,7 @@ public class SnapshotVerifier {
     private void validateExpectCall(Snapshot snapshot) {
         for (Snapshot eachSnapshot : calledSnapshots) {
             if (eachSnapshot.getSnapshotName().equals(snapshot.getSnapshotName())) {
-                throw new SnapshotMatchException(
+                throw new SnapshotExtensionException(
                         "You can only call 'expect' once per test method. Try using array of arguments on a single 'expect' call");
             }
         }

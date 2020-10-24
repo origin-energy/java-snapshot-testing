@@ -1,15 +1,16 @@
 package au.com.origin.snapshots;
 
-import static au.com.origin.snapshots.SnapshotMatcher.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
+import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
+import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static au.com.origin.snapshots.SnapshotMatcher.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 public class SnapshotIntegrationTest {
@@ -75,6 +76,6 @@ public class SnapshotIntegrationTest {
     fakeObject1.setFakeObject(fakeObject2);
     fakeObject2.setFakeObject(fakeObject1);
 
-    assertThrows(SnapshotMatchException.class, () -> expect(fakeObject1).toMatchSnapshot());
+    assertThrows(SnapshotExtensionException.class, () -> expect(fakeObject1).toMatchSnapshot());
   }
 }

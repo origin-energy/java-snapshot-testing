@@ -1,5 +1,7 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
@@ -41,7 +43,7 @@ class SnapshotCaptor {
                         field.set(newValue, null);
                     }
                 } catch (IllegalAccessException | NoSuchFieldException e) {
-                    throw new SnapshotMatchException("Invalid Ignore value " + each, e.getCause());
+                    throw new SnapshotExtensionException("Invalid Ignore value " + each, e.getCause());
                 }
             }
         }
@@ -64,7 +66,7 @@ class SnapshotCaptor {
             }
             return newValue;
         } catch (Exception e) {
-            throw new SnapshotMatchException(
+            throw new SnapshotExtensionException(
                     "Class "
                             + this.argumentClass.getSimpleName()
                             + " must have a default empty constructor!");

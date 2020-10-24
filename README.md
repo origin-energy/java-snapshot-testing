@@ -174,6 +174,16 @@ class SpockExtensionUsedSpec extends Specification {
     SnapshotMatcher.expect(something).toMatchSnapshot()
     ```
 
+# Conflicting snapshot comparison via *.snap.debug
+Often your IDE has an excellent file comparison tool.
+A `*.snap.debug` file will be created containing the conflicting snapshot & deleted automatically once the test passes.
+You can then use your IDE tooling to compare the two files.
+
+Note: `*.snap.debug` files should never be checked into version control so consider adding it to `.gitignore`
+
+```
+expect(uppercase).debug().toMatchSnapshot()
+```
 # Parameterized tests
 In cases where the same test runs multiple times with different parameters you need to set the `scenario` and it must be unique for each run
 
@@ -205,10 +215,11 @@ The serializer determines how a class gets converted into a string.
 
 Currently, we support two different serializers
 
-| Serializer                 | Description                                                                           |
-|----------------------------|---------------------------------------------------------------------------------------|
-| ToStringSnapshotSerializer | uses the toString() method                                                            | 
-| JacksonSnapshotSerializer  | uses [jackson](https://github.com/FasterXML/jackson) to convert a class to a snapshot |
+| Serializer                             | Description                                                                                                                 |
+|----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| ToStringSnapshotSerializer             | uses the toString() method                                                                                                  | 
+| JacksonSnapshotSerializer              | uses [jackson](https://github.com/FasterXML/jackson) to convert a class to a snapshot                                       |
+| DeterministicJacksonSnapshotSerializer | extension of JacksonSnapshotSerializer that also orders Collections for situations where the order changes on multiple runs | 
 
 Serializers are pluggable, so you can write you own by implementing the `SnapshotSerializer` interface.
 

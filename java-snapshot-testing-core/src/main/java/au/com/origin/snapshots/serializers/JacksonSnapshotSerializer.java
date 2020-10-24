@@ -1,6 +1,6 @@
 package au.com.origin.snapshots.serializers;
 
-import au.com.origin.snapshots.SnapshotMatchException;
+import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.PrettyPrinter;
@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter.Indenter;
 import com.fasterxml.jackson.core.util.Separators;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -20,9 +19,11 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
 
     private Consumer<ObjectMapper> customConfiguration = objectMapper -> {};
 
-    public void configure(Consumer<ObjectMapper> customConfiguration) {
-        this.customConfiguration = customConfiguration;
-    }
+    /**
+     * Override to customize the Jackson objectMapper
+     * @param objectMapper
+     */
+    public void configure(ObjectMapper objectMapper) { }
 
     private PrettyPrinter buildDefaultPrettyPrinter() {
         DefaultPrettyPrinter pp =
@@ -55,7 +56,6 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        //objectMapper.enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY);
 
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.registerModule(new Jdk8Module());
@@ -68,6 +68,7 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+        configure(objectMapper);
         return objectMapper;
     }
 
@@ -80,7 +81,7 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
         try {
             return objectMapper.writer(pp).writeValueAsString(objects);
         } catch (Exception e) {
-            throw new SnapshotMatchException(e.getMessage());
+            throw new SnapshotExtensionException("Jackson Serialization failed", e);
         }
     }
 }

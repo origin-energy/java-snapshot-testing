@@ -1,5 +1,6 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.diff.DiffUtils;
@@ -9,7 +10,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
-import java.util.function.Function;
 
 public class Snapshot {
 
@@ -58,11 +58,14 @@ public class Snapshot {
         // Match Snapshot
         if (rawSnapshot != null && !shouldUpdateSnapshot()) {
             if (!rawSnapshot.trim().equals(currentObject.trim())) {
+                snapshotFile.createDebugFile(currentObject.trim());
                 throw generateDiffError(rawSnapshot, currentObject);
             }
+            snapshotFile.deleteDebugFile();
         }
         // Create New Snapshot
         else {
+            snapshotFile.deleteDebugFile();
             snapshotFile.push(currentObject);
         }
     }
