@@ -4,10 +4,10 @@
 - Inspired by [facebook's Jest framework](https://facebook.github.io/jest/docs/en/snapshot-testing.html)
 - Fork of [json-snapshot.github.io](https://github.com/json-snapshot/json-snapshot.github.io)
 
-##The testing framework loved by ~~lazy~~ productive devs
-> - Tired of needing to `assertThat(foo).isEqualTo("bar")` again & again?
-> - Are you just wanting to ensure you don't break - for example - REST interfaces
-> - Are you manually saving text files for verification in your tests?
+## The testing framework loved by ~~lazy~~ productive devs
+- Tired of needing to `assertThat(foo).isEqualTo("bar")` again & again?
+- Are you just wanting to ensure you don't break - for example - REST interfaces
+- Are you manually saving text files for verification in your tests?
 
 **Want a better way?**
 Then java-snapshot-testing might just be what you are looking for! 
