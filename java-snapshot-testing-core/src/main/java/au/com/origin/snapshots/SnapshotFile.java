@@ -2,6 +2,7 @@ package au.com.origin.snapshots;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -12,6 +13,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 class SnapshotFile {
 
     private static final String SPLIT_STRING = "\n\n\n";
@@ -28,6 +30,7 @@ class SnapshotFile {
     SnapshotFile(String srcDirPath, String fileName) throws IOException {
 
         this.fileName = srcDirPath + File.separator + fileName;
+        log.info("Snapshot File: " + this.fileName);
 
         StringBuilder fileContent = new StringBuilder();
 
