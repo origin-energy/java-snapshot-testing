@@ -12,9 +12,6 @@
 **Want a better way?**
 Then java-snapshot-testing might just be what you are looking for! 
 
-## Jest Snapshot Testing for the JVM
-The aim of this project is to port Jest Snapshot testing for jvm projects.
-
 ## Advantages of Snapshot Testing
 It's useful for deterministic tests. That is, running the same tests multiple times on a component that hasn't changed 
 should produce the same results every time. You're responsible for making sure your generated snapshots do not include 
@@ -26,9 +23,9 @@ platform specific or other non-deterministic data.
 - Great of testing dynamic objects
 
 ## Disadvantages of Snapshot Testing
+- You need to ensure your test is deterministic for all fields (there are ways to ignore things like dates)
 - Does not give great insight to why the snapshot failed
-- Can be difficult to troll though large snapshot changes
-- Does not document the business rules the way a Unit test might
+- Can be difficult to troll though large snapshot changes where you might only be interested in a small set of fields
 
 ## Installation [Maven](https://search.maven.org/search?q=java-snapshot-testing)
 
@@ -43,7 +40,7 @@ We currently support:
 - [JUnit5](https://search.maven.org/search?q=a:java-snapshot-testing-junit5)
 - [Spock](https://search.maven.org/search?q=a:java-snapshot-testing-spock)
 
-### Using the latest SNAPSHOT
+### Using the latest SNAPSHOT (excuse the pun)
 Gradle
 ```
 repositories {
