@@ -56,15 +56,16 @@ dependencies {
 ```
 
 ## How does it work
-1. When a test runs for the first time a `.snap` file is created in a `__snapshots__` subdirectory
-1. On subsequent test runs the `.snap` file is compared with the one produced by the test
-1. If they don't match the test fails
-1. It is then your job to decide if you have introduced a regression or intentionally changed the output
+1. When a test runs for the first time, a `.snap` file is created in a `__snapshots__` subdirectory
+1. On subsequent test runs, the `.snap` file is compared with the one produced by the test
+1. If they don't match, the test fails and a `.snap.debug` with the conflict is created
+1. It is then your job to decide if you have introduced a regression or intentionally changed the output (Use your IDE file comparison tools to compare the two files or refer to the terminal output)
 1. If you have introduced a regression you will need to fix your code
 1. If you have intentionally changed the output you can manually modify the `.snap` file to make it pass or delete it and it will be generated again from scratch
+1. One you fix the test, the `*.snap.debug` file will get deleted
 
 ## What is a Snapshot
-A text (usually json) representation of your java object.
+A text representation of your java object (toString() or JSON).
 
 As an example
 ```text
