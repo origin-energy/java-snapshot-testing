@@ -213,36 +213,38 @@ class MySpec extends Specification {
 ## Supplying a custom SnapshotSerializer
 The serializer determines how a class gets converted into a string.
 
-Currently, we support two different serializers
+Currently, we support three different serializers
 
 | Serializer                             | Description                                                                                                                 |
 |----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| ToStringSnapshotSerializer             | uses the toString() method                                                                                                  | 
+| ToStringSnapshotSerializer             | uses the `toString()` method                                                                                                | 
 | JacksonSnapshotSerializer              | uses [jackson](https://github.com/FasterXML/jackson) to convert a class to a snapshot                                       |
 | DeterministicJacksonSnapshotSerializer | extension of JacksonSnapshotSerializer that also orders Collections for situations where the order changes on multiple runs | 
 
 Serializers are pluggable, so you can write you own by implementing the `SnapshotSerializer` interface.
 
 There are three ways to override the Serializer and are resolved in the following order.
-- `@UseCustomSerializer` (method level)
-- `@UseCustomSerializer` (class level)
-- `@UseCustomConfig` (class level -`getSerializer()` method)
-- configured `SnapshotConfig` default for your test framework
-
-```
+- (method level) explicitly `expect(...).serializer(ToStringSerializer.class).toMatchSnapshot();`
+- (class level) implicitly `@UseCustomConfig` which gets read from the `getSerializer()` method
+- (global) implicitly via `SnapshotConfig` default for your test framework 
+                
+```java
 @ExtendWith(SnapshotExtension.class)
-@UseSnapshotSerializer(ToStringSnapshotSerializer.class)
+@UseSnapshotConfig(LowercaseToStringSnapshotConfig.class)
 public class SnapshotExtensionUsedTest {
 
-    @UseSnapshotSerializer(JacksonSnapshotSerializer.class)
+    // Read from UppercaseToStringSerializer
     @Test
-    public void test1() { 
-        // This will use the method level JacksonSnapshotSerializer to marshal into JSON
+    public void uppercaseTest() { 
+        expect(new TestObject())
+                .serializer(new UppercaseToStringSerializer())
+                .toMatchSnapshot();
     }
 
+    // Read from LowercaseToStringSnapshotConfig
     @Test
-    public void test1() {
-        // This will use the class level ToStringSnapshotSerializer
+    public void lowercaseTest() {
+        expect(new TestObject()).toMatchSnapshot();
     }
 }
 ```

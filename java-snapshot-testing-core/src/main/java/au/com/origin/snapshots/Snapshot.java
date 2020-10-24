@@ -2,6 +2,8 @@ package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
+import lombok.Getter;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.diff.DiffUtils;
 import org.assertj.core.util.diff.Patch;
@@ -13,7 +15,7 @@ import java.util.Set;
 
 public class Snapshot {
 
-    private final SnapshotSerializer snapshotSerializer;
+    private SnapshotSerializer snapshotSerializer;
     private final SnapshotFile snapshotFile;
     private final Class testClass;
     private final Method testMethod;
@@ -44,6 +46,29 @@ public class Snapshot {
      */
     public Snapshot scenario(String scenario) {
         this.scenario = scenario;
+        return this;
+    }
+
+    /**
+     * Apply a custom serializer for this snapshot
+     *
+     * @param serializer
+     * @return
+     */
+    public Snapshot serializer(SnapshotSerializer serializer) {
+        this.snapshotSerializer = serializer;
+        return this;
+    }
+
+    /**
+     * Apply a custom serializer for this snapshot
+     *
+     * @param serializer
+     * @return
+     */
+    @SneakyThrows
+    public Snapshot serializer(Class<? extends SnapshotSerializer> serializer) {
+        this.snapshotSerializer = serializer.newInstance();
         return this;
     }
 

@@ -1,7 +1,6 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.annotations.UseSnapshotConfig;
-import au.com.origin.snapshots.annotations.UseSnapshotSerializer;
 import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +31,6 @@ public class SnapshotMatcher {
             UseSnapshotConfig customConfig = testClass.getAnnotation(UseSnapshotConfig.class);
             SnapshotConfig resolvedConfig = customConfig == null ? defaultConfig : customConfig.value().newInstance();
 
-            UseSnapshotSerializer classLevelSerializer = testClass.getAnnotation(UseSnapshotSerializer.class);
-            SnapshotSerializer resolvedSerializer = classLevelSerializer == null ? resolvedConfig.getSerializer() : classLevelSerializer.value().newInstance();
-
             // Matcher.quoteReplacement required for Windows
             String testFilename = testClass.getName().replaceAll("\\.", Matcher.quoteReplacement(File.separator)) + ".snap";
 
@@ -51,7 +47,6 @@ public class SnapshotMatcher {
                 testClass,
                 snapshotFile,
                 resolvedConfig,
-                resolvedSerializer,
                 failOnOrphans
             );
             INSTANCES.set(snapshotVerifier);

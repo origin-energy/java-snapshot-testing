@@ -1,8 +1,6 @@
 package au.com.origin.snapshots;
 
-import au.com.origin.snapshots.annotations.UseSnapshotSerializer;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
-import au.com.origin.snapshots.serializers.LowercaseToStringSerializer;
 import au.com.origin.snapshots.serializers.UppercaseToStringSerializer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static au.com.origin.snapshots.SnapshotMatcher.*;
 
-@UseSnapshotSerializer(LowercaseToStringSerializer.class)
 @ExtendWith(MockitoExtension.class)
 public class UseCustomSerializerTest {
 
@@ -21,21 +18,25 @@ public class UseCustomSerializerTest {
     @BeforeAll
     static void beforeAll() {
         SnapshotUtils.copyTestSnapshots();
+        start(DEFAULT_CONFIG);
     }
 
-    @DisplayName("@SnapshotSerializer on a class")
+    @DisplayName("@SnapshotSerializer on a method via new instance")
     @Test
-    void canUseSnapshotSerializerAnnotationAtClassLevel() {
-        start(DEFAULT_CONFIG);
-        expect(new TestObject()).toMatchSnapshot();
+    public void canUseSnapshotSerializerAnnotationAtMethodLevelUsingNewInstance() {
+        expect(new TestObject())
+                .serializer(new UppercaseToStringSerializer())
+                .toMatchSnapshot();
         validateSnapshots();
     }
 
-    @DisplayName("@SnapshotSerializer on a method")
-    @UseSnapshotSerializer(UppercaseToStringSerializer.class)
+    @DisplayName("@SnapshotSerializer on a method via class name")
     @Test
-    public void canUseSnapshotSerializerAnnotationAtMethodLevel() {
-        expect(new TestObject()).toMatchSnapshot();
+    public void canUseSnapshotSerializerAnnotationAtMethodLevelUsingClassName() {
+        expect(new TestObject())
+                .serializer(new UppercaseToStringSerializer())
+                .toMatchSnapshot();
+        validateSnapshots();
     }
 
     private class TestObject {

@@ -1,8 +1,8 @@
 package au.com.origin.snapshots;
 
-import au.com.origin.snapshots.annotations.UseSnapshotSerializer;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
+import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import au.com.origin.snapshots.serializers.ToStringSerializer;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeAll;
@@ -20,11 +20,15 @@ import static au.com.origin.snapshots.SnapshotMatcher.start;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@UseSnapshotSerializer(ToStringSerializer.class)
 @ExtendWith(MockitoExtension.class)
 public class DebugSnapshotTest {
 
-    private static final SnapshotConfig DEFAULT_CONFIG = new BaseSnapshotConfig();
+    private static final SnapshotConfig DEFAULT_CONFIG = new BaseSnapshotConfig() {
+        @Override
+        public SnapshotSerializer getSerializer() {
+            return new ToStringSerializer();
+        }
+    };
 
     private static final String DEBUG_FILE_PATH = "src/test/java/au/com/origin/snapshots/__snapshots__/DebugSnapshotTest.snap.debug";
     private static final String SNAPSHOT_FILE_PATH = "src/test/java/au/com/origin/snapshots/__snapshots__/DebugSnapshotTest.snap";
