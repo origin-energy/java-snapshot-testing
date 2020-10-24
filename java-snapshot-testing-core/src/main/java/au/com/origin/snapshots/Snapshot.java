@@ -43,6 +43,7 @@ public class Snapshot {
      * the scenario() to overcome this restriction.  Ensure each scenario is unique.
      *
      * @param scenario - unique scenario description
+     * @return  this
      */
     public Snapshot scenario(String scenario) {
         this.scenario = scenario;
@@ -52,8 +53,8 @@ public class Snapshot {
     /**
      * Apply a custom serializer for this snapshot
      *
-     * @param serializer
-     * @return
+     * @param serializer your custom serializer
+     * @return  this
      */
     public Snapshot serializer(SnapshotSerializer serializer) {
         this.snapshotSerializer = serializer;
@@ -63,8 +64,8 @@ public class Snapshot {
     /**
      * Apply a custom serializer for this snapshot
      *
-     * @param serializer
-     * @return
+     * @param serializer your custom serializer
+     * @return  this
      */
     @SneakyThrows
     public Snapshot serializer(Class<? extends SnapshotSerializer> serializer) {

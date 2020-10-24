@@ -45,7 +45,7 @@ public class CustomFolderSnapshotTest {
     public static class CustomFolderSnapshotConfig extends BaseSnapshotConfig {
 
         @Override
-        public String getTestSrcDir() {
+        public String getOutputDir() {
             return "src/test/some-folder";
         }
     }
@@ -53,7 +53,7 @@ public class CustomFolderSnapshotTest {
     public static class CustomFolderSnapshotConfigLegacy extends BaseSnapshotConfig {
 
         @Override
-        public String getTestSrcDir() {
+        public String getOutputDir() {
             return "src/test/some-folder/";
         }
     }

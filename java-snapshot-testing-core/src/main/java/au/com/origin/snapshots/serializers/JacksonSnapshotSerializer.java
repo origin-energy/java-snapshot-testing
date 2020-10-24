@@ -21,7 +21,7 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
 
     /**
      * Override to customize the Jackson objectMapper
-     * @param objectMapper
+     * @param objectMapper existing ObjectMapper
      */
     public void configure(ObjectMapper objectMapper) { }
 
