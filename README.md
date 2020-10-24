@@ -4,11 +4,19 @@
 - Inspired by [facebook's Jest framework](https://facebook.github.io/jest/docs/en/snapshot-testing.html)
 - Fork of [json-snapshot.github.io](https://github.com/json-snapshot/json-snapshot.github.io)
 
+> ##The testing framework loved by ~~lazy~~ productive devs
+> - Tired of needing to `assertThat(foo).isEqualTo("bar")` again & again?
+> - Are you just wanting to ensure you don't break - for example - REST interfaces
+> - Are you manually saving text files for verification in your tests?
+>
+> Want a better way?
+> Then java-snapshot-testing might just be what you are looking for! 
+
 ## Jest Snapshot Testing for the JVM
 The aim of this project is to port Jest Snapshot testing for jvm projects.
 
 ## Advantages of Snapshot Testing
-It's useful for deterministic tests. That is, running the same tests multiple times on a component that has not changed 
+It's useful for deterministic tests. That is, running the same tests multiple times on a component that hasn't changed 
 should produce the same results every time. You're responsible for making sure your generated snapshots do not include 
 platform specific or other non-deterministic data. 
 
@@ -20,23 +28,20 @@ platform specific or other non-deterministic data.
 ## Disadvantages of Snapshot Testing
 - Does not give great insight to why the snapshot failed
 - Can be difficult to troll though large snapshot changes
-- Does not document the business rules the way a Unit test would
-
-A Snapshot test does not assert Java types. You can continue doing that with any other testing framework.
+- Does not document the business rules the way a Unit test might
 
 ## Installation [Maven](https://search.maven.org/search?q=java-snapshot-testing)
 
+These docs are for the latest `-SNAPSHOT` version published to maven central.
+Select the branch `release/X.X.X` matching your maven dependency to get correct documentation for your version.
+
+Only if you want to integrate with non supported framework. [Show me how!](#custom-framework)
 - [Core](https://search.maven.org/search?q=a:java-snapshot-testing-core)
 
 We currently support:
 - [JUnit4](https://search.maven.org/search?q=a:java-snapshot-testing-junit4)
 - [JUnit5](https://search.maven.org/search?q=a:java-snapshot-testing-junit5)
 - [Spock](https://search.maven.org/search?q=a:java-snapshot-testing-spock)
-
-However, any JVM testing framework should work if you correctly implement the `SnapshotConfig` interface and pass it into the `start()` method.
-
-These docs are for the latest `-SNAPSHOT` version published to maven central.
-Select the branch `release/X.X.X` matching your maven dependency to get correct documentation for your version.
 
 ### Using the latest SNAPSHOT
 Gradle
@@ -177,17 +182,16 @@ class SpockExtensionUsedSpec extends Specification {
     SnapshotMatcher.expect(something).toMatchSnapshot()
     ```
 
-# Conflicting snapshot comparison via *.snap.debug
+## Conflicting snapshot comparison via `*.snap.debug`
 Often your IDE has an excellent file comparison tool.
-A `*.snap.debug` file will be created containing the conflicting snapshot & deleted automatically once the test passes.
-You can then use your IDE tooling to compare the two files.
 
-Note: `*.snap.debug` files should never be checked into version control so consider adding it to `.gitignore`
+- A `*.snap.debug` file will be created alongside your `*.snap` file when a conflict occurs.
+- You can then use your IDE tooling to compare the two files.
+- `*.snap.debug` is deleted automatically once the test passes.
 
-```
-expect(uppercase).debug().toMatchSnapshot()
-```
-# Parameterized tests
+**Note:** `*.snap.debug` files should never be checked into version control so consider adding it to your `.gitignore`
+
+## Parameterized tests
 In cases where the same test runs multiple times with different parameters you need to set the `scenario` and it must be unique for each run
 
 ```java
@@ -228,9 +232,9 @@ Serializers are pluggable, so you can write you own by implementing the `Snapsho
 
 There are three ways to override the Serializer and are resolved in the following order.
 - (method level) explicitly `expect(...).serializer(ToStringSerializer.class).toMatchSnapshot();`
-- (class level) implicitly `@UseCustomConfig` which gets read from the `getSerializer()` method
+- (class level) explicitly `@UseSnapshotConfig` which gets read from the `getSerializer()` method
 - (global) implicitly via `SnapshotConfig` default for your test framework 
-                
+
 ```java
 @ExtendWith(SnapshotExtension.class)
 @UseSnapshotConfig(LowercaseToStringSnapshotConfig.class)
@@ -240,7 +244,7 @@ public class SnapshotExtensionUsedTest {
     @Test
     public void uppercaseTest() { 
         expect(new TestObject())
-                .serializer(new UppercaseToStringSerializer())
+                .serializer(UppercaseToStringSerializer.class)
                 .toMatchSnapshot();
     }
 
@@ -257,7 +261,7 @@ Sometimes the default serialization doesn't work for you. An example is Hibernat
 
 You can supply any serializer you like Gson, Jackson or something else.
 
-For example,this following will exclude the rendering of Lists without changing the source code to include @JsonIgnore.
+For example,this following will exclude the rendering of Lists without changing the source code to include `@JsonIgnore`.
 This is good because you shouldn't need to add annotations to your source code for testing purposes only.
 
 ```java
@@ -302,7 +306,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(SnapshotExtension.class)
-@UseSnapshotConfig(HibernateSnapshotConfig.class) // apply your custom snapshot configuration to this test class
+// apply your custom snapshot configuration to this test class
+@UseSnapshotConfig(HibernateSnapshotConfig.class)
 public class SnapshotExtensionUsedTest {
 
     @Test

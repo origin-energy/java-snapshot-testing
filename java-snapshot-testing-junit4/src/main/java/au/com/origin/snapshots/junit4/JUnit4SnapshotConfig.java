@@ -4,7 +4,7 @@ import au.com.origin.snapshots.SnapshotConfig;
 
 import java.lang.reflect.Method;
 
-public class JUnit4Config implements SnapshotConfig {
+public class JUnit4SnapshotConfig implements SnapshotConfig {
 
   @Override
   public Class<?> getTestClass() {

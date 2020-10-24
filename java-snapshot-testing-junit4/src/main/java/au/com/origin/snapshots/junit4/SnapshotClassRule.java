@@ -27,6 +27,6 @@ public class SnapshotClassRule implements TestRule, SnapshotConfigInjector {
 
     @Override
     public SnapshotConfig getSnapshotConfig() {
-        return new JUnit4Config();
+        return new JUnit4SnapshotConfig();
     }
 }

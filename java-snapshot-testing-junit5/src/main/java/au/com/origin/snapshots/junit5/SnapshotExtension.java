@@ -38,7 +38,7 @@ public class SnapshotExtension implements AfterAllCallback, BeforeAllCallback, B
 
     @Override
     public SnapshotConfig getSnapshotConfig() {
-        return new JUnit5Config();
+        return new JUnit5SnapshotConfig();
     }
 
 

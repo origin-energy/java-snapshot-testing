@@ -12,6 +12,7 @@ import java.util.Optional;
  *
  *  Implement this interface when integrating `java-snapshot-testing` with a custom testing library
  *
+ *  For frameworks - consider extending the framework implementation instead
  */
 public interface SnapshotConfig {
     String JVM_UPDATE_SNAPSHOTS_PARAMETER = "updateSnapshot";
