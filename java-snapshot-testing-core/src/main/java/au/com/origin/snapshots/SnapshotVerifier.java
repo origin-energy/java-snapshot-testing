@@ -37,7 +37,7 @@ public class SnapshotVerifier {
         Object[] objects = mergeObjects(firstObject, others);
         Method resolvedTestMethod = testMethod == null ? config.getTestMethod(testClass) : testMethod;
         Snapshot snapshot =
-                new Snapshot(config.getSerializer(), snapshotFile, testClass, resolvedTestMethod, objects);
+                new Snapshot(config, snapshotFile, testClass, resolvedTestMethod, objects);
         validateExpectCall(snapshot);
         calledSnapshots.add(snapshot);
         return snapshot;

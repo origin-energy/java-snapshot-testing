@@ -6,7 +6,6 @@ import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -42,7 +41,7 @@ class SnapshotTest {
     snapshotFile = new SnapshotFile(DEFAULT_CONFIG.getOutputDir(), "anyFilePath");
     snapshot =
         new Snapshot(
-            DEFAULT_CONFIG.getSerializer(),
+            DEFAULT_CONFIG,
             snapshotFile,
             String.class,
             String.class.getDeclaredMethod("toString"),
@@ -79,7 +78,7 @@ class SnapshotTest {
   void shouldRenderScenarioNameWhenSupplied() {
     Snapshot snapshotWithScenario =
         new Snapshot(
-                DEFAULT_CONFIG.getSerializer(),
+            DEFAULT_CONFIG,
             snapshotFile,
             String.class,
             String.class.getDeclaredMethod("toString"),
@@ -94,7 +93,7 @@ class SnapshotTest {
   void shouldNotRenderScenarioNameWhenNull() {
     Snapshot snapshotWithoutScenario =
         new Snapshot(
-                DEFAULT_CONFIG.getSerializer(),
+            DEFAULT_CONFIG,
             snapshotFile,
             String.class,
             String.class.getDeclaredMethod("toString"),
@@ -104,7 +103,6 @@ class SnapshotTest {
     assertThat(snapshotWithoutScenario.getSnapshotName()).isEqualTo("java.lang.String.toString=");
   }
 
-  @Disabled("FIXME #15")
   @SneakyThrows
   @Test
   void shouldOverwriteSnapshotsWhenParamIsPassed() {
@@ -118,7 +116,7 @@ class SnapshotTest {
 
     Snapshot snapshot =
         new Snapshot(
-            mockConfig.getSerializer(),
+            mockConfig,
             snapshotFile,
             String.class,
             String.class.getDeclaredMethod("toString"),
