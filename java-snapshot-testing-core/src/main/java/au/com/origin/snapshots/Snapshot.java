@@ -15,6 +15,7 @@ import java.util.Set;
 
 public class Snapshot {
 
+    private SnapshotConfig snapshotConfig;
     private SnapshotSerializer snapshotSerializer;
     private final SnapshotFile snapshotFile;
     private final Class testClass;
@@ -24,12 +25,13 @@ public class Snapshot {
     private String scenario = null;
 
     Snapshot(
-            SnapshotSerializer snapshotSerializer,
+            SnapshotConfig snapshotConfig,
             SnapshotFile snapshotFile,
             Class testClass,
             Method testMethod,
             Object... current) {
-        this.snapshotSerializer = snapshotSerializer;
+        this.snapshotConfig = snapshotConfig;
+        this.snapshotSerializer = snapshotConfig.getSerializer();
         this.current = current;
         this.snapshotFile = snapshotFile;
         this.testClass = testClass;
@@ -81,29 +83,30 @@ public class Snapshot {
 
         String currentObject = takeSnapshot();
 
-        // Match Snapshot
-        if (rawSnapshot != null && !shouldUpdateSnapshot()) {
+        if (rawSnapshot != null && shouldUpdateSnapshot()) {
+            snapshotFile.getRawSnapshots().remove(rawSnapshot);
+            rawSnapshot = null;
+        }
+
+        if (rawSnapshot != null) {
+            // Match existing Snapshot
             if (!rawSnapshot.trim().equals(currentObject.trim())) {
                 snapshotFile.createDebugFile(currentObject.trim());
                 throw generateDiffError(rawSnapshot, currentObject);
             }
-            snapshotFile.deleteDebugFile();
-        }
-        // Create New Snapshot
-        else {
-            snapshotFile.deleteDebugFile();
+        } else {
+            // Create New Snapshot
             snapshotFile.push(currentObject);
         }
+        snapshotFile.deleteDebugFile();
     }
 
     private boolean shouldUpdateSnapshot() {
-        // FIXME #15
-//        if (snapshotConfig.updateSnapshot().isPresent()) {
-//            return getSnapshotName().contains(snapshotConfig.updateSnapshot().get());
-//        } else {
-//            return false;
-//        }
-        return false;
+        if (snapshotConfig.updateSnapshot().isPresent()) {
+            return getSnapshotName().contains(snapshotConfig.updateSnapshot().get());
+        } else {
+            return false;
+        }
     }
 
     private SnapshotMatchException generateDiffError(String rawSnapshot, String currentObject) {

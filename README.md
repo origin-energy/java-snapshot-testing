@@ -227,7 +227,7 @@ Currently, we support three different serializers
 
 Serializers are pluggable, so you can write you own by implementing the `SnapshotSerializer` interface.
 
-There are three ways to override the Serializer and are resolved in the following order.
+Serializers and are resolved in the following order.
 - (method level) explicitly `expect(...).serializer(ToStringSerializer.class).toMatchSnapshot();`
 - (class level) explicitly `@UseSnapshotConfig` which gets read from the `getSerializer()` method
 - (global) implicitly via `SnapshotConfig` default for your test framework 
@@ -296,7 +296,7 @@ public class HibernateSnapshotSerializer implements SnapshotSerializer {
 ## Supplying a custom SnapshotConfig
 You can override the snapshot configuration easily using the `@UseSnapshotConfig` annotation
 
-JUnit5 Example
+**JUnit5 Example**
 ```java
 import au.com.origin.snapshots.junit5.SnapshotExtension;
 import org.junit.jupiter.api.Test;
@@ -314,12 +314,22 @@ public class SnapshotExtensionUsedTest {
 }
 ```
 
-## ~~Updating all snapshots and generating a new baseline~~ (Issue #15)
-Often - after analysing each snapshot an verifying it is correct - you will need to generate a new baseline for the snapshots.
+## Automatically updating a snapshot via `-PupdateSnapshot=filter`
+Often - after analysing each snapshot and verifying it is correct, 
+you will need to generate a new baseline for the snapshots.
 
-Instead of deleting or manually modifying each snapshot you can pass `-PupdateSnapshot="pattern` which is equivalent to the `--updateUnapshot` flag in Jest
+Instead of deleting or manually modifying each snapshot you can pass `-PupdateSnapshot` which is equivalent to the `--updateSnapshot` flag in [Jest](https://jestjs.io/docs/en/snapshot-testing#updating-snapshots)
 
-This will update all snapshots containing the text passed as the value
+#### Update all snapshots automatically
+```
+-PupdateSnapshot
+```
+
+#### Update selected snapshots only using `filter`
+pass the class names you want to update to `filter`
+```
+-PupdateSnapshot=UserService,PermissionRepository
+```
 
 
 # Contributing
