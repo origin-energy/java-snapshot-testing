@@ -59,7 +59,7 @@ dependencies {
 }
 ```
 
-## How does it work
+## How does it work?
 1. When a test runs for the first time, a `.snap` file is created in a `__snapshots__` subdirectory
 1. On subsequent test runs, the `.snap` file is compared with the one produced by the test
 1. If they don't match, the test fails and a `.snap.debug` with the conflict is created
@@ -68,10 +68,24 @@ dependencies {
 1. If you have intentionally changed the output you can manually modify the `.snap` file to make it pass or delete it and it will be generated again from scratch
 1. One you fix the test, the `*.snap.debug` file will get deleted
 
-## What is a Snapshot
+## What is a Snapshot?
 A text representation of your java object (toString() or JSON).
 
-As an example
+**String snapshot example**
+```java
+expect("hello world", "Hello world again!").string().toMatchSnapshot();
+```
+```text
+au.com.example.company.HelloWorldTest.helloWorld=[
+Hello world
+Hello world again!
+]
+```
+
+**JSON Snapshot Example**
+```java
+expect(userDto).json().toMatchSnapshot();
+```
 ```text
 au.com.example.company.UserEndpointTest.shouldReturnCustomerData=[
   {
@@ -81,14 +95,6 @@ au.com.example.company.UserEndpointTest.shouldReturnCustomerData=[
     "age": 34
   }
 ]
-
-
-au.com.example.company.UserEndpointTest.shouldRenderMITLicense=
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
 # Usage Examples
@@ -105,12 +111,12 @@ public class SnapshotExtensionUsedTest {
     @Test
     public void shouldUseExtension() {
         // Verify your snapshot
-        SnapshotMatcher.expect("Hello Wolrd").toMatchSnapshot();
+        SnapshotMatcher.expect("Hello World").toMatchSnapshot();
     }
 
     @Test
     public void exampleSnapshot() {
-        SnapshotMatcher.expect("Hello Wolrd Again").toMatchSnapshot();
+        SnapshotMatcher.expect("Hello World Again").toMatchSnapshot();
     }
 }
 ```
@@ -131,12 +137,12 @@ public class SnapshotRuleUsedTest {
     @Test
     public void shouldUseExtension() {
         // Verify your snapshot
-        SnapshotMatcher.expect("Hello Wolrd").toMatchSnapshot();
+        SnapshotMatcher.expect("Hello World").toMatchSnapshot();
     }
 
     @Test
     public void shouldUseExtensionAgain() {
-        SnapshotMatcher.expect("Hello Wolrd Again").toMatchSnapshot();
+        SnapshotMatcher.expect("Hello World Again").toMatchSnapshot();
     }
 }
 ```
@@ -151,7 +157,7 @@ import spock.lang.Specification
 class SpockExtensionUsedSpec extends Specification {
     def "Should use extension"() {
         when:
-        SnapshotMatcher.expect("Hello Wolrd").toMatchSnapshot()
+        SnapshotMatcher.expect("Hello World").toMatchSnapshot()
 
         then:
         true
@@ -159,7 +165,7 @@ class SpockExtensionUsedSpec extends Specification {
 }
 ```
 
-# Custom Framework
+# Custom Framework (only if your testing library is not supported by default)
 1. implement the interface `au.com.origin.snapshots.SnapshotConfig`
     ```java
     public class MyCustomSnapshotConfig implements SnapshotConfig {
@@ -219,11 +225,11 @@ The serializer determines how a class gets converted into a string.
 
 Currently, we support three different serializers
 
-| Serializer                             | Description                                                                                                                 |
-|----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| ToStringSnapshotSerializer             | uses the `toString()` method                                                                                                | 
-| JacksonSnapshotSerializer              | uses [jackson](https://github.com/FasterXML/jackson) to convert a class to a snapshot                                       |
-| DeterministicJacksonSnapshotSerializer | extension of JacksonSnapshotSerializer that also orders Collections for situations where the order changes on multiple runs | 
+| Serializer                             | Alias          | Description                                                                                                                 |
+|----------------------------------------|----------------|-----------------------------------------------------------------------------------------------------------------------------|
+| ToStringSnapshotSerializer (default)   | .string()      | uses the `toString()` method                                                                                                | 
+| JacksonSnapshotSerializer              | .json()        | uses [jackson](https://github.com/FasterXML/jackson) to convert a class to a snapshot                                       |
+| DeterministicJacksonSnapshotSerializer | .orderedJson() | extension of JacksonSnapshotSerializer that also orders Collections for situations where the order changes on multiple runs | 
 
 Serializers are pluggable, so you can write you own by implementing the `SnapshotSerializer` interface.
 
@@ -237,15 +243,21 @@ Serializers and are resolved in the following order.
 @UseSnapshotConfig(LowercaseToStringSnapshotConfig.class)
 public class SnapshotExtensionUsedTest {
 
-    // Read from UppercaseToStringSerializer
     @Test
-    public void uppercaseTest() { 
+    public void aliasMethodTest() {
         expect(new TestObject())
-                .serializer(UppercaseToStringSerializer.class)
+                .orderedJson() // <------ Using alias() method
                 .toMatchSnapshot();
     }
 
-    // Read from LowercaseToStringSnapshotConfig
+    @Test
+    public void customSerializerTest() {
+        expect(new TestObject())
+                .serializer(UppercaseToStringSerializer.class)  // <------ Using custom serializer
+                .toMatchSnapshot();
+    }
+
+    // Read from LowercaseToStringSnapshotConfig defined on the class
     @Test
     public void lowercaseTest() {
         expect(new TestObject()).toMatchSnapshot();
@@ -331,6 +343,20 @@ pass the class names you want to update to `filter`
 -PupdateSnapshot=UserService,PermissionRepository
 ```
 
+### Changing the output directory
+By default, output files are relative to `src/main/java` if you require a different directory structure
+create a custom SnapshotConfig and override `getOutputDir()` as follows.
+
+```java
+class SnapshotConfig implements SnapshotConfig {
+
+    @Override
+    String getOutputDir() {
+        return "src/integration/groovy";
+    }
+
+}
+```
 
 # Contributing
 

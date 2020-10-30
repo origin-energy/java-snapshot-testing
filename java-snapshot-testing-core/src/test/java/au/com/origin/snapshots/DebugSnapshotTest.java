@@ -3,7 +3,7 @@ package au.com.origin.snapshots;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
-import au.com.origin.snapshots.serializers.ToStringSerializer;
+import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ public class DebugSnapshotTest {
     private static final SnapshotConfig DEFAULT_CONFIG = new BaseSnapshotConfig() {
         @Override
         public SnapshotSerializer getSerializer() {
-            return new ToStringSerializer();
+            return new ToStringSnapshotSerializer();
         }
     };
 

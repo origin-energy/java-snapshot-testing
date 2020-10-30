@@ -4,11 +4,11 @@ import au.com.origin.snapshots.SnapshotConfig
 
 import java.lang.reflect.Method
 
-class SpockConfig implements SnapshotConfig {
+class SpockSnapshotConfig implements SnapshotConfig {
 
     @Override
     String getOutputDir() {
-        return "src/test/groovy/"
+        return "src/test/groovy"
     }
 
     @Override

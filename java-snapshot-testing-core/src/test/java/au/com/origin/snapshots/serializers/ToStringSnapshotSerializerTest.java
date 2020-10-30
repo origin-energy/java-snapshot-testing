@@ -13,11 +13,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static au.com.origin.snapshots.SnapshotMatcher.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ToStringSerializerTest {
+public class ToStringSnapshotSerializerTest {
     private static final SnapshotConfig DEFAULT_CONFIG = new BaseSnapshotConfig() {
         @Override
         public SnapshotSerializer getSerializer() {
-            return new ToStringSerializer();
+            return new ToStringSnapshotSerializer();
         }
     };
 

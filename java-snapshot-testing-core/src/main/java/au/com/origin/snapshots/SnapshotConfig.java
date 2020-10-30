@@ -1,7 +1,7 @@
 package au.com.origin.snapshots;
 
-import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
+import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -92,6 +92,7 @@ public interface SnapshotConfig {
      * @return custom serialization function
      */
     default SnapshotSerializer getSerializer() {
-        return new JacksonSnapshotSerializer();
+        return new ToStringSnapshotSerializer();
     }
+
 }

@@ -8,7 +8,7 @@ class SpockExtensionUsedSpec extends Specification {
 
     def "Should use extension"() {
         when:
-        SnapshotMatcher.expect("Hello Wolrd").toMatchSnapshot()
+        SnapshotMatcher.expect("Hello World").toMatchSnapshot()
 
         then:
         true
@@ -16,7 +16,7 @@ class SpockExtensionUsedSpec extends Specification {
 
     def "Should use extension again"() {
         when:
-        SnapshotMatcher.expect("Hello Wolrd Again").toMatchSnapshot()
+        SnapshotMatcher.expect("Hello World", "Hello World Again").toMatchSnapshot()
 
         then:
         true

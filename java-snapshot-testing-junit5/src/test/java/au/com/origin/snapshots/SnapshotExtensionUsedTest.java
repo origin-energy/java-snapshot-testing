@@ -9,11 +9,11 @@ public class SnapshotExtensionUsedTest {
 
     @Test
     public void shouldUseExtension() {
-        SnapshotMatcher.expect("Hello Wolrd").toMatchSnapshot();
+        SnapshotMatcher.expect("Hello World").toMatchSnapshot();
     }
 
     @Test
     public void shouldUseExtensionAgain() {
-        SnapshotMatcher.expect("Hello Wolrd Again").toMatchSnapshot();
+        SnapshotMatcher.expect("Hello World", "Hello World Again").toMatchSnapshot();
     }
 }

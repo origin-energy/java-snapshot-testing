@@ -1,8 +1,9 @@
 au.com.origin.snapshots.SnapshotRuleUsedTest.shouldUseExtension=[
-  "Hello Wolrd"
+Hello World
 ]
 
 
 au.com.origin.snapshots.SnapshotRuleUsedTest.shouldUseExtensionAgain=[
-  "Hello Wolrd Again"
+Hello World
+Hello World Again
 ]

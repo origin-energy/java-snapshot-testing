@@ -1,6 +1,7 @@
 package au.com.origin.snapshots;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +19,7 @@ class SnapshotFile {
 
     private static final String SPLIT_STRING = "\n\n\n";
 
-    private String fileName;
+    private final String fileName;
 
     private String getDebugFilename() {
         return this.fileName + ".debug";
@@ -27,8 +28,7 @@ class SnapshotFile {
     @Getter
     private Set<String> rawSnapshots;
 
-    SnapshotFile(String srcDirPath, String fileName) throws IOException {
-
+    SnapshotFile( String srcDirPath, String fileName) throws IOException {
         this.fileName = srcDirPath + File.separator + fileName;
         log.info("Snapshot File: " + this.fileName);
 

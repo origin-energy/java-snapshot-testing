@@ -1,8 +1,10 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
+import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer;
+import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
-import lombok.Getter;
+import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.diff.DiffUtils;
@@ -45,7 +47,7 @@ public class Snapshot {
      * the scenario() to overcome this restriction.  Ensure each scenario is unique.
      *
      * @param scenario - unique scenario description
-     * @return  this
+     * @return Snapshot
      */
     public Snapshot scenario(String scenario) {
         this.scenario = scenario;
@@ -56,11 +58,35 @@ public class Snapshot {
      * Apply a custom serializer for this snapshot
      *
      * @param serializer your custom serializer
-     * @return  this
+     * @return Snapshot
      */
     public Snapshot serializer(SnapshotSerializer serializer) {
         this.snapshotSerializer = serializer;
         return this;
+    }
+
+    /**
+     * Alias for serializer(new ToStringSerializer())
+     * @return Snapshot
+     */
+    public Snapshot string() {
+        return serializer(new ToStringSnapshotSerializer());
+    }
+
+    /**
+     * Alias for serializer(new JacksonSnapshotSerializer())
+     * @return Snapshot
+     */
+    public Snapshot json() {
+        return serializer(new JacksonSnapshotSerializer());
+    }
+
+    /**
+     * Alias for serializer(new DeterministicJacksonSnapshotSerializer())
+     * @return Snapshot
+     */
+    public Snapshot orderedJson() {
+        return serializer(new DeterministicJacksonSnapshotSerializer());
     }
 
     /**

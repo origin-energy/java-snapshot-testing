@@ -1,2 +1,2 @@
-au.com.origin.snapshots.serializers.ToStringSerializerTest.canUseSnapshotConfigAnnotationAtClassLevel=
+au.com.origin.snapshots.serializers.ToStringSnapshotSerializerTest.canUseSnapshotConfigAnnotationAtClassLevel=
 ToStringSerializerTest.Dummy(id=0, name=null)

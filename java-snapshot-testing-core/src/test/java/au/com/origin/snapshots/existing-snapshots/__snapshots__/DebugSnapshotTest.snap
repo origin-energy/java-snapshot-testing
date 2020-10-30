@@ -1,10 +1,13 @@
-au.com.origin.snapshots.DebugSnapshotTest.createDebugFile=
+au.com.origin.snapshots.DebugSnapshotTest.createDebugFile=[
 Good Snapshot
+]
 
 
-au.com.origin.snapshots.DebugSnapshotTest.deleteDebugFile=
+au.com.origin.snapshots.DebugSnapshotTest.deleteDebugFile=[
 Good Snapshot
+]
 
 
-au.com.origin.snapshots.DebugSnapshotTest.noDebugFileCreatedExistingSnapshot=
+au.com.origin.snapshots.DebugSnapshotTest.noDebugFileCreatedExistingSnapshot=[
 Good Snapshot
+]

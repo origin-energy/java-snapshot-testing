@@ -9,7 +9,7 @@ import org.spockframework.runtime.model.SpecInfo
 class SnapshotExtension extends AbstractAnnotationDrivenExtension<EnableSnapshots> implements SnapshotConfigInjector {
 
     void visitSpecAnnotation(EnableSnapshots annotation, SpecInfo spec) {
-        SnapshotMatcher.start(new SpockConfig(),false, spec.reflection)
+        SnapshotMatcher.start(new SpockSnapshotConfig(),false, spec.reflection)
     }
 
     void visitSpec(SpecInfo spec) {
@@ -18,6 +18,6 @@ class SnapshotExtension extends AbstractAnnotationDrivenExtension<EnableSnapshot
 
     @Override
     SnapshotConfig getSnapshotConfig() {
-        return new SpockConfig()
+        return new SpockSnapshotConfig()
     }
 }
