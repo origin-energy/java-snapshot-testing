@@ -73,6 +73,7 @@ A text representation of your java object (toString() or JSON).
 
 **String snapshot example**
 ```java
+// By default `.string()` is the default so not strictly required (unless you override the default!)
 expect("hello world", "Hello world again!").string().toMatchSnapshot();
 ```
 ```text
@@ -98,7 +99,7 @@ au.com.example.company.UserEndpointTest.shouldReturnCustomerData=[
 ```
 
 # Usage Examples
-## JUnit 5
+## [JUnit 5](https://junit.org/junit5)
 ```java
 import au.com.origin.snapshots.junit5.SnapshotExtension;
 import org.junit.jupiter.api.Test;
@@ -120,7 +121,7 @@ public class SnapshotExtensionUsedTest {
     }
 }
 ```
-## JUnit 4
+## [JUnit 4](https://junit.org/junit4)
 ```java
 import au.com.origin.snapshots.junit4.SnapshotClassRule;
 import au.com.origin.snapshots.junit4.SnapshotRule;
@@ -147,7 +148,7 @@ public class SnapshotRuleUsedTest {
 }
 ```
 
-## Spock
+## [Spock](http://spockframework.org/)
 ```groovy
 import au.com.origin.snapshots.spock.EnableSnapshots
 import spock.lang.Specification
@@ -165,7 +166,7 @@ class SpockExtensionUsedSpec extends Specification {
 }
 ```
 
-# Custom Framework (only if your testing library is not supported by default)
+# Using an unsupported custom framework
 1. implement the interface `au.com.origin.snapshots.SnapshotConfig`
     ```java
     public class MyCustomSnapshotConfig implements SnapshotConfig {
@@ -185,7 +186,7 @@ class SpockExtensionUsedSpec extends Specification {
     SnapshotMatcher.expect(something).toMatchSnapshot()
     ```
 
-## Conflicting snapshot comparison via `*.snap.debug`
+## Resolving conflicting snapshot comparison via `*.snap.debug`
 Often your IDE has an excellent file comparison tool.
 
 - A `*.snap.debug` file will be created alongside your `*.snap` file when a conflict occurs.
