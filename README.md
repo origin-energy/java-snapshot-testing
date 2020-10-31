@@ -234,7 +234,7 @@ Currently, we support three different serializers
 
 Serializers are pluggable, so you can write you own by implementing the `SnapshotSerializer` interface.
 
-Serializers and are resolved in the following order.
+Serializers are resolved in the following order.
 - (method level) explicitly `expect(...).serializer(ToStringSerializer.class).toMatchSnapshot();`
 - (class level) explicitly `@UseSnapshotConfig` which gets read from the `getSerializer()` method
 - (global) implicitly via `SnapshotConfig` default for your test framework 

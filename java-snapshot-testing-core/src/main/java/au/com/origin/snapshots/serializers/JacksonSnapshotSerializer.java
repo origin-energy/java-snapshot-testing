@@ -6,18 +6,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter.Indenter;
 import com.fasterxml.jackson.core.util.Separators;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import java.util.function.Consumer;
-
 public class JacksonSnapshotSerializer implements SnapshotSerializer {
-
-    private Consumer<ObjectMapper> customConfiguration = objectMapper -> {};
 
     /**
      * Override to customize the Jackson objectMapper
@@ -25,59 +20,49 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
      */
     public void configure(ObjectMapper objectMapper) { }
 
-    private PrettyPrinter buildDefaultPrettyPrinter() {
-        DefaultPrettyPrinter pp =
-            new DefaultPrettyPrinter("") {
-
-                // It's a requirement
-                // @see https://github.com/FasterXML/jackson-databind/issues/2203
-                public DefaultPrettyPrinter createInstance() {
-                    return new DefaultPrettyPrinter(this);
-                }
-
-                @Override
-                public DefaultPrettyPrinter withSeparators(Separators separators) {
-                    this._separators = separators;
-                    this._objectFieldValueSeparatorWithSpaces =
-                            separators.getObjectFieldValueSeparator() + " ";
-                    return this;
-                }
-            };
+    private final PrettyPrinter pp = new DefaultPrettyPrinter("") {{
         Indenter lfOnlyIndenter = new DefaultIndenter("  ", "\n");
-        pp.indentArraysWith(lfOnlyIndenter);
-        pp.indentObjectsWith(lfOnlyIndenter);
-        return pp;
+        this.indentArraysWith(lfOnlyIndenter);
+        this.indentObjectsWith(lfOnlyIndenter);
     }
+        // It's a requirement
+        // @see https://github.com/FasterXML/jackson-databind/issues/2203
+        public DefaultPrettyPrinter createInstance() {
+            return new DefaultPrettyPrinter(this);
+        }
 
-    private ObjectMapper buildObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
-        objectMapper.enable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        @Override
+        public DefaultPrettyPrinter withSeparators(Separators separators) {
+            this._separators = separators;
+            this._objectFieldValueSeparatorWithSpaces =
+                    separators.getObjectFieldValueSeparator() + " ";
+            return this;
+        }
+    };
 
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.registerModule(new Jdk8Module());
+    private final ObjectMapper objectMapper = new ObjectMapper() {{
+        this.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
+        this.enable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
+        this.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        this.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        this.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-        objectMapper.setVisibility(
-            objectMapper
-                .getSerializationConfig()
-                .getDefaultVisibilityChecker()
-                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
-                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
-                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
-                .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
-        configure(objectMapper);
-        return objectMapper;
-    }
+        this.registerModule(new JavaTimeModule());
+        this.registerModule(new Jdk8Module());
+
+        this.setVisibility(
+                this
+                        .getSerializationConfig()
+                        .getDefaultVisibilityChecker()
+                        .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+                        .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                        .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+                        .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+        JacksonSnapshotSerializer.this.configure(this);
+    }};
 
     @Override
     public String apply(Object[] objects) {
-        ObjectMapper objectMapper = buildObjectMapper();
-        customConfiguration.accept(objectMapper);
-        PrettyPrinter pp = buildDefaultPrettyPrinter();
-
         try {
             return objectMapper.writer(pp).writeValueAsString(objects);
         } catch (Exception e) {
