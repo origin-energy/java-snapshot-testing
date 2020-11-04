@@ -166,7 +166,7 @@ class SpockExtensionUsedSpec extends Specification {
 }
 ```
 
-# Using an unsupported custom framework
+# Using an unsupported framework
 1. implement the interface `au.com.origin.snapshots.SnapshotConfig`
     ```java
     public class MyCustomSnapshotConfig implements SnapshotConfig {
@@ -345,7 +345,7 @@ pass the class names you want to update to `filter`
 ```
 
 ### Changing the output directory
-By default, output files are relative to `src/main/java` if you require a different directory structure
+By default, output files are relative to `src/test/java` if you require a different directory structure
 create a custom SnapshotConfig and override `getOutputDir()` as follows.
 
 ```java
