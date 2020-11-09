@@ -276,18 +276,23 @@ This is good because you shouldn't need to add annotations to your source code f
 
 ```java
 public class HibernateSnapshotSerializer implements SnapshotSerializer {
-    @Override
-    public String apply(Object[] objects) {
-        JacksonSnapshotSerializer jacksonSerializer = new JacksonSnapshotSerializer();
-        jacksonSerializer.configure(objectMapper -> {
+
+    private final JacksonSnapshotSerializer jacksonSerializer = new JacksonSnapshotSerializer() {
+        @Override
+        public void configure(ObjectMapper objectMapper) {
+            super.configure(objectMapper);
+
             // Ignore Hibernate Lists to prevent infinite recursion
             objectMapper.addMixIn(List.class, IgnoreTypeMixin.class);
 
             // Ignore Fields that Hibernate generates for us automatically
             objectMapper.addMixIn(BaseEntity.class, IgnoreHibernateEntityFields.class);
-        });
+        }
+    };
 
-        jacksonSerializer.apply(objects);
+    @Override
+    public String apply(Object[] objects) {
+        return jacksonSerializer.apply(objects);
     }
 
     @JsonIgnoreType
@@ -302,6 +307,12 @@ public class HibernateSnapshotSerializer implements SnapshotSerializer {
 
         @JsonIgnore
         abstract Instant getLastModifiedDate();
+
+        @JsonIgnore
+        abstract Customer getCustomer();
+
+        @JsonIgnore
+        abstract Customer getAccount();
     }
 }
 ```
