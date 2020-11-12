@@ -1,9 +1,15 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.comparators.PlainTextEqualsComparator;
+import au.com.origin.snapshots.comparators.SnapshotComparator;
+import au.com.origin.snapshots.reporters.PlainTextSnapshotDiffReporter;
+import au.com.origin.snapshots.reporters.SnapshotDiffReporter;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -77,12 +83,7 @@ public interface SnapshotConfig {
      * @return snapshots should be updated automatically without verification
      */
     default Optional<String> updateSnapshot() {
-        String value = System.getProperty(JVM_UPDATE_SNAPSHOTS_PARAMETER);
-        if ( value != null) {
-            return Optional.of(value);
-        } else {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(System.getProperty(JVM_UPDATE_SNAPSHOTS_PARAMETER));
     }
 
     /**
@@ -95,7 +96,6 @@ public interface SnapshotConfig {
         return new ToStringSnapshotSerializer();
     }
 
-
     /**
      * Optional
      * Allows you to perform any custom modifications to the file before it is saved
@@ -106,5 +106,34 @@ public interface SnapshotConfig {
      */
     default String onSaveSnapshotFile(Class<?> testClass, String snapshotContent) {
         return snapshotContent;
+    }
+
+
+    /**
+     * Optional
+     * Override to supply your own custom comparator function
+     *
+     * @return custom comparator function
+     */
+    default SnapshotComparator<?> getComparator() {
+        return new PlainTextEqualsComparator();
+    }
+
+    /**
+     * Optional
+     * Override to supply your own custom diff reporter functions
+     * Reporters will run in the same sequence as provided.
+     * Reporters can choose to throw exceptions in which case subsequent reporters will be skipped.
+     * Typically one such reporter can be included at the end which can use common assertion libraries
+     * like assertj or junit assertions to 'fail' the test. This is useful since IDEs like intellij can
+     * then show a diff using their native diff tools.
+     * <p>
+     * In the absence of any 'throwing' reporters in the list, a default failure exception will be thrown
+     * to make sure tests fail.
+     *
+     * @return custom reporter functions
+     */
+    default List<SnapshotDiffReporter> getDiffReporters() {
+        return Collections.singletonList(new PlainTextSnapshotDiffReporter());
     }
 }

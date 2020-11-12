@@ -1,43 +1,60 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.comparators.CompareResult;
+import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
+import au.com.origin.snapshots.reporters.SnapshotDiffReporter;
 import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer;
 import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.With;
 import org.apache.commons.lang3.StringUtils;
-import org.assertj.core.util.diff.DiffUtils;
-import org.assertj.core.util.diff.Patch;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Snapshot {
 
-    private SnapshotConfig snapshotConfig;
-    private SnapshotSerializer snapshotSerializer;
+    private final SnapshotConfig snapshotConfig;
     private final SnapshotFile snapshotFile;
-    private final Class testClass;
+    private final Class<?> testClass;
     private final Method testMethod;
     private final Object[] current;
 
-    private String scenario = null;
+    @With
+    private final SnapshotSerializer snapshotSerializer;
+    @With
+    private final SnapshotComparator<?> snapshotComparator;
+    @With
+    private final List<SnapshotDiffReporter> snapshotDiffReporters;
+    @With
+    private final String scenario;
 
     Snapshot(
             SnapshotConfig snapshotConfig,
             SnapshotFile snapshotFile,
-            Class testClass,
+            Class<?> testClass,
             Method testMethod,
             Object... current) {
-        this.snapshotConfig = snapshotConfig;
-        this.snapshotSerializer = snapshotConfig.getSerializer();
-        this.current = current;
-        this.snapshotFile = snapshotFile;
-        this.testClass = testClass;
-        this.testMethod = testMethod;
+        this(snapshotConfig,
+                snapshotFile,
+                testClass,
+                testMethod,
+                current,
+                snapshotConfig.getSerializer(),
+                snapshotConfig.getComparator(),
+                snapshotConfig.getDiffReporters(),
+                null);
     }
 
     /**
@@ -50,8 +67,7 @@ public class Snapshot {
      * @return Snapshot
      */
     public Snapshot scenario(String scenario) {
-        this.scenario = scenario;
-        return this;
+        return this.withScenario(scenario);
     }
 
     /**
@@ -61,8 +77,51 @@ public class Snapshot {
      * @return Snapshot
      */
     public Snapshot serializer(SnapshotSerializer serializer) {
-        this.snapshotSerializer = serializer;
-        return this;
+        return this.withSnapshotSerializer(serializer);
+    }
+
+    /**
+     * Apply a custom comparator for this snapshot
+     *
+     * @param comparator your custom comparator
+     * @return Snapshot
+     */
+    public Snapshot comparator(SnapshotComparator<?> comparator) {
+        return this.withSnapshotComparator(comparator);
+    }
+
+    /**
+     * Apply a list of custom diff reporters for this snapshot
+     * This will replace the default reporters defined in the config
+     *
+     * @param diffReporters your custom diff reporters
+     * @return Snapshot
+     */
+    public Snapshot reporters(List<SnapshotDiffReporter> diffReporters) {
+        return this.withSnapshotDiffReporters(diffReporters);
+    }
+
+    /**
+     * Apply a single custom diff reporter for this snapshot
+     * This will replace the default reporters defined in the config
+     *
+     * @param diffReporter your custom diff reporter
+     * @return Snapshot
+     */
+    public Snapshot reporter(SnapshotDiffReporter diffReporter) {
+        return this.withSnapshotDiffReporters(Collections.singletonList(diffReporter));
+    }
+
+    /**
+     * Add a single custom diff reporter to this snapshot
+     *
+     * @param diffReporter your custom diff reporter
+     * @return Snapshot
+     */
+    public Snapshot extraReporter(SnapshotDiffReporter diffReporter) {
+        Stream<SnapshotDiffReporter> supplied = Stream.of(diffReporter);
+        Stream<SnapshotDiffReporter> existing = snapshotDiffReporters.stream();
+        return this.withSnapshotDiffReporters(Stream.concat(existing, supplied).collect(Collectors.toList()));
     }
 
     /**
@@ -93,12 +152,11 @@ public class Snapshot {
      * Apply a custom serializer for this snapshot
      *
      * @param serializer your custom serializer
-     * @return  this
+     * @return this
      */
     @SneakyThrows
     public Snapshot serializer(Class<? extends SnapshotSerializer> serializer) {
-        this.snapshotSerializer = serializer.newInstance();
-        return this;
+        return this.withSnapshotSerializer(serializer.getConstructor().newInstance());
     }
 
     public void toMatchSnapshot() {
@@ -116,9 +174,25 @@ public class Snapshot {
 
         if (rawSnapshot != null) {
             // Match existing Snapshot
-            if (!rawSnapshot.trim().equals(currentObject.trim())) {
+            CompareResult<?> compareResult = snapshotComparator.compare(getSnapshotName(), rawSnapshot, currentObject);
+            if (!compareResult.isSnapshotsMatch()) {
                 snapshotFile.createDebugFile(currentObject.trim());
-                throw generateDiffError(rawSnapshot, currentObject);
+
+                List<SnapshotDiffReporter> reporters = snapshotDiffReporters
+                        .stream()
+                        .filter(reporter -> reporter.supportsComparator(snapshotComparator))
+                        .collect(Collectors.toList());
+
+                if (reporters.isEmpty()) {
+                    String comparator = snapshotComparator.getClass().getSimpleName();
+                    throw new IllegalStateException("No compatible reporters found for comparator " + comparator);
+                }
+
+                for (SnapshotDiffReporter reporter : reporters) {
+                    reporter.reportDiff(compareResult, currentObject);
+                }
+
+                throw new SnapshotMatchException("Error matching snapshot");
             }
         } else {
             // Create New Snapshot
@@ -135,28 +209,8 @@ public class Snapshot {
         }
     }
 
-    private SnapshotMatchException generateDiffError(String rawSnapshot, String currentObject) {
-        // compute the patch: this is the diffutils part
-        Patch<String> patch =
-            DiffUtils.diff(
-                Arrays.asList(rawSnapshot.trim().split("\n")),
-                Arrays.asList(currentObject.trim().split("\n")));
-        String error =
-            "Error on: \n"
-                + currentObject.trim()
-                + "\n\n"
-                + patch
-                .getDeltas()
-                .stream()
-                .map(delta -> delta.toString() + "\n")
-                .reduce(String::concat)
-                .get();
-        return new SnapshotMatchException(error);
-    }
-
     private String getRawSnapshot(Collection<String> rawSnapshots) {
         for (String rawSnapshot : rawSnapshots) {
-
             if (rawSnapshot.contains(getSnapshotName())) {
                 return rawSnapshot;
             }
