@@ -13,7 +13,7 @@ au.com.origin.snapshots.serializers.JacksonSnapshotSerializerTest.shouldSerializ
     "date": "2020-10-19T22:21:07.103+00:00",
     "localDate": "2020-10-19",
     "localDateTime": "2020-10-19T22:21:07.103",
-    "zonedDateTime": "2020-10-19T22:21:07.103+11:00[Australia/Melbourne]",
+    "zonedDateTime": "2020-04-19T22:21:07.103+10:00[Australia/Melbourne]",
     "anEnum": "A",
     "presentOptional": "Hello World",
     "emptyOptional": null,

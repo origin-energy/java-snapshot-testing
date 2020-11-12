@@ -22,7 +22,7 @@ import static org.assertj.core.util.Arrays.isNullOrEmpty;
 @RequiredArgsConstructor
 public class SnapshotVerifier {
 
-    private final Class testClass;
+    private final Class<?> testClass;
     private final SnapshotFile snapshotFile;
     private final SnapshotConfig config;
     private final boolean failOnOrphans;
@@ -54,6 +54,7 @@ public class SnapshotVerifier {
             for (String snapshotName : snapshotNames) {
                 if (rawSnapshot.contains(snapshotName)) {
                     foundSnapshot = true;
+                    break;
                 }
             }
             if (!foundSnapshot) {

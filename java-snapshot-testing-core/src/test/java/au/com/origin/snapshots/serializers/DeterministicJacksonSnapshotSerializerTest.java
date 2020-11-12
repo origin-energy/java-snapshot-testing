@@ -47,7 +47,7 @@ public class DeterministicJacksonSnapshotSerializerTest {
         private final Date date = Date.from(Instant.parse("2020-10-19T22:21:07.103Z"));
         private final LocalDate localDate = LocalDate.parse("2020-10-19");
         private final LocalDateTime localDateTime = LocalDateTime.parse("2020-10-19T22:21:07.103");
-        private final ZonedDateTime zonedDateTime = ZonedDateTime.parse("2020-10-19T22:21:07.103+10:00[Australia/Melbourne]");
+        private final ZonedDateTime zonedDateTime = ZonedDateTime.parse("2020-04-19T22:21:07.103+10:00[Australia/Melbourne]");
         private final AnEnum anEnum = AnEnum.A;
         private final Optional<String> presentOptional = Optional.of("Hello World");
         private final Optional<String> emptyOptional = Optional.empty();
