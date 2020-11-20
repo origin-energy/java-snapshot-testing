@@ -42,8 +42,12 @@ public class SnapshotMatcher {
             // Support legacy trailing space syntax
             String testSrcDir = resolvedConfig.getOutputDir();
             String testSrcDirNoTrailing = testSrcDir.endsWith("/") ? resolvedConfig.getOutputDir().substring(0, testSrcDir.length()-1) : resolvedConfig.getOutputDir();
-            SnapshotFile snapshotFile =
-                new SnapshotFile(testSrcDirNoTrailing, snapshotDir.getPath() + File.separator + fileUnderTest.getName());
+            SnapshotFile snapshotFile = new SnapshotFile(
+                    testSrcDirNoTrailing,
+                    snapshotDir.getPath() + File.separator + fileUnderTest.getName(),
+                    testClass,
+                    resolvedConfig::onSaveSnapshotFile
+            );
 
             SnapshotVerifier snapshotVerifier = new SnapshotVerifier(
                 testClass,

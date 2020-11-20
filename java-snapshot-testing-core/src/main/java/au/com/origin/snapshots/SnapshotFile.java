@@ -1,16 +1,15 @@
 package au.com.origin.snapshots;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,6 +19,8 @@ class SnapshotFile {
     private static final String SPLIT_STRING = "\n\n\n";
 
     private final String fileName;
+    private final Class<?> testClass;
+    private final BiFunction<Class<?>, String, String> onSaveSnapshotFile;
 
     private String getDebugFilename() {
         return this.fileName + ".debug";
@@ -28,7 +29,9 @@ class SnapshotFile {
     @Getter
     private Set<String> rawSnapshots;
 
-    SnapshotFile( String srcDirPath, String fileName) throws IOException {
+    SnapshotFile( String srcDirPath, String fileName, Class<?> testClass, BiFunction<Class<?>, String, String> onSaveSnapshotFile) throws IOException {
+        this.testClass = testClass;
+        this.onSaveSnapshotFile = onSaveSnapshotFile;
         this.fileName = srcDirPath + File.separator + fileName;
         log.info("Snapshot File: " + this.fileName);
 
@@ -115,9 +118,14 @@ class SnapshotFile {
 
     @SneakyThrows
     public void cleanup() {
-        if (Files.size(Paths.get(this.fileName)) == 0) {
+        Path path = Paths.get(this.fileName);
+        if (Files.size(path) == 0) {
             deleteDebugFile();
             delete();
+        } else {
+            String content = new String(Files.readAllBytes(Paths.get(this.fileName)));
+            String modified = onSaveSnapshotFile.apply(testClass, content);
+            Files.write(path, modified.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
         }
     }
 }

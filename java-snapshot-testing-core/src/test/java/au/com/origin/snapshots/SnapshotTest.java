@@ -38,7 +38,7 @@ class SnapshotTest {
 
   @BeforeEach
   void setUp() throws NoSuchMethodException, IOException {
-    snapshotFile = new SnapshotFile(DEFAULT_CONFIG.getOutputDir(), "anyFilePath");
+    snapshotFile = new SnapshotFile(DEFAULT_CONFIG.getOutputDir(), "anyFilePath", this.getClass(), (a, b) -> b);
     snapshot =
         new Snapshot(
             DEFAULT_CONFIG,
