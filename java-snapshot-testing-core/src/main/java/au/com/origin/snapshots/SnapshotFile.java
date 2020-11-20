@@ -81,6 +81,11 @@ class SnapshotFile {
         Files.deleteIfExists(Paths.get(getDebugFilename()));
     }
 
+    @SneakyThrows
+    public void delete() {
+        Files.deleteIfExists(Paths.get(this.fileName));
+    }
+
     private File createFile(String fileName) throws IOException {
         File file = new File(fileName);
         file.getParentFile().mkdirs();
@@ -105,6 +110,14 @@ class SnapshotFile {
             fileStream.write(myBytes);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @SneakyThrows
+    public void cleanup() {
+        if (Files.size(Paths.get(this.fileName)) == 0) {
+            deleteDebugFile();
+            delete();
         }
     }
 }

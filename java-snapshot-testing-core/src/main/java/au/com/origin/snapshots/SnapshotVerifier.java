@@ -71,6 +71,7 @@ public class SnapshotVerifier {
                 log.warn(errorMessage);
             }
         }
+        snapshotFile.cleanup();
     }
 
     private void validateExpectCall(Snapshot snapshot) {
