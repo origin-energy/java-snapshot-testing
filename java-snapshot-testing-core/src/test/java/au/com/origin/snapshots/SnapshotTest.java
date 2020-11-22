@@ -198,9 +198,9 @@ class SnapshotTest {
                   .replace("java.lang.String.toString=[", "")
                   .replaceAll(" +", " ");
 
-          assertThat(cleanMessage).contains("Expecting: \"hola\" to be equal to: \"hello\" but was not."); // assertj
-          assertThat(cleanMessage).contains("expected: \"hello\" but was: \"hola\""); // junit jupiter
-          assertThat(cleanMessage).contains("Expected : \"hello\"Actual : \"hola\""); // SnapshotMatchException delegating to opentest4j
+          assertThat(cleanMessage).containsPattern("Expecting.*hola.*to be equal to.*hello.*but was not"); // assertj
+          assertThat(cleanMessage).containsPattern("expected.*hello.*but was.*hola"); // junit jupiter
+          assertThat(cleanMessage).containsPattern("Expected.*hello.*Actual.*hola"); // SnapshotMatchException delegating to opentest4j
 
           return;
       }
