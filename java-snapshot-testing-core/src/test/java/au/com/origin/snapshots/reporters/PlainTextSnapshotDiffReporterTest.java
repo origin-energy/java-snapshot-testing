@@ -1,8 +1,7 @@
 package au.com.origin.snapshots.reporters;
 
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
-import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
-import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
+import au.com.origin.snapshots.serializers.SerializerType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +12,8 @@ class PlainTextSnapshotDiffReporterTest {
 
     @Test
     void shouldSupportAllFormats() {
-        Assertions.assertThat(REPORTER.supportsFormat(ToStringSnapshotSerializer.FORMAT)).isTrue();
-        Assertions.assertThat(REPORTER.supportsFormat(JacksonSnapshotSerializer.FORMAT)).isTrue();
+        Assertions.assertThat(REPORTER.supportsFormat(SerializerType.TEXT.name())).isTrue();
+        Assertions.assertThat(REPORTER.supportsFormat(SerializerType.JSON.name())).isTrue();
 
         Assertions.assertThat(REPORTER.supportsFormat("xml")).isTrue();
         Assertions.assertThat(REPORTER.supportsFormat("blah")).isTrue();

@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
  */
 public class ToStringSnapshotSerializer implements SnapshotSerializer {
 
-    public static final String FORMAT = "string";
-
     @Override
     public String apply(Object[] objects) {
         return "[\n" + Arrays.stream(objects).map(Object::toString).collect(Collectors.joining("\n")) + "\n]";
@@ -19,6 +17,6 @@ public class ToStringSnapshotSerializer implements SnapshotSerializer {
 
     @Override
     public String getOutputFormat() {
-        return FORMAT;
+        return SerializerType.TEXT.name();
     }
 }

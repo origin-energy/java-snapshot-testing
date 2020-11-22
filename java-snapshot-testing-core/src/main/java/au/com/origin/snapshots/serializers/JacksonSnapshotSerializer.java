@@ -14,8 +14,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class JacksonSnapshotSerializer implements SnapshotSerializer {
 
-    public static final String FORMAT = "json";
-
     /**
      * Override to customize the Jackson objectMapper
      * @param objectMapper existing ObjectMapper
@@ -74,6 +72,6 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
 
     @Override
     public String getOutputFormat() {
-        return FORMAT;
+        return SerializerType.JSON.name();
     }
 }

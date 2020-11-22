@@ -31,7 +31,7 @@ public class JacksonSnapshotSerializerTest {
 
     @Test
     void shouldSupportJsonFormat() {
-        Assertions.assertThat(JacksonSnapshotSerializer.FORMAT).isEqualTo("json");
+        Assertions.assertThat(new JacksonSnapshotSerializer().getOutputFormat()).isEqualTo(SerializerType.JSON.name());
     }
 
     private enum AnEnum {

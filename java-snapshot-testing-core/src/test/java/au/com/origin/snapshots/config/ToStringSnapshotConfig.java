@@ -1,7 +1,7 @@
 package au.com.origin.snapshots.config;
 
+import au.com.origin.snapshots.serializers.SerializerType;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
-import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -13,7 +13,7 @@ public class ToStringSnapshotConfig extends BaseSnapshotConfig {
         return new SnapshotSerializer() {
             @Override
             public String getOutputFormat() {
-                return ToStringSnapshotSerializer.FORMAT;
+                return SerializerType.TEXT.name();
             }
 
             @Override

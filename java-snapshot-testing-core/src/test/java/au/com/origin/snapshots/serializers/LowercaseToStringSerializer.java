@@ -11,6 +11,6 @@ public class LowercaseToStringSerializer implements SnapshotSerializer {
 
     @Override
     public String getOutputFormat() {
-        return ToStringSnapshotSerializer.FORMAT;
+        return SerializerType.TEXT.name();
     }
 }

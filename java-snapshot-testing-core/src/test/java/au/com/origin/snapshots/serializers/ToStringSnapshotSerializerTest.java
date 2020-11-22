@@ -36,7 +36,7 @@ public class ToStringSnapshotSerializerTest {
 
     @Test
     void shouldSupportStringFormat() {
-        Assertions.assertThat(ToStringSnapshotSerializer.FORMAT).isEqualTo("string");
+        Assertions.assertThat(new ToStringSnapshotSerializer().getOutputFormat()).isEqualTo(SerializerType.TEXT.name());
     }
 
     @AllArgsConstructor

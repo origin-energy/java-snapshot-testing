@@ -11,6 +11,6 @@ public class UppercaseToStringSerializer implements SnapshotSerializer {
 
     @Override
     public String getOutputFormat() {
-        return ToStringSnapshotSerializer.FORMAT;
+        return SerializerType.TEXT.name();
     }
 }
