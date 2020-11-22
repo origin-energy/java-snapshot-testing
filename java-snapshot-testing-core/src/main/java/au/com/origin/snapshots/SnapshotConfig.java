@@ -123,13 +123,10 @@ public interface SnapshotConfig {
      * Optional
      * Override to supply your own custom reporter functions
      * Reporters will run in the same sequence as provided.
-     * Reporters can choose to throw exceptions in which case subsequent reporters will be skipped.
-     * Typically one such reporter can be included at the end which can use common assertion libraries
-     * like assertj or junit assertions to 'fail' the test. This is useful since IDEs like intellij can
-     * then show a diff using their native diff tools.
-     * <p>
-     * In the absence of any 'throwing' reporters in the list, a default failure exception will be thrown
-     * to make sure tests fail.
+     * Reporters should throw exceptions to indicate comparison failure.
+     * Exceptions thrown from reporters are aggregated and reported together.
+     * Reporters that wish to leverage IDE comparison tools can use standard
+     * assertion libraries like assertj, junit jupiter assertions (or) opentest4j.
      *
      * @return custom reporter functions
      */

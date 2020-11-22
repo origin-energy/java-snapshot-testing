@@ -1,8 +1,8 @@
 package au.com.origin.snapshots.reporters;
 
-import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import org.assertj.core.util.diff.DiffUtils;
 import org.assertj.core.util.diff.Patch;
+import org.opentest4j.AssertionFailedError;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
@@ -22,7 +22,10 @@ public class PlainTextSnapshotReporter implements SnapshotReporter {
         Patch<String> patch = DiffUtils.diff(
                 Arrays.asList(rawSnapshot.trim().split("\n")),
                 Arrays.asList(currentObject.trim().split("\n")));
-        throw new SnapshotMatchException("Error on: \n" + currentObject.trim() + "\n\n" + getDiffString(patch));
+
+        String message = "Error on: \n" + currentObject.trim() + "\n\n" + getDiffString(patch);
+
+        throw new AssertionFailedError(message, rawSnapshot, currentObject);
     }
 
     public static String getDiffString(Patch<String> patch) {

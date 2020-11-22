@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.opentest4j.AssertionFailedError;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -161,7 +162,7 @@ class SnapshotTest {
               (rawSnapshot, currentObject) -> {
                   String message = String.join(System.lineSeparator(),
                           "Expected : ", rawSnapshot, "Actual : ", currentObject);
-                  throw SnapshotMatchException.of(message, rawSnapshot, currentObject); // SnapshotMatchException delegating to opentest4j
+                  throw new AssertionFailedError(message, rawSnapshot, currentObject); // opentest4j
               }
       );
 
@@ -201,7 +202,7 @@ class SnapshotTest {
 
           assertThat(cleanMessage).containsPattern("Expecting.*hola.*to be equal to.*hello.*but was not"); // assertj
           assertThat(cleanMessage).containsPattern("expected.*hello.*but was.*hola"); // junit jupiter
-          assertThat(cleanMessage).containsPattern("Expected.*hello.*Actual.*hola"); // SnapshotMatchException delegating to opentest4j
+          assertThat(cleanMessage).containsPattern("Expected.*hello.*Actual.*hola"); // opentest4j
 
           return;
       }
