@@ -317,6 +317,69 @@ public class HibernateSnapshotSerializer implements SnapshotSerializer {
 }
 ```
 
+## Supplying a custom SnapshotComparator
+The comparator determines if two snapshots match.
+
+Currently, we support one default comparator (`PlainTextEqualsComparator`) which uses string equals for comparison.
+
+This should work for most cases. Custom implementations of `SnapshotComparator` can provide more advanced comparisons.
+
+Comparators follow the same resolution order as Serializers
+1. method 
+2. class
+3. global
+
+### Example: JsonObjectComparator
+The default comparator may be too strict for certain types of data.
+For example, when comparing json objects, formatting of the json string or the order of fields 
+may not be of much importance during comparison. A custom serializer can help in such cases. 
+
+For example, the following will convert a json string to a Map and then perform an equals comparison
+so that formatting and field order are ignored.
+
+```java
+public class JsonObjectComparator implements SnapshotComparator {
+    @Override
+    public boolean matches(String snapshotName, String rawSnapshot, String currentObject) {
+        return asObject(snapshotName, rawSnapshot).equals(asObject(snapshotName, currentObject));
+    }
+
+    @SneakyThrows
+    private static Object asObject(String snapshotName, String json) {
+        return new ObjectMapper().readValue(json.replaceFirst(snapshotName, ""), Object.class);
+    }
+}
+```
+
+## Supplying a custom SnapshotReporter
+The reporter reports the details of comparison failures.
+
+Currently, we support one default reporter (`PlainTextSnapshotReporter`) which uses assertj's DiffUtils 
+to generate a patch of the differences between two snapshots.
+
+Custom reporters can be plugged in by implementing `SnapshotReporter`.
+
+Reporters follow the same resolution order as Serializers and Comparators
+
+### Example: JsonDiffReporter
+For generating and reporting json diffs using other libraries like https://github.com/skyscreamer/JSONassert
+a custom reporter can be created like the one below. 
+
+```java
+public class JsonAssertReporter implements SnapshotReporter {
+    @Override
+    public boolean supportsFormat(String outputFormat) {
+        return SerializerType.JSON.name().equalsIgnoreCase(outputFormat);
+    }
+
+    @Override
+    @SneakyThrows
+    public void report(String snapshotName, String rawSnapshot, String currentObject) {
+        JSONAssert.assertEquals(rawSnapshot, currentObject, JSONCompareMode.STRICT);
+    }
+}
+```
+
 ## Supplying a custom SnapshotConfig
 You can override the snapshot configuration easily using the `@UseSnapshotConfig` annotation
 
