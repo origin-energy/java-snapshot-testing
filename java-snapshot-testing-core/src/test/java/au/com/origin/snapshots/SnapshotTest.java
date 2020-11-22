@@ -190,7 +190,7 @@ class SnapshotTest {
           String cleanMessage = m.getMessage()
                   .replace("<\"", "")
                   .replace("<", "")
-                  .replace("\n", "")
+                  .replace(System.lineSeparator(), "")
                   .replace("\">", " ")
                   .replace(">", " ")
                   .replace("]", "")
