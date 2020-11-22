@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- *  Snapshot Configuration
- *  ----------------------
+ * Snapshot Configuration
+ * ----------------------
  *
- *  Implement this interface when integrating `java-snapshot-testing` with a custom testing library
+ * Implement this interface when integrating `java-snapshot-testing` with a custom testing library
  *
- *  For frameworks - consider extending the framework implementation instead
+ * For frameworks - consider extending the framework implementation instead
  */
 public interface SnapshotConfig {
     String JVM_UPDATE_SNAPSHOTS_PARAMETER = "updateSnapshot";
@@ -73,7 +73,7 @@ public interface SnapshotConfig {
      * However, some don't and can use this method to discover it.
      *
      * @param testClass class under test
-     * @return  method under tests
+     * @return method under tests
      */
     Method getTestMethod(Class<?> testClass);
 
