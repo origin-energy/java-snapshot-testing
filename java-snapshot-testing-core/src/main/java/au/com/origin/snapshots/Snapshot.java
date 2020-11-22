@@ -1,6 +1,5 @@
 package au.com.origin.snapshots;
 
-import au.com.origin.snapshots.comparators.CompareResult;
 import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.reporters.SnapshotDiffReporter;
@@ -15,12 +14,8 @@ import lombok.With;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Snapshot {
@@ -34,7 +29,7 @@ public class Snapshot {
     @With
     private final SnapshotSerializer snapshotSerializer;
     @With
-    private final SnapshotComparator<?> snapshotComparator;
+    private final SnapshotComparator snapshotComparator;
     @With
     private final List<SnapshotDiffReporter> snapshotDiffReporters;
     @With
@@ -86,7 +81,7 @@ public class Snapshot {
      * @param comparator your custom comparator
      * @return Snapshot
      */
-    public Snapshot comparator(SnapshotComparator<?> comparator) {
+    public Snapshot comparator(SnapshotComparator comparator) {
         return this.withSnapshotComparator(comparator);
     }
 
@@ -97,31 +92,8 @@ public class Snapshot {
      * @param diffReporters your custom diff reporters
      * @return Snapshot
      */
-    public Snapshot reporters(List<SnapshotDiffReporter> diffReporters) {
-        return this.withSnapshotDiffReporters(diffReporters);
-    }
-
-    /**
-     * Apply a single custom diff reporter for this snapshot
-     * This will replace the default reporters defined in the config
-     *
-     * @param diffReporter your custom diff reporter
-     * @return Snapshot
-     */
-    public Snapshot reporter(SnapshotDiffReporter diffReporter) {
-        return this.withSnapshotDiffReporters(Collections.singletonList(diffReporter));
-    }
-
-    /**
-     * Add a single custom diff reporter to this snapshot
-     *
-     * @param diffReporter your custom diff reporter
-     * @return Snapshot
-     */
-    public Snapshot extraReporter(SnapshotDiffReporter diffReporter) {
-        Stream<SnapshotDiffReporter> supplied = Stream.of(diffReporter);
-        Stream<SnapshotDiffReporter> existing = snapshotDiffReporters.stream();
-        return this.withSnapshotDiffReporters(Stream.concat(existing, supplied).collect(Collectors.toList()));
+    public Snapshot reporters(SnapshotDiffReporter... diffReporters) {
+        return this.withSnapshotDiffReporters(Arrays.asList(diffReporters));
     }
 
     /**
@@ -174,13 +146,12 @@ public class Snapshot {
 
         if (rawSnapshot != null) {
             // Match existing Snapshot
-            CompareResult<?> compareResult = snapshotComparator.compare(getSnapshotName(), rawSnapshot, currentObject);
-            if (!compareResult.isSnapshotsMatch()) {
+            if (!snapshotComparator.match(getSnapshotName(), rawSnapshot, currentObject)) {
                 snapshotFile.createDebugFile(currentObject.trim());
 
                 List<SnapshotDiffReporter> reporters = snapshotDiffReporters
                         .stream()
-                        .filter(reporter -> reporter.supportsComparator(snapshotComparator))
+                        .filter(reporter -> reporter.supportsFormat(snapshotSerializer.getOutputFormat()))
                         .collect(Collectors.toList());
 
                 if (reporters.isEmpty()) {
@@ -189,7 +160,7 @@ public class Snapshot {
                 }
 
                 for (SnapshotDiffReporter reporter : reporters) {
-                    reporter.reportDiff(compareResult, currentObject);
+                    reporter.reportDiff(getSnapshotName(), rawSnapshot, currentObject);
                 }
 
                 throw new SnapshotMatchException("Error matching snapshot");

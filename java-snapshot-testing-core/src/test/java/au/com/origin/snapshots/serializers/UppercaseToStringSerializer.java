@@ -8,4 +8,9 @@ public class UppercaseToStringSerializer implements SnapshotSerializer {
     public String apply(Object[] objects) {
         return Arrays.stream(objects).map(Object::toString).collect(Collectors.joining()).toUpperCase();
     }
+
+    @Override
+    public String getOutputFormat() {
+        return ToStringSnapshotSerializer.FORMAT;
+    }
 }

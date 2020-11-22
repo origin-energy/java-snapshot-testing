@@ -1,11 +1,8 @@
 package au.com.origin.snapshots.reporters;
 
-import au.com.origin.snapshots.comparators.CompareResult;
-import au.com.origin.snapshots.comparators.SnapshotComparator;
-
 public interface SnapshotDiffReporter {
 
-    boolean supportsComparator(SnapshotComparator<?> comparator);
+    boolean supportsFormat(String outputFormat);
 
-    void reportDiff(CompareResult<?> compareResult, String currentObject);
+    void reportDiff(String snapshotName, String rawSnapshot, String currentObject);
 }

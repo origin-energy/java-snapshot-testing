@@ -1,26 +1,27 @@
 package au.com.origin.snapshots.reporters;
 
-import au.com.origin.snapshots.comparators.PlainTextEqualsComparator;
-import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
+import org.assertj.core.util.diff.DiffUtils;
 import org.assertj.core.util.diff.Patch;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 import java.util.function.Supplier;
 
-public class PlainTextSnapshotDiffReporter extends AbstractComparatorAwareSnapshotDiffReporter<Patch<String>> {
+public class PlainTextSnapshotDiffReporter implements SnapshotDiffReporter {
 
     private static final Supplier<IllegalStateException> NO_DIFF_EXCEPTION_SUPPLIER =
             () -> new IllegalStateException("No differences found. Potential mismatch between comparator and reporter");
 
     @Override
-    protected List<Class<? extends SnapshotComparator<Patch<String>>>> supportedComparators() {
-        return Collections.singletonList(PlainTextEqualsComparator.class);
+    public boolean supportsFormat(String outputFormat) {
+        return true; // always true
     }
 
     @Override
-    protected void doReport(Patch<String> patch, String currentObject) {
+    public void reportDiff(String snapshotName, String rawSnapshot, String currentObject) {
+        Patch<String> patch = DiffUtils.diff(
+                Arrays.asList(rawSnapshot.trim().split("\n")),
+                Arrays.asList(currentObject.trim().split("\n")));
         throw new SnapshotMatchException("Error on: \n" + currentObject.trim() + "\n\n" + getDiffString(patch));
     }
 

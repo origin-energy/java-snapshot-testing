@@ -115,7 +115,7 @@ public interface SnapshotConfig {
      *
      * @return custom comparator function
      */
-    default SnapshotComparator<?> getComparator() {
+    default SnapshotComparator getComparator() {
         return new PlainTextEqualsComparator();
     }
 

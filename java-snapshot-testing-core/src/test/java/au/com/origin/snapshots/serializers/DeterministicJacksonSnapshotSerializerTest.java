@@ -2,6 +2,7 @@ package au.com.origin.snapshots.serializers;
 
 import au.com.origin.snapshots.SnapshotConfig;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -26,6 +27,11 @@ public class DeterministicJacksonSnapshotSerializerTest {
         start(DEFAULT_CONFIG);
         expect(new TypeDummy()).toMatchSnapshot();
         validateSnapshots();
+    }
+
+    @Test
+    void shouldSupportJsonFormat() {
+        Assertions.assertThat(JacksonSnapshotSerializer.FORMAT).isEqualTo("json");
     }
 
     private enum AnEnum {
