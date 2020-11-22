@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-class PlainTextSnapshotDiffReporterTest {
-    private static final PlainTextSnapshotDiffReporter REPORTER = new PlainTextSnapshotDiffReporter();
+class PlainTextSnapshotReporterTest {
+    private static final PlainTextSnapshotReporter REPORTER = new PlainTextSnapshotReporter();
 
     @Test
     void shouldSupportAllFormats() {
@@ -22,7 +22,7 @@ class PlainTextSnapshotDiffReporterTest {
     @Test
     void doReport() {
         assertThatExceptionOfType(SnapshotMatchException.class)
-                .isThrownBy(() -> REPORTER.reportDiff("snap1", "blah", "bloo"))
+                .isThrownBy(() -> REPORTER.report("snap1", "blah", "bloo"))
                 .withMessageContaining("expecting:")
                 .withMessageContaining("[\"blah\"]")
                 .withMessageContaining("but was:")

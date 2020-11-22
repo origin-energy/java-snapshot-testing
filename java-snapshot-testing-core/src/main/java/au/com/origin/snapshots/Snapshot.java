@@ -2,7 +2,7 @@ package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
-import au.com.origin.snapshots.reporters.SnapshotDiffReporter;
+import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer;
 import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
@@ -11,12 +11,14 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.With;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Snapshot {
 
@@ -25,13 +27,14 @@ public class Snapshot {
     private final Class<?> testClass;
     private final Method testMethod;
     private final Object[] current;
+    private final boolean isCi;
 
     @With
     private final SnapshotSerializer snapshotSerializer;
     @With
     private final SnapshotComparator snapshotComparator;
     @With
-    private final List<SnapshotDiffReporter> snapshotDiffReporters;
+    private final List<SnapshotReporter> snapshotReporters;
     @With
     private final String scenario;
 
@@ -46,9 +49,10 @@ public class Snapshot {
                 testClass,
                 testMethod,
                 current,
+                snapshotConfig.isCi(),
                 snapshotConfig.getSerializer(),
                 snapshotConfig.getComparator(),
-                snapshotConfig.getDiffReporters(),
+                snapshotConfig.getReporters(),
                 null);
     }
 
@@ -86,14 +90,14 @@ public class Snapshot {
     }
 
     /**
-     * Apply a list of custom diff reporters for this snapshot
+     * Apply a list of custom reporters for this snapshot
      * This will replace the default reporters defined in the config
      *
-     * @param diffReporters your custom diff reporters
+     * @param reporters your custom reporters
      * @return Snapshot
      */
-    public Snapshot reporters(SnapshotDiffReporter... diffReporters) {
-        return this.withSnapshotDiffReporters(Arrays.asList(diffReporters));
+    public Snapshot reporters(SnapshotReporter... reporters) {
+        return this.withSnapshotReporters(Arrays.asList(reporters));
     }
 
     /**
@@ -146,10 +150,10 @@ public class Snapshot {
 
         if (rawSnapshot != null) {
             // Match existing Snapshot
-            if (!snapshotComparator.match(getSnapshotName(), rawSnapshot, currentObject)) {
+            if (!snapshotComparator.matches(getSnapshotName(), rawSnapshot, currentObject)) {
                 snapshotFile.createDebugFile(currentObject.trim());
 
-                List<SnapshotDiffReporter> reporters = snapshotDiffReporters
+                List<SnapshotReporter> reporters = snapshotReporters
                         .stream()
                         .filter(reporter -> reporter.supportsFormat(snapshotSerializer.getOutputFormat()))
                         .collect(Collectors.toList());
@@ -159,15 +163,21 @@ public class Snapshot {
                     throw new IllegalStateException("No compatible reporters found for comparator " + comparator);
                 }
 
-                for (SnapshotDiffReporter reporter : reporters) {
-                    reporter.reportDiff(getSnapshotName(), rawSnapshot, currentObject);
+                for (SnapshotReporter reporter : reporters) {
+                    reporter.report(getSnapshotName(), rawSnapshot, currentObject);
                 }
 
                 throw new SnapshotMatchException("Error matching snapshot");
             }
         } else {
-            // Create New Snapshot
-            snapshotFile.push(currentObject);
+            if (this.isCi) {
+                log.warn("We detected you are running on a CI Server - if this is incorrect please override the isCI() method in SnapshotConfig");
+                throw new SnapshotMatchException("Snapshot [" + getSnapshotName() + "] not found. Has this snapshot been committed ?");
+            } else {
+                log.warn("We detected you are running on a developer machine - if this is incorrect please override the isCI() method in SnapshotConfig");
+                // Create New Snapshot
+                snapshotFile.push(currentObject);
+            }
         }
         snapshotFile.deleteDebugFile();
     }

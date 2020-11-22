@@ -4,6 +4,7 @@ import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
 import lombok.SneakyThrows;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -124,5 +125,26 @@ class SnapshotTest {
     snapshot.toMatchSnapshot();
     Mockito.verify(snapshotFile)
         .push("java.lang.String.toString[hello world]=[\n" + "  \"anyObject\"\n" + "]");
+  }
+
+  @SneakyThrows
+  @Test
+  void shouldFailWhenRunningOnCiWithoutExistingSnapshot() {
+    BaseSnapshotConfig ciSnapshotConfig = new BaseSnapshotConfig() {
+        @Override
+        public boolean isCi() {
+            return true;
+        }
+    };
+
+    Snapshot ciSnapshot = new Snapshot(
+            ciSnapshotConfig,
+            new SnapshotFile(ciSnapshotConfig.getOutputDir(), "blah", this.getClass(), (a, b) -> b),
+            String.class,
+            String.class.getDeclaredMethod("toString"),
+            "anyObject");
+
+    Assertions.assertThatThrownBy(ciSnapshot::toMatchSnapshot)
+            .hasMessage("Snapshot [java.lang.String.toString=] not found. Has this snapshot been committed ?");
   }
 }

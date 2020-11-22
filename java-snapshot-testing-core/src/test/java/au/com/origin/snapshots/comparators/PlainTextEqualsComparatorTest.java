@@ -9,11 +9,11 @@ class PlainTextEqualsComparatorTest {
 
     @Test
     void successfulComparison() {
-        Assertions.assertThat(COMPARATOR.match("snap1", "blah", "blah")).isTrue();
+        Assertions.assertThat(COMPARATOR.matches("snap1", "blah", "blah")).isTrue();
     }
 
     @Test
     void failingComparison() {
-        Assertions.assertThat(COMPARATOR.match("snap1", "blah", "blahblah")).isFalse();
+        Assertions.assertThat(COMPARATOR.matches("snap1", "blah", "blahblah")).isFalse();
     }
 }

@@ -2,10 +2,11 @@ package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.comparators.PlainTextEqualsComparator;
 import au.com.origin.snapshots.comparators.SnapshotComparator;
-import au.com.origin.snapshots.reporters.PlainTextSnapshotDiffReporter;
-import au.com.origin.snapshots.reporters.SnapshotDiffReporter;
+import au.com.origin.snapshots.reporters.PlainTextSnapshotReporter;
+import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -108,7 +109,6 @@ public interface SnapshotConfig {
         return snapshotContent;
     }
 
-
     /**
      * Optional
      * Override to supply your own custom comparator function
@@ -121,7 +121,7 @@ public interface SnapshotConfig {
 
     /**
      * Optional
-     * Override to supply your own custom diff reporter functions
+     * Override to supply your own custom reporter functions
      * Reporters will run in the same sequence as provided.
      * Reporters can choose to throw exceptions in which case subsequent reporters will be skipped.
      * Typically one such reporter can be included at the end which can use common assertion libraries
@@ -133,7 +133,27 @@ public interface SnapshotConfig {
      *
      * @return custom reporter functions
      */
-    default List<SnapshotDiffReporter> getDiffReporters() {
-        return Collections.singletonList(new PlainTextSnapshotDiffReporter());
+    default List<SnapshotReporter> getReporters() {
+        return Collections.singletonList(new PlainTextSnapshotReporter());
+    }
+
+    /**
+     * Optional
+     * This method is meant to detect if we're running on a CI environment.
+     * This is used to determine the action to be taken when a snapshot is not found.
+     *
+     * If this method returns false, meaning we're NOT running on a CI environment (probably a dev machine),
+     * a new snapshot is created when not found.
+     *
+     * If this method returns true, meaning we're running on a CI environment, no new snapshots are created
+     * and an error is thrown instead to prevent tests from silently passing when snapshots are not found.
+     *
+     * Default logic to determine if running on a CI environment is to check for the presence of a 'CI' env variable
+     * Override this method if a custom CI detection logic is required.
+     *
+     * @return boolean indicating if we're running on a CI environment or not
+     */
+    default boolean isCi() {
+        return StringUtils.isNotEmpty(System.getenv("CI"));
     }
 }

@@ -7,7 +7,7 @@ import org.assertj.core.util.diff.Patch;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
-public class PlainTextSnapshotDiffReporter implements SnapshotDiffReporter {
+public class PlainTextSnapshotReporter implements SnapshotReporter {
 
     private static final Supplier<IllegalStateException> NO_DIFF_EXCEPTION_SUPPLIER =
             () -> new IllegalStateException("No differences found. Potential mismatch between comparator and reporter");
@@ -18,7 +18,7 @@ public class PlainTextSnapshotDiffReporter implements SnapshotDiffReporter {
     }
 
     @Override
-    public void reportDiff(String snapshotName, String rawSnapshot, String currentObject) {
+    public void report(String snapshotName, String rawSnapshot, String currentObject) {
         Patch<String> patch = DiffUtils.diff(
                 Arrays.asList(rawSnapshot.trim().split("\n")),
                 Arrays.asList(currentObject.trim().split("\n")));

@@ -66,4 +66,9 @@ public class BaseSnapshotConfig implements SnapshotConfig {
     public SnapshotSerializer getSerializer() {
         return new JacksonSnapshotSerializer();
     }
+
+    @Override
+    public boolean isCi() {
+        return false;
+    }
 }
