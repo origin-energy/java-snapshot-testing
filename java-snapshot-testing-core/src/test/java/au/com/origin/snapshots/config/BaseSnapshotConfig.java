@@ -68,7 +68,7 @@ public class BaseSnapshotConfig implements SnapshotConfig {
     }
 
     @Override
-    public boolean isCi() {
+    public boolean isCI() {
         return false;
     }
 }

@@ -2,8 +2,9 @@ package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
-import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
-import lombok.SneakyThrows;
+import au.com.origin.snapshots.reporters.SnapshotReporter;
+import au.com.origin.snapshots.serializers.*;
+import lombok.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,10 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -132,7 +131,7 @@ class SnapshotTest {
   void shouldFailWhenRunningOnCiWithoutExistingSnapshot() {
     BaseSnapshotConfig ciSnapshotConfig = new BaseSnapshotConfig() {
         @Override
-        public boolean isCi() {
+        public boolean isCI() {
             return true;
         }
     };
@@ -146,5 +145,65 @@ class SnapshotTest {
 
     Assertions.assertThatThrownBy(ciSnapshot::toMatchSnapshot)
             .hasMessage("Snapshot [java.lang.String.toString=] not found. Has this snapshot been committed ?");
+  }
+
+  @SneakyThrows
+  @Test
+  void shouldAggregateMultipleFailures() {
+      SnapshotFile snapshotFile = Mockito.mock(SnapshotFile.class);
+      Set<String> set = new HashSet<>();
+      set.add("java.lang.String.toString=[\n  \"hello\"\n]");
+      Mockito.when(snapshotFile.getRawSnapshots()).thenReturn(set);
+
+      Stream<BiConsumer<String, String>> reportingFunctions = Stream.of(
+              (rawSnapshot, currentObject) -> assertThat(currentObject).isEqualTo(rawSnapshot), // assertj
+              org.junit.jupiter.api.Assertions::assertEquals, // junit jupiter
+              (rawSnapshot, currentObject) -> {
+                  String message = String.join(System.lineSeparator(),
+                          "Expected : ", rawSnapshot, "Actual : ", currentObject);
+                  throw SnapshotMatchException.of(message, rawSnapshot, currentObject); // SnapshotMatchException delegating to opentest4j
+              }
+      );
+
+      Stream<SnapshotReporter> reporters = reportingFunctions.map(consumer -> new SnapshotReporter() {
+          @Override
+          public boolean supportsFormat(String outputFormat) {
+              return true;
+          }
+
+          @Override
+          public void report(String snapshotName, String rawSnapshot, String currentObject) {
+              consumer.accept(rawSnapshot, currentObject);
+          }
+      });
+
+      Snapshot failingSnapshot = snapshot
+              .withCurrent(new Object[]{"hola"})
+              .withSnapshotFile(snapshotFile)
+              .serializer(new DeterministicJacksonSnapshotSerializer())
+              .reporters(reporters.toArray(SnapshotReporter[]::new));
+
+      try {
+          failingSnapshot.toMatchSnapshot();
+      }
+      catch (Throwable m) {
+          String cleanMessage = m.getMessage()
+                  .replace("<\"", "")
+                  .replace("<", "")
+                  .replace("\n", "")
+                  .replace("\">", " ")
+                  .replace(">", " ")
+                  .replace("]", "")
+                  .replace("java.lang.String.toString=[", "")
+                  .replaceAll(" +", " ");
+
+          assertThat(cleanMessage).contains("Expecting: \"hola\" to be equal to: \"hello\" but was not."); // assertj
+          assertThat(cleanMessage).contains("expected: \"hello\" but was: \"hola\""); // junit jupiter
+          assertThat(cleanMessage).contains("Expected : \"hello\"Actual : \"hola\""); // SnapshotMatchException delegating to opentest4j
+
+          return;
+      }
+
+      Assertions.fail("Expected an error to be thrown");
   }
 }

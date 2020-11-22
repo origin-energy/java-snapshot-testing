@@ -153,7 +153,7 @@ public interface SnapshotConfig {
      *
      * @return boolean indicating if we're running on a CI environment or not
      */
-    default boolean isCi() {
+    default boolean isCI() {
         return StringUtils.isNotEmpty(System.getenv("CI"));
     }
 }

@@ -23,11 +23,13 @@ import java.util.stream.Collectors;
 public class Snapshot {
 
     private final SnapshotConfig snapshotConfig;
+    @With(AccessLevel.PACKAGE)
     private final SnapshotFile snapshotFile;
     private final Class<?> testClass;
     private final Method testMethod;
+    @With(AccessLevel.PACKAGE)
     private final Object[] current;
-    private final boolean isCi;
+    private final boolean isCI;
 
     @With
     private final SnapshotSerializer snapshotSerializer;
@@ -49,7 +51,7 @@ public class Snapshot {
                 testClass,
                 testMethod,
                 current,
-                snapshotConfig.isCi(),
+                snapshotConfig.isCI(),
                 snapshotConfig.getSerializer(),
                 snapshotConfig.getComparator(),
                 snapshotConfig.getReporters(),
@@ -163,15 +165,23 @@ public class Snapshot {
                     throw new IllegalStateException("No compatible reporters found for comparator " + comparator);
                 }
 
+                List<Throwable> errors = new ArrayList<>();
+
                 for (SnapshotReporter reporter : reporters) {
-                    reporter.report(getSnapshotName(), rawSnapshot, currentObject);
+                    try {
+                        reporter.report(getSnapshotName(), rawSnapshot, currentObject);
+                    } catch (Throwable t) {
+                        errors.add(t);
+                    }
                 }
 
-                throw new SnapshotMatchException("Error matching snapshot");
+                if(!errors.isEmpty()) {
+                    throw new SnapshotMatchException("Error(s) matching snapshot(s)", errors);
+                }
             }
         } else {
-            if (this.isCi) {
-                log.warn("We detected you are running on a CI Server - if this is incorrect please override the isCI() method in SnapshotConfig");
+            if (this.isCI) {
+                log.error("We detected you are running on a CI Server - if this is incorrect please override the isCI() method in SnapshotConfig");
                 throw new SnapshotMatchException("Snapshot [" + getSnapshotName() + "] not found. Has this snapshot been committed ?");
             } else {
                 log.warn("We detected you are running on a developer machine - if this is incorrect please override the isCI() method in SnapshotConfig");
