@@ -332,7 +332,7 @@ Comparators follow the same resolution order as Serializers
 ### Example: JsonObjectComparator
 The default comparator may be too strict for certain types of data.
 For example, when comparing json objects, formatting of the json string or the order of fields 
-may not be of much importance during comparison. A custom serializer can help in such cases. 
+may not be of much importance during comparison. A custom comparator can help in such cases. 
 
 For example, the following will convert a json string to a Map and then perform an equals comparison
 so that formatting and field order are ignored.
