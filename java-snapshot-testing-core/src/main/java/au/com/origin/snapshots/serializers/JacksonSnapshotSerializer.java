@@ -69,4 +69,9 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
             throw new SnapshotExtensionException("Jackson Serialization failed", e);
         }
     }
+
+    @Override
+    public String getOutputFormat() {
+        return SerializerType.JSON.name();
+    }
 }

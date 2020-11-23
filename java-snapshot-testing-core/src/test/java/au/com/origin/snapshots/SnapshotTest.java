@@ -2,22 +2,23 @@ package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
-import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
-import lombok.SneakyThrows;
+import au.com.origin.snapshots.reporters.SnapshotReporter;
+import au.com.origin.snapshots.serializers.*;
+import lombok.*;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.opentest4j.AssertionFailedError;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -124,5 +125,88 @@ class SnapshotTest {
     snapshot.toMatchSnapshot();
     Mockito.verify(snapshotFile)
         .push("java.lang.String.toString[hello world]=[\n" + "  \"anyObject\"\n" + "]");
+  }
+
+  @SneakyThrows
+  @Test
+  void shouldFailWhenRunningOnCiWithoutExistingSnapshot() {
+    BaseSnapshotConfig ciSnapshotConfig = new BaseSnapshotConfig() {
+        @Override
+        public boolean isCI() {
+            return true;
+        }
+    };
+
+    Snapshot ciSnapshot = new Snapshot(
+            ciSnapshotConfig,
+            new SnapshotFile(ciSnapshotConfig.getOutputDir(), "blah", this.getClass(), (a, b) -> b),
+            String.class,
+            String.class.getDeclaredMethod("toString"),
+            "anyObject");
+
+    Assertions.assertThatThrownBy(ciSnapshot::toMatchSnapshot)
+            .hasMessage("Snapshot [java.lang.String.toString=] not found. Has this snapshot been committed ?");
+  }
+
+  @SneakyThrows
+  @Test
+  void shouldAggregateMultipleFailures() {
+      SnapshotFile snapshotFile = Mockito.mock(SnapshotFile.class);
+      Set<String> set = new HashSet<>();
+      set.add("java.lang.String.toString=[\n  \"hello\"\n]");
+      Mockito.when(snapshotFile.getRawSnapshots()).thenReturn(set);
+
+      Stream<BiConsumer<String, String>> reportingFunctions = Stream.of(
+              (rawSnapshot, currentObject) -> assertThat(currentObject).isEqualTo(rawSnapshot), // assertj
+              org.junit.jupiter.api.Assertions::assertEquals, // junit jupiter
+              (rawSnapshot, currentObject) -> {
+                  String message = String.join(System.lineSeparator(),
+                          "Expected : ", rawSnapshot, "Actual : ", currentObject);
+                  throw new AssertionFailedError(message, rawSnapshot, currentObject); // opentest4j
+              }
+      );
+
+      Stream<SnapshotReporter> reporters = reportingFunctions.map(consumer -> new SnapshotReporter() {
+          @Override
+          public boolean supportsFormat(String outputFormat) {
+              return true;
+          }
+
+          @Override
+          public void report(String snapshotName, String rawSnapshot, String currentObject) {
+              consumer.accept(rawSnapshot, currentObject);
+          }
+      });
+
+      Snapshot failingSnapshot = snapshot
+              .withCurrent(new Object[]{"hola"})
+              .withSnapshotFile(snapshotFile)
+              .serializer(new DeterministicJacksonSnapshotSerializer())
+              .reporters(reporters.toArray(SnapshotReporter[]::new));
+
+      try {
+          failingSnapshot.toMatchSnapshot();
+      }
+      catch (Throwable m) {
+          String cleanMessage = m.getMessage()
+                  .replace("<\"", "")
+                  .replace("<", "")
+                  .replaceAll("\n", "")
+                  .replaceAll("\r", "")
+                  .replaceAll("\t", "")
+                  .replace("\">", " ")
+                  .replace(">", " ")
+                  .replace("]", "")
+                  .replace("java.lang.String.toString=[", "")
+                  .replaceAll(" +", " ");
+
+          assertThat(cleanMessage).containsPattern("Expecting.*hola.*to be equal to.*hello.*but was not"); // assertj
+          assertThat(cleanMessage).containsPattern("expected.*hello.*but was.*hola"); // junit jupiter
+          assertThat(cleanMessage).containsPattern("Expected.*hello.*Actual.*hola"); // opentest4j
+
+          return;
+      }
+
+      Assertions.fail("Expected an error to be thrown");
   }
 }

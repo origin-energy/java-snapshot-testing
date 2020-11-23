@@ -135,6 +135,6 @@ au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializerTest.s
       "f",
       "g"
     ],
-    "zonedDateTime": "2020-10-19T22:21:07.103+11:00[Australia/Melbourne]"
+    "zonedDateTime": "2020-04-19T22:21:07.103+10:00[Australia/Melbourne]"
   }
 ]

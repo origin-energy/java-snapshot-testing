@@ -5,6 +5,7 @@ import au.com.origin.snapshots.SnapshotUtils;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +32,11 @@ public class ToStringSnapshotSerializerTest {
         start(DEFAULT_CONFIG);
         expect(new Dummy(1, "John Doe")).toMatchSnapshot();
         validateSnapshots();
+    }
+
+    @Test
+    void shouldSupportStringFormat() {
+        Assertions.assertThat(new ToStringSnapshotSerializer().getOutputFormat()).isEqualTo(SerializerType.TEXT.name());
     }
 
     @AllArgsConstructor

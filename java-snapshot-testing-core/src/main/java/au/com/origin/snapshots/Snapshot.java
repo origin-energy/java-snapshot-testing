@@ -1,43 +1,61 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
+import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer;
 import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.With;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.assertj.core.util.diff.DiffUtils;
-import org.assertj.core.util.diff.Patch;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@Slf4j
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Snapshot {
 
-    private SnapshotConfig snapshotConfig;
-    private SnapshotSerializer snapshotSerializer;
+    private final SnapshotConfig snapshotConfig;
+    @With(AccessLevel.PACKAGE)
     private final SnapshotFile snapshotFile;
-    private final Class testClass;
+    private final Class<?> testClass;
     private final Method testMethod;
+    @With(AccessLevel.PACKAGE)
     private final Object[] current;
+    private final boolean isCI;
 
-    private String scenario = null;
+    @With
+    private final SnapshotSerializer snapshotSerializer;
+    @With
+    private final SnapshotComparator snapshotComparator;
+    @With
+    private final List<SnapshotReporter> snapshotReporters;
+    @With
+    private final String scenario;
 
     Snapshot(
             SnapshotConfig snapshotConfig,
             SnapshotFile snapshotFile,
-            Class testClass,
+            Class<?> testClass,
             Method testMethod,
             Object... current) {
-        this.snapshotConfig = snapshotConfig;
-        this.snapshotSerializer = snapshotConfig.getSerializer();
-        this.current = current;
-        this.snapshotFile = snapshotFile;
-        this.testClass = testClass;
-        this.testMethod = testMethod;
+        this(snapshotConfig,
+                snapshotFile,
+                testClass,
+                testMethod,
+                current,
+                snapshotConfig.isCI(),
+                snapshotConfig.getSerializer(),
+                snapshotConfig.getComparator(),
+                snapshotConfig.getReporters(),
+                null);
     }
 
     /**
@@ -50,8 +68,7 @@ public class Snapshot {
      * @return Snapshot
      */
     public Snapshot scenario(String scenario) {
-        this.scenario = scenario;
-        return this;
+        return this.withScenario(scenario);
     }
 
     /**
@@ -61,8 +78,28 @@ public class Snapshot {
      * @return Snapshot
      */
     public Snapshot serializer(SnapshotSerializer serializer) {
-        this.snapshotSerializer = serializer;
-        return this;
+        return this.withSnapshotSerializer(serializer);
+    }
+
+    /**
+     * Apply a custom comparator for this snapshot
+     *
+     * @param comparator your custom comparator
+     * @return Snapshot
+     */
+    public Snapshot comparator(SnapshotComparator comparator) {
+        return this.withSnapshotComparator(comparator);
+    }
+
+    /**
+     * Apply a list of custom reporters for this snapshot
+     * This will replace the default reporters defined in the config
+     *
+     * @param reporters your custom reporters
+     * @return Snapshot
+     */
+    public Snapshot reporters(SnapshotReporter... reporters) {
+        return this.withSnapshotReporters(Arrays.asList(reporters));
     }
 
     /**
@@ -93,12 +130,11 @@ public class Snapshot {
      * Apply a custom serializer for this snapshot
      *
      * @param serializer your custom serializer
-     * @return  this
+     * @return this
      */
     @SneakyThrows
     public Snapshot serializer(Class<? extends SnapshotSerializer> serializer) {
-        this.snapshotSerializer = serializer.newInstance();
-        return this;
+        return this.withSnapshotSerializer(serializer.getConstructor().newInstance());
     }
 
     public void toMatchSnapshot() {
@@ -116,13 +152,42 @@ public class Snapshot {
 
         if (rawSnapshot != null) {
             // Match existing Snapshot
-            if (!rawSnapshot.trim().equals(currentObject.trim())) {
+            if (!snapshotComparator.matches(getSnapshotName(), rawSnapshot, currentObject)) {
                 snapshotFile.createDebugFile(currentObject.trim());
-                throw generateDiffError(rawSnapshot, currentObject);
+
+                List<SnapshotReporter> reporters = snapshotReporters
+                        .stream()
+                        .filter(reporter -> reporter.supportsFormat(snapshotSerializer.getOutputFormat()))
+                        .collect(Collectors.toList());
+
+                if (reporters.isEmpty()) {
+                    String comparator = snapshotComparator.getClass().getSimpleName();
+                    throw new IllegalStateException("No compatible reporters found for comparator " + comparator);
+                }
+
+                List<Throwable> errors = new ArrayList<>();
+
+                for (SnapshotReporter reporter : reporters) {
+                    try {
+                        reporter.report(getSnapshotName(), rawSnapshot, currentObject);
+                    } catch (Throwable t) {
+                        errors.add(t);
+                    }
+                }
+
+                if(!errors.isEmpty()) {
+                    throw new SnapshotMatchException("Error(s) matching snapshot(s)", errors);
+                }
             }
         } else {
-            // Create New Snapshot
-            snapshotFile.push(currentObject);
+            if (this.isCI) {
+                log.error("We detected you are running on a CI Server - if this is incorrect please override the isCI() method in SnapshotConfig");
+                throw new SnapshotMatchException("Snapshot [" + getSnapshotName() + "] not found. Has this snapshot been committed ?");
+            } else {
+                log.warn("We detected you are running on a developer machine - if this is incorrect please override the isCI() method in SnapshotConfig");
+                // Create New Snapshot
+                snapshotFile.push(currentObject);
+            }
         }
         snapshotFile.deleteDebugFile();
     }
@@ -135,28 +200,8 @@ public class Snapshot {
         }
     }
 
-    private SnapshotMatchException generateDiffError(String rawSnapshot, String currentObject) {
-        // compute the patch: this is the diffutils part
-        Patch<String> patch =
-            DiffUtils.diff(
-                Arrays.asList(rawSnapshot.trim().split("\n")),
-                Arrays.asList(currentObject.trim().split("\n")));
-        String error =
-            "Error on: \n"
-                + currentObject.trim()
-                + "\n\n"
-                + patch
-                .getDeltas()
-                .stream()
-                .map(delta -> delta.toString() + "\n")
-                .reduce(String::concat)
-                .get();
-        return new SnapshotMatchException(error);
-    }
-
     private String getRawSnapshot(Collection<String> rawSnapshots) {
         for (String rawSnapshot : rawSnapshots) {
-
             if (rawSnapshot.contains(getSnapshotName())) {
                 return rawSnapshot;
             }

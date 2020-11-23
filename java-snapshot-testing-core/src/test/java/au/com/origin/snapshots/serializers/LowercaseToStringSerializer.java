@@ -8,4 +8,9 @@ public class LowercaseToStringSerializer implements SnapshotSerializer {
     public String apply(Object[] objects) {
         return Arrays.stream(objects).map(Object::toString).collect(Collectors.joining()).toLowerCase();
     }
+
+    @Override
+    public String getOutputFormat() {
+        return SerializerType.TEXT.name();
+    }
 }

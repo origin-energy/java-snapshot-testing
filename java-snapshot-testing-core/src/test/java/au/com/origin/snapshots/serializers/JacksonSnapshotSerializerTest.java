@@ -2,6 +2,7 @@ package au.com.origin.snapshots.serializers;
 
 import au.com.origin.snapshots.SnapshotConfig;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -28,6 +29,11 @@ public class JacksonSnapshotSerializerTest {
         validateSnapshots();
     }
 
+    @Test
+    void shouldSupportJsonFormat() {
+        Assertions.assertThat(new JacksonSnapshotSerializer().getOutputFormat()).isEqualTo(SerializerType.JSON.name());
+    }
+
     private enum AnEnum {
         F, A, D, E, G, B, C;
     }
@@ -47,7 +53,7 @@ public class JacksonSnapshotSerializerTest {
         private final Date date = Date.from(Instant.parse("2020-10-19T22:21:07.103Z"));
         private final LocalDate localDate = LocalDate.parse("2020-10-19");
         private final LocalDateTime localDateTime = LocalDateTime.parse("2020-10-19T22:21:07.103");
-        private final ZonedDateTime zonedDateTime = ZonedDateTime.parse("2020-10-19T22:21:07.103+10:00[Australia/Melbourne]");
+        private final ZonedDateTime zonedDateTime = ZonedDateTime.parse("2020-04-19T22:21:07.103+10:00[Australia/Melbourne]");
         private final AnEnum anEnum = AnEnum.A;
         private final Optional<String> presentOptional = Optional.of("Hello World");
         private final Optional<String> emptyOptional = Optional.empty();

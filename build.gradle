@@ -28,10 +28,10 @@ subprojects { subproject ->
 
     dependencies {
         // Lombok
-        compileOnly 'org.projectlombok:lombok:1.18.8'
-        annotationProcessor 'org.projectlombok:lombok:1.18.8'
-        testCompileOnly 'org.projectlombok:lombok:1.18.8'
-        testAnnotationProcessor 'org.projectlombok:lombok:1.18.8'
+        compileOnly 'org.projectlombok:lombok:1.18.16'
+        annotationProcessor 'org.projectlombok:lombok:1.18.16'
+        testCompileOnly 'org.projectlombok:lombok:1.18.16'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
     }
 
     // Adds verbose logging for TravisCI
