@@ -15,9 +15,12 @@ artifacts {
 apply plugin: 'net.researchgate.release'
 
 // Sign for maven central deployment
-if (project.hasProperty("signing.keyId")) {
+if (project.hasProperty("sign")) {
     apply plugin: 'signing'
     signing {
+        def signingKey = findProperty("signingKey")
+        def signingPassword = findProperty("signingPassword")
+        useInMemoryPgpKeys(signingKey, signingPassword)
         sign configurations.archives
     }
 
