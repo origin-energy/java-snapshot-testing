@@ -1,4 +1,3 @@
-[![Build Status](https://img.shields.io/travis/origin-energy/java-snapshot-testing.svg)](https://travis-ci.org/origin-energy/java-snapshot-testing)
 [![Build Status](https://github.com/origin-energy/java-snapshot-testing/workflows/Build/badge.svg)](https://github.com/origin-energy/java-snapshot-testing/actions)
 
 # Java Snapshot Testing

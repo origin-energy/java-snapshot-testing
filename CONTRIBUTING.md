@@ -8,7 +8,7 @@ We welcome contributions to this project by both internal and external parties
 1. Ensure you commit message is descriptive as it acts as the changelog.  Mark any breaking changes with `BREAKING`. Include a rectification strategy if you introduce a `BREAKING` change.
 1. Ensure `README.md` is updated if needed. 
 1. Submit a pull request back to `master` branch (or the branch you are contributing to)
-1. Ensure TravisCI build passes
+1. Ensure Github Actions build passes
 1. Await reviews
 1. Once merged into `master` a `SNAPSHOT` build will be available for consumption immediately [here](https://oss.sonatype.org/content/repositories/snapshots/io/github/origin-energy/). Note that snapshots change regularly and cannot be relied upon.
 1. Hard Releases will by made once enough features have been added. 
