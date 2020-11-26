@@ -1,4 +1,5 @@
 [![Build Status](https://github.com/origin-energy/java-snapshot-testing/workflows/Build/badge.svg)](https://github.com/origin-energy/java-snapshot-testing/actions)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.origin-energy/java-snapshot-testing-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.origin-energy/java-snapshot-testing-core)
 
 # Java Snapshot Testing
 - Inspired by [facebook's Jest framework](https://facebook.github.io/jest/docs/en/snapshot-testing.html)
