@@ -1,0 +1,18 @@
+au.com.origin.snapshots.SnapshotParameterTest.shouldSupportParameterizedTest=[
+Duplicates are OK
+]
+
+
+au.com.origin.snapshots.SnapshotParameterTest.shouldSupportParameterizedTest[Scenario1]=[
+Additional snapshots need to include a scenario
+]
+
+
+au.com.origin.snapshots.SnapshotParameterTest.shouldSupportParameterizedTest[Scenario2]=[
+  "test input 1"
+]
+
+
+au.com.origin.snapshots.SnapshotParameterTest.shouldSupportParameterizedTest[Scenario3]=[
+  "test input 2"
+]

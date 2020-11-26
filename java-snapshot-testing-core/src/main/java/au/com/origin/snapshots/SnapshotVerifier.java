@@ -38,15 +38,14 @@ public class SnapshotVerifier {
         Method resolvedTestMethod = testMethod == null ? config.getTestMethod(testClass) : testMethod;
         Snapshot snapshot =
                 new Snapshot(config, snapshotFile, testClass, resolvedTestMethod, objects);
-        validateExpectCall(snapshot);
         calledSnapshots.add(snapshot);
         return snapshot;
     }
 
     public void validateSnapshots() {
         Set<String> rawSnapshots = snapshotFile.getRawSnapshots();
-        List<String> snapshotNames =
-                calledSnapshots.stream().map(Snapshot::getSnapshotName).collect(Collectors.toList());
+        Set<String> snapshotNames =
+                calledSnapshots.stream().map(Snapshot::getSnapshotName).collect(Collectors.toSet());
         List<String> unusedRawSnapshots = new ArrayList<>();
 
         for (String rawSnapshot : rawSnapshots) {
@@ -73,15 +72,6 @@ public class SnapshotVerifier {
             }
         }
         snapshotFile.cleanup();
-    }
-
-    private void validateExpectCall(Snapshot snapshot) {
-        for (Snapshot eachSnapshot : calledSnapshots) {
-            if (eachSnapshot.getSnapshotName().equals(snapshot.getSnapshotName())) {
-                throw new SnapshotExtensionException(
-                        "You can only call 'expect' once per test method. Try using array of arguments on a single 'expect' call");
-            }
-        }
     }
 
     private Object[] mergeObjects(Object firstObject, Object[] others) {

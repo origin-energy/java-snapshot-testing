@@ -13,6 +13,12 @@ import java.util.regex.Matcher;
 public class SnapshotMatcher {
 
     private static final ThreadLocal<SnapshotVerifier> INSTANCES = new ThreadLocal<>();
+    private static final ThreadLocal<Boolean> SNAPSHOT_TEST_IN_PROGRESS = new ThreadLocal<Boolean>() {
+        @Override
+        protected Boolean initialValue() {
+            return false;
+        }
+    };
 
     public static void start(SnapshotConfig config) {
         start(config, false, config.getTestClass());
@@ -55,6 +61,7 @@ public class SnapshotMatcher {
                 resolvedConfig,
                 failOnOrphans
             );
+            SNAPSHOT_TEST_IN_PROGRESS.set(true);
             INSTANCES.set(snapshotVerifier);
         } catch (IOException | InstantiationException | IllegalAccessException e) {
             throw new SnapshotExtensionException(e.getMessage());
@@ -66,18 +73,15 @@ public class SnapshotMatcher {
      * @param method under test
      */
     public static void setTestMethod(Method method) {
-        INSTANCES.get().setTestMethod(method);
+        getSnapshotVerifier().setTestMethod(method);
     }
 
     /**
      * Execute after all tests have run for a given class
      */
     public static void validateSnapshots() {
-        SnapshotVerifier snapshotVerifier = INSTANCES.get();
-        if (snapshotVerifier == null) {
-            throw new SnapshotExtensionException("Could not find Snapshot Verifier for this thread");
-        }
-        snapshotVerifier.validateSnapshots();
+        getSnapshotVerifier().validateSnapshots();
+        SNAPSHOT_TEST_IN_PROGRESS.set(false);
     }
 
     /**
@@ -88,10 +92,17 @@ public class SnapshotMatcher {
      * @return snapshot
      */
     public static Snapshot expect(Object firstObject, Object... objects) {
+        if (!SNAPSHOT_TEST_IN_PROGRESS.get()) {
+            throw new SnapshotExtensionException("setTestMethod() not called! Has SnapshotMatcher.start() been called?");
+        }
+        return getSnapshotVerifier().expectCondition(firstObject, objects);
+    }
+
+    private static SnapshotVerifier getSnapshotVerifier() {
         SnapshotVerifier instance = INSTANCES.get();
         if (instance == null) {
-            throw new SnapshotExtensionException("Unable to locate snapshot - has SnapshotMatcher.start() been called?");
+            throw new SnapshotExtensionException("Unable to locate SnapshotVerifier instance! Has SnapshotMatcher.start() been called?");
         }
-        return instance.expectCondition(firstObject, objects);
+        return instance;
     }
 }

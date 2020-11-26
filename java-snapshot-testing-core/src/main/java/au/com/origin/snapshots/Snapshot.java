@@ -7,10 +7,7 @@ import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerialize
 import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.With;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,14 +28,10 @@ public class Snapshot {
     private final Object[] current;
     private final boolean isCI;
 
-    @With
-    private final SnapshotSerializer snapshotSerializer;
-    @With
-    private final SnapshotComparator snapshotComparator;
-    @With
-    private final List<SnapshotReporter> snapshotReporters;
-    @With
-    private final String scenario;
+    private SnapshotSerializer snapshotSerializer;
+    private SnapshotComparator snapshotComparator;
+    private List<SnapshotReporter> snapshotReporters;
+    private String scenario;
 
     Snapshot(
             SnapshotConfig snapshotConfig,
@@ -68,7 +61,8 @@ public class Snapshot {
      * @return Snapshot
      */
     public Snapshot scenario(String scenario) {
-        return this.withScenario(scenario);
+        this.scenario = scenario;
+        return this;
     }
 
     /**
@@ -78,7 +72,8 @@ public class Snapshot {
      * @return Snapshot
      */
     public Snapshot serializer(SnapshotSerializer serializer) {
-        return this.withSnapshotSerializer(serializer);
+        this.snapshotSerializer = serializer;
+        return this;
     }
 
     /**
@@ -88,7 +83,8 @@ public class Snapshot {
      * @return Snapshot
      */
     public Snapshot comparator(SnapshotComparator comparator) {
-        return this.withSnapshotComparator(comparator);
+        this.snapshotComparator = comparator;
+        return this;
     }
 
     /**
@@ -99,7 +95,8 @@ public class Snapshot {
      * @return Snapshot
      */
     public Snapshot reporters(SnapshotReporter... reporters) {
-        return this.withSnapshotReporters(Arrays.asList(reporters));
+        this.snapshotReporters = Arrays.asList(reporters);
+        return this;
     }
 
     /**
@@ -134,7 +131,8 @@ public class Snapshot {
      */
     @SneakyThrows
     public Snapshot serializer(Class<? extends SnapshotSerializer> serializer) {
-        return this.withSnapshotSerializer(serializer.getConstructor().newInstance());
+        this.snapshotSerializer = serializer.getConstructor().newInstance();
+        return this;
     }
 
     public void toMatchSnapshot() {

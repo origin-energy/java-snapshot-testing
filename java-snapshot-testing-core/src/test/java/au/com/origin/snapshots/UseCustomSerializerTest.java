@@ -16,14 +16,14 @@ public class UseCustomSerializerTest {
     private static final SnapshotConfig DEFAULT_CONFIG = new BaseSnapshotConfig();
 
     @BeforeAll
-    static void beforeAll() {
+    static void beforeEach() {
         SnapshotUtils.copyTestSnapshots();
-        start(DEFAULT_CONFIG);
     }
 
     @DisplayName("@SnapshotSerializer on a method via new instance")
     @Test
     public void canUseSnapshotSerializerAnnotationAtMethodLevelUsingNewInstance() {
+        start(DEFAULT_CONFIG);
         expect(new TestObject())
                 .serializer(new UppercaseToStringSerializer())
                 .toMatchSnapshot();
@@ -33,6 +33,7 @@ public class UseCustomSerializerTest {
     @DisplayName("@SnapshotSerializer on a method via class name")
     @Test
     public void canUseSnapshotSerializerAnnotationAtMethodLevelUsingClassName() {
+        start(DEFAULT_CONFIG);
         expect(new TestObject())
                 .serializer(new UppercaseToStringSerializer())
                 .toMatchSnapshot();

@@ -18,14 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(MockitoExtension.class)
 public class UpdateSnapshotPropertyTest {
 
-  @BeforeAll
-  static void beforeAll() {
-    start(new BaseSnapshotConfig());
-  }
-
   @AfterAll
   static void afterAll() {
-    validateSnapshots();
     System.clearProperty(SnapshotConfig.JVM_UPDATE_SNAPSHOTS_PARAMETER);
   }
 
@@ -53,6 +47,7 @@ public class UpdateSnapshotPropertyTest {
 
   @Test
   void shouldUpdateSnapshot() throws IOException {
+    start(new BaseSnapshotConfig());
     System.setProperty(SnapshotConfig.JVM_UPDATE_SNAPSHOTS_PARAMETER, "");
     expect(FakeObject.builder().id("anyId2").value(2).name("anyName2").build()).toMatchSnapshot();
     validateSnapshots();
@@ -86,6 +81,7 @@ public class UpdateSnapshotPropertyTest {
 
   @Test
   void shouldNotUpdateSnapshot() {
+    start(new BaseSnapshotConfig());
     System.setProperty(SnapshotConfig.JVM_UPDATE_SNAPSHOTS_PARAMETER, "ClassNotFound");
     assertThrows(
             SnapshotMatchException.class,
