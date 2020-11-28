@@ -1,10 +1,12 @@
 package au.com.origin.snapshots
 
 import au.com.origin.snapshots.exceptions.SnapshotExtensionException
+import spock.lang.Ignore
 import spock.lang.Specification
 
 class SpockExtensionUnusedSpec extends Specification {
 
+    @Ignore
     def "Should fail with exception"() {
         when:
         SnapshotMatcher.expect("Hello World").toMatchSnapshot()
