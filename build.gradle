@@ -1,6 +1,7 @@
 plugins {
     id 'net.researchgate.release' version '2.6.0' apply false
     id 'com.github.johnrengelman.shadow' version '5.1.0' apply false
+    id 'io.codearte.nexus-staging' version '0.22.0'
 }
 
 subprojects { subproject ->
