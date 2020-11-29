@@ -448,7 +448,7 @@ class SnapshotConfig implements SnapshotConfig {
 Solution: 
 Add a 1.8 compatible provider, eg. `testImplementation("org.slf4j:slf4j-simple:2.0.0-alpha0")`
 
-**My test source files are not in src/main/java**
+**My test source files are not in `src/test/java`**
 
 Solution: Override `getOutputDir()` in SnapshotConfig and return the correct path
 
