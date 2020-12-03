@@ -8,6 +8,7 @@ dependencies {
     compileOnly 'org.junit.vintage:junit-vintage-engine:5.2.0'
 
     // Testing
+    testImplementation 'org.slf4j:slf4j-simple:2.0.0-alpha0'
     testImplementation 'org.junit.platform:junit-platform-runner:1.2.0'
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.2.0'
     testImplementation 'org.assertj:assertj-core:3.11.1'

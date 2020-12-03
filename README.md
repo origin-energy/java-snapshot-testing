@@ -438,15 +438,11 @@ class SnapshotConfig implements SnapshotConfig {
 
 **I'm seeing this error in my logs**
 ```
- SLF4J: No SLF4J providers were found.
- SLF4J: Defaulting to no-operation (NOP) logger implementation
- SLF4J: See http://www.slf4j.org/codes.html#noProviders for further details.
- SLF4J: Class path contains SLF4J bindings targeting slf4j-api versions prior to 1.8.
- SLF4J: Ignoring binding found at [jar:file:/Users/me/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-classic/1.2.3/7c4f3c474fb2c041d8028740440937705ebb473a/logback-classic-1.2.3.jar!/org/slf4j/impl/StaticLoggerBinder.class]
- SLF4J: See http://www.slf4j.org/codes.html#ignoredBindings for an explanation.
+org/slf4j/LoggerFactory
+java.lang.NoClassDefFoundError: org/slf4j/LoggerFactory
 ```
 Solution: 
-Add a 1.8 compatible provider, eg. `testImplementation("org.slf4j:slf4j-simple:2.0.0-alpha0")`
+Add an SLF4J Provider such as`testImplementation("org.slf4j:slf4j-simple:2.0.0-alpha0")`
 
 **My test source files are not in `src/test/java`**
 
