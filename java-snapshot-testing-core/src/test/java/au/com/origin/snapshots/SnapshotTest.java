@@ -51,7 +51,7 @@ class SnapshotTest {
 
   @AfterEach
   void tearDown() throws IOException {
-    Files.delete(Paths.get(FILE_PATH));
+    Files.deleteIfExists(Paths.get(FILE_PATH));
   }
 
   @Test

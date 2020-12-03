@@ -44,21 +44,20 @@ class SnapshotMatcherTest {
 
   @Test
   void should1ShowSnapshotSuccessfully() throws IOException {
+    SnapshotMatcher.expect("any type of object").toMatchSnapshot();
     File f = new File(FILE_PATH);
     if (!f.exists() || f.isDirectory()) {
       throw new RuntimeException("File should exist here");
     }
-    SnapshotMatcher.expect("any type of object").toMatchSnapshot();
   }
 
   @Test
   void should2SecondSnapshotExecutionSuccessfully() throws IOException {
-
+    SnapshotMatcher.expect("any second type of object", "any third type of object")
+            .toMatchSnapshot();
     File f = new File(FILE_PATH);
     if (!f.exists() || f.isDirectory()) {
       throw new RuntimeException("File should exist here");
     }
-    SnapshotMatcher.expect("any second type of object", "any third type of object")
-        .toMatchSnapshot();
   }
 }

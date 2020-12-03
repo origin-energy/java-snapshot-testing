@@ -55,7 +55,6 @@ class SnapshotFile {
                 rawSnapshots = new TreeSet<>();
             }
         } catch (IOException e) {
-            createFile(this.fileName);
             rawSnapshots = new TreeSet<>();
         }
     }
@@ -89,24 +88,20 @@ class SnapshotFile {
         Files.deleteIfExists(Paths.get(this.fileName));
     }
 
-    private File createFile(String fileName) throws IOException {
-        File file = new File(fileName);
-        file.getParentFile().mkdirs();
-        file.createNewFile();
-        return file;
+    @SneakyThrows
+    public File createFileIfNotExists() {
+        Path path = Paths.get(this.fileName);
+        if (!Files.exists(path)) {
+            Files.createDirectories(path.getParent());
+            Files.createFile(path);
+        }
+        return path.toFile();
     }
 
     public void push(String snapshot) {
-
         rawSnapshots.add(snapshot);
 
-        File file = null;
-
-        try {
-            file = createFile(fileName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        File file = createFileIfNotExists();
 
         try (FileOutputStream fileStream = new FileOutputStream(file, false)) {
             byte[] myBytes = StringUtils.join(rawSnapshots, SPLIT_STRING).getBytes();

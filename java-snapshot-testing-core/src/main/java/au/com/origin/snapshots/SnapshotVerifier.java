@@ -1,8 +1,6 @@
 package au.com.origin.snapshots;
 
-import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
-import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.SneakyThrows;
