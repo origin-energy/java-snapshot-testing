@@ -24,7 +24,6 @@ public class SnapshotVerifier {
     private final SnapshotFile snapshotFile;
     private final SnapshotConfig config;
     private final boolean failOnOrphans;
-
     private final List<Snapshot> calledSnapshots = new ArrayList<>();
 
     @Setter
@@ -69,6 +68,7 @@ public class SnapshotVerifier {
                 log.warn(errorMessage);
             }
         }
+
         snapshotFile.cleanup();
     }
 

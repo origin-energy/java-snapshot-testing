@@ -139,35 +139,43 @@ public class Snapshot {
 
         Set<String> rawSnapshots = snapshotFile.getRawSnapshots();
 
-        String rawSnapshot = getRawSnapshot(rawSnapshots);
+        String existingSnapshot = getRawSnapshot(rawSnapshots);
 
-        String currentObject = takeSnapshot();
+        String incomingSnapshot = takeSnapshot();
 
-        if (rawSnapshot != null && shouldUpdateSnapshot()) {
-            snapshotFile.getRawSnapshots().remove(rawSnapshot);
-            rawSnapshot = null;
+        SnapshotContext snapshotContext = new SnapshotContext(
+                testClass,
+                testMethod,
+                snapshotFile.getSnapshotFilePath(),
+                getSnapshotName(),
+                existingSnapshot,
+                incomingSnapshot
+        );
+
+        if (existingSnapshot != null && shouldUpdateSnapshot()) {
+            snapshotFile.getRawSnapshots().remove(existingSnapshot);
+            existingSnapshot = null;
         }
 
-        if (rawSnapshot != null) {
+        if (existingSnapshot != null) {
+            List<SnapshotReporter> reporters = snapshotReporters
+                    .stream()
+                    .filter(reporter -> reporter.supportsFormat(snapshotSerializer.getOutputFormat()))
+                    .collect(Collectors.toList());
+
+            if (reporters.isEmpty()) {
+                String comparator = snapshotComparator.getClass().getSimpleName();
+                throw new IllegalStateException("No compatible reporters found for comparator " + comparator);
+            }
+
             // Match existing Snapshot
-            if (!snapshotComparator.matches(getSnapshotName(), rawSnapshot, currentObject)) {
-                snapshotFile.createDebugFile(currentObject.trim());
-
-                List<SnapshotReporter> reporters = snapshotReporters
-                        .stream()
-                        .filter(reporter -> reporter.supportsFormat(snapshotSerializer.getOutputFormat()))
-                        .collect(Collectors.toList());
-
-                if (reporters.isEmpty()) {
-                    String comparator = snapshotComparator.getClass().getSimpleName();
-                    throw new IllegalStateException("No compatible reporters found for comparator " + comparator);
-                }
+            if (!snapshotComparator.matches(snapshotContext)) {
 
                 List<Throwable> errors = new ArrayList<>();
 
                 for (SnapshotReporter reporter : reporters) {
                     try {
-                        reporter.report(getSnapshotName(), rawSnapshot, currentObject);
+                        reporter.reportFailure(snapshotContext);
                     } catch (Throwable t) {
                         errors.add(t);
                     }
@@ -176,18 +184,25 @@ public class Snapshot {
                 if(!errors.isEmpty()) {
                     throw new SnapshotMatchException("Error(s) matching snapshot(s)", errors);
                 }
+            } else {
+                for (SnapshotReporter reporter : reporters) {
+                    try {
+                        reporter.reportSuccess(snapshotContext);
+                    } catch (Throwable t) {
+                        log.error("SnapshotReporter.cleanup() failed for {}", reporter.getClass().getName(), t);
+                    }
+                }
             }
         } else {
             if (this.isCI) {
                 log.error("We detected you are running on a CI Server - if this is incorrect please override the isCI() method in SnapshotConfig");
-                throw new SnapshotMatchException("Snapshot [" + getSnapshotName() + "] not found. Has this snapshot been committed ?");
+                throw new SnapshotMatchException("Snapshot [" + getSnapshotName() + "] not found. Has this snapshot been committed?");
             } else {
                 log.warn("We detected you are running on a developer machine - if this is incorrect please override the isCI() method in SnapshotConfig");
                 // Create New Snapshot
-                snapshotFile.push(currentObject);
+                snapshotFile.push(incomingSnapshot);
             }
         }
-        snapshotFile.deleteDebugFile();
     }
 
     private boolean shouldUpdateSnapshot() {

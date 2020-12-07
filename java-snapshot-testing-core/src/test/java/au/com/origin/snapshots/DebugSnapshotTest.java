@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import static au.com.origin.snapshots.SnapshotMatcher.expect;
 import static au.com.origin.snapshots.SnapshotMatcher.start;
@@ -83,9 +84,13 @@ public class DebugSnapshotTest {
     @Test
     void deleteDebugFile() {
         assertTrue(Files.exists(Paths.get(SNAPSHOT_FILE_PATH)));
-        Files.createFile(Paths.get(DEBUG_FILE_PATH));
+        Files.write(Paths.get(DEBUG_FILE_PATH),
+                ("au.com.origin.snapshots.DebugSnapshotTest.deleteDebugFile=[\n" +
+                "Old Snapshot\n" +
+                "]").getBytes(), StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
         start(DEFAULT_CONFIG);
+        expect("Good Snapshot").toMatchSnapshot();
         expect(new TestObjectGood()).toMatchSnapshot();
         assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)));
     }

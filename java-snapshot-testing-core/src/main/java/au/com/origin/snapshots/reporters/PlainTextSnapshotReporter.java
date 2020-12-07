@@ -1,5 +1,6 @@
 package au.com.origin.snapshots.reporters;
 
+import au.com.origin.snapshots.SnapshotContext;
 import org.assertj.core.util.diff.DiffUtils;
 import org.assertj.core.util.diff.Patch;
 import org.opentest4j.AssertionFailedError;
@@ -18,14 +19,19 @@ public class PlainTextSnapshotReporter implements SnapshotReporter {
     }
 
     @Override
-    public void report(String snapshotName, String rawSnapshot, String currentObject) {
+    public void reportFailure(SnapshotContext context) {
         Patch<String> patch = DiffUtils.diff(
-                Arrays.asList(rawSnapshot.trim().split("\n")),
-                Arrays.asList(currentObject.trim().split("\n")));
+                Arrays.asList(context.getExistingSnapshot().trim().split("\n")),
+                Arrays.asList(context.getIncomingSnapshot().trim().split("\n")));
 
-        String message = "Error on: \n" + currentObject.trim() + "\n\n" + getDiffString(patch);
+        String message = "Error on: \n" + context.getIncomingSnapshot().trim() + "\n\n" + getDiffString(patch);
 
-        throw new AssertionFailedError(message, rawSnapshot, currentObject);
+        throw new AssertionFailedError(message, context.getExistingSnapshot(), context.getIncomingSnapshot());
+    }
+
+    @Override
+    public void reportSuccess(SnapshotContext snapshotContext) {
+
     }
 
     public static String getDiffString(Patch<String> patch) {

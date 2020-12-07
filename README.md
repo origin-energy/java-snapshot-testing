@@ -187,7 +187,7 @@ class SpockExtensionUsedSpec extends Specification {
     SnapshotMatcher.expect(something).toMatchSnapshot()
     ```
 
-## Resolving conflicting snapshot comparison via `*.snap.debug`
+## Resolving conflicting snapshot comparison via DebugFileSnapshotReporter `*.snap.debug` [See Reporters](#supplying-a-custom-snapshotreporter)
 Often your IDE has an excellent file comparison tool.
 
 - A `*.snap.debug` file will be created alongside your `*.snap` file when a conflict occurs.
@@ -355,8 +355,12 @@ public class JsonObjectComparator implements SnapshotComparator {
 ## Supplying a custom SnapshotReporter
 The reporter reports the details of comparison failures.
 
-Currently, we support one default reporter (`PlainTextSnapshotReporter`) which uses assertj's DiffUtils 
-to generate a patch of the differences between two snapshots.
+Currently, we support the following reporters
+
+| Reporter                            | Description                                                                           |
+|-----------------------------------------------------------------------------------------------------------------------------|
+| PlainTextSnapshotReporter (default) | uses assertj's DiffUtils to generate a patch of the differences between two snapshots.| 
+| DebugFileSnapshotReporter (default) | generates a `.snap.debug` file which you can compare using your IDE tooling           |
 
 Custom reporters can be plugged in by implementing `SnapshotReporter`.
 

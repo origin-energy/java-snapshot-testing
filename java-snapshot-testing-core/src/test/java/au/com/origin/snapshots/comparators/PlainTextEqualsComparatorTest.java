@@ -1,7 +1,10 @@
 package au.com.origin.snapshots.comparators;
 
+import au.com.origin.snapshots.SnapshotContext;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class PlainTextEqualsComparatorTest {
 
@@ -9,11 +12,19 @@ class PlainTextEqualsComparatorTest {
 
     @Test
     void successfulComparison() {
-        Assertions.assertThat(COMPARATOR.matches("snap1", "blah", "blah")).isTrue();
+        SnapshotContext context = SnapshotContext.builder()
+                .existingSnapshot("foo")
+                .incomingSnapshot("foo")
+                .build();
+        assertThat(COMPARATOR.matches(context)).isTrue();
     }
 
     @Test
     void failingComparison() {
-        Assertions.assertThat(COMPARATOR.matches("snap1", "blah", "blahblah")).isFalse();
+        SnapshotContext context = SnapshotContext.builder()
+                .existingSnapshot("foo")
+                .incomingSnapshot("bar")
+                .build();
+        assertThat(COMPARATOR.matches(context)).isFalse();
     }
 }

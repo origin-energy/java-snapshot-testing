@@ -145,7 +145,7 @@ class SnapshotTest {
             "anyObject");
 
     Assertions.assertThatThrownBy(ciSnapshot::toMatchSnapshot)
-            .hasMessage("Snapshot [java.lang.String.toString=] not found. Has this snapshot been committed ?");
+            .hasMessage("Snapshot [java.lang.String.toString=] not found. Has this snapshot been committed?");
   }
 
   @SneakyThrows
@@ -173,8 +173,13 @@ class SnapshotTest {
           }
 
           @Override
-          public void report(String snapshotName, String rawSnapshot, String currentObject) {
-              consumer.accept(rawSnapshot, currentObject);
+          public void reportFailure(SnapshotContext context) {
+              consumer.accept(context.getExistingSnapshot(), context.getIncomingSnapshot());
+          }
+
+          @Override
+          public void reportSuccess(SnapshotContext snapshotContext) {
+
           }
       });
 

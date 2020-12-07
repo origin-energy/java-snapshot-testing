@@ -18,26 +18,23 @@ class SnapshotFile {
 
     private static final String SPLIT_STRING = "\n\n\n";
 
-    private final String fileName;
+    @Getter
+    private final String snapshotFilePath;
     private final Class<?> testClass;
     private final BiFunction<Class<?>, String, String> onSaveSnapshotFile;
-
-    private String getDebugFilename() {
-        return this.fileName + ".debug";
-    }
 
     @Getter
     private Set<String> rawSnapshots;
 
-    SnapshotFile( String srcDirPath, String fileName, Class<?> testClass, BiFunction<Class<?>, String, String> onSaveSnapshotFile) throws IOException {
+    SnapshotFile(String srcDirPath, String snapshotFilePath, Class<?> testClass, BiFunction<Class<?>, String, String> onSaveSnapshotFile) throws IOException {
         this.testClass = testClass;
         this.onSaveSnapshotFile = onSaveSnapshotFile;
-        this.fileName = srcDirPath + File.separator + fileName;
-        log.info("Snapshot File: " + this.fileName);
+        this.snapshotFilePath = srcDirPath + File.separator + snapshotFilePath;
+        log.info("Snapshot File: " + this.snapshotFilePath);
 
         StringBuilder fileContent = new StringBuilder();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(this.fileName))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(this.snapshotFilePath))) {
 
             String sCurrentLine;
 
@@ -59,38 +56,14 @@ class SnapshotFile {
         }
     }
 
-    public File createDebugFile(String snapshot) {
-        File file = null;
-        try {
-            file = new File(getDebugFilename());
-            file.getParentFile().mkdirs();
-            file.createNewFile();
-
-            try (FileOutputStream fileStream = new FileOutputStream(file, false)) {
-                fileStream.write(snapshot.getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return file;
-    }
-
-    @SneakyThrows
-    public void deleteDebugFile() {
-        Files.deleteIfExists(Paths.get(getDebugFilename()));
-    }
-
     @SneakyThrows
     public void delete() {
-        Files.deleteIfExists(Paths.get(this.fileName));
+        Files.deleteIfExists(Paths.get(this.snapshotFilePath));
     }
 
     @SneakyThrows
     public File createFileIfNotExists() {
-        Path path = Paths.get(this.fileName);
+        Path path = Paths.get(this.snapshotFilePath);
         if (!Files.exists(path)) {
             Files.createDirectories(path.getParent());
             Files.createFile(path);
@@ -113,12 +86,11 @@ class SnapshotFile {
 
     @SneakyThrows
     public void cleanup() {
-        Path path = Paths.get(this.fileName);
+        Path path = Paths.get(this.snapshotFilePath);
         if (Files.size(path) == 0) {
-            deleteDebugFile();
             delete();
         } else {
-            String content = new String(Files.readAllBytes(Paths.get(this.fileName)));
+            String content = new String(Files.readAllBytes(Paths.get(this.snapshotFilePath)));
             String modified = onSaveSnapshotFile.apply(testClass, content);
             Files.write(path, modified.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
         }

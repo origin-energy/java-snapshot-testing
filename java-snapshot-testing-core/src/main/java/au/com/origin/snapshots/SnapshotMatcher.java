@@ -13,12 +13,7 @@ import java.util.regex.Matcher;
 public class SnapshotMatcher {
 
     private static final ThreadLocal<SnapshotVerifier> INSTANCES = new ThreadLocal<>();
-    private static final ThreadLocal<Boolean> SNAPSHOT_TEST_IN_PROGRESS = new ThreadLocal<Boolean>() {
-        @Override
-        protected Boolean initialValue() {
-            return false;
-        }
-    };
+    private static final ThreadLocal<Boolean> SNAPSHOT_TEST_IN_PROGRESS = ThreadLocal.withInitial(() -> false);
 
     public static void start(SnapshotConfig config) {
         start(config, false, config.getTestClass());
@@ -47,7 +42,7 @@ public class SnapshotMatcher {
 
             // Support legacy trailing space syntax
             String testSrcDir = resolvedConfig.getOutputDir();
-            String testSrcDirNoTrailing = testSrcDir.endsWith("/") ? resolvedConfig.getOutputDir().substring(0, testSrcDir.length()-1) : resolvedConfig.getOutputDir();
+            String testSrcDirNoTrailing = testSrcDir.endsWith("/") ? testSrcDir.substring(0, testSrcDir.length()-1) : testSrcDir;
             SnapshotFile snapshotFile = new SnapshotFile(
                     testSrcDirNoTrailing,
                     snapshotDir.getPath() + File.separator + fileUnderTest.getName(),
@@ -61,6 +56,7 @@ public class SnapshotMatcher {
                 resolvedConfig,
                 failOnOrphans
             );
+
             SNAPSHOT_TEST_IN_PROGRESS.set(true);
             INSTANCES.set(snapshotVerifier);
         } catch (IOException | InstantiationException | IllegalAccessException e) {
