@@ -31,17 +31,22 @@ public class DebugFileSnapshotReporter implements SnapshotReporter {
     public void reportSuccess(SnapshotContext context) {
         Path debugFile = getDebugFile(context.getSnapshotFilePath());
         if (Files.exists(debugFile)) {
+            System.out.println("** exists");
             Files.lines(debugFile)
                     .filter(it -> it.startsWith(context.getSnapshotName()))
                     .findAny()
                     .ifPresent(it -> {
                         try {
+                            System.out.println("** exists and found");
+                            System.out.println("exists?" + Files.exists(debugFile));
                             Files.deleteIfExists(debugFile);
                         } catch (IOException e) {
+                            System.out.println("** exists and found blew up");
                             e.printStackTrace();
                         }
                     });
         }
+        System.out.println("** does not exist");
     }
 
     private Path getDebugFile(String filename) {

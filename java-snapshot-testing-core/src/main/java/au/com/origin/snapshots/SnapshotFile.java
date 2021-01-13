@@ -29,7 +29,7 @@ class SnapshotFile {
     SnapshotFile(String srcDirPath, String snapshotFilePath, Class<?> testClass, BiFunction<Class<?>, String, String> onSaveSnapshotFile) throws IOException {
         this.testClass = testClass;
         this.onSaveSnapshotFile = onSaveSnapshotFile;
-        this.snapshotFilePath = srcDirPath + File.separator + snapshotFilePath;
+        this.snapshotFilePath = srcDirPath + "/" + snapshotFilePath;
         log.info("Snapshot File: " + this.snapshotFilePath);
 
         StringBuilder fileContent = new StringBuilder();

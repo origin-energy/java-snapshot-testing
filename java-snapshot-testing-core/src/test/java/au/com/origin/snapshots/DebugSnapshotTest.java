@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
@@ -90,7 +91,6 @@ public class DebugSnapshotTest {
                 "]").getBytes(), StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
         start(DEFAULT_CONFIG);
-        expect("Good Snapshot").toMatchSnapshot();
         expect(new TestObjectGood()).toMatchSnapshot();
         assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)));
     }

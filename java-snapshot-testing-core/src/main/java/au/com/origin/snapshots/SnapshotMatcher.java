@@ -35,7 +35,7 @@ public class SnapshotMatcher {
             SnapshotConfig resolvedConfig = customConfig == null ? defaultConfig : customConfig.value().newInstance();
 
             // Matcher.quoteReplacement required for Windows
-            String testFilename = testClass.getName().replaceAll("\\.", Matcher.quoteReplacement(File.separator)) + ".snap";
+            String testFilename = testClass.getName().replaceAll("\\.", Matcher.quoteReplacement("/")) + ".snap";
 
             File fileUnderTest = new File(testFilename);
             File snapshotDir = new File(fileUnderTest.getParentFile(), resolvedConfig.getSnapshotFolder());
@@ -45,7 +45,7 @@ public class SnapshotMatcher {
             String testSrcDirNoTrailing = testSrcDir.endsWith("/") ? testSrcDir.substring(0, testSrcDir.length()-1) : testSrcDir;
             SnapshotFile snapshotFile = new SnapshotFile(
                     testSrcDirNoTrailing,
-                    snapshotDir.getPath() + File.separator + fileUnderTest.getName(),
+                    snapshotDir.getPath().replaceAll("\\\\", "/") + "/" + fileUnderTest.getName(),
                     testClass,
                     resolvedConfig::onSaveSnapshotFile
             );
