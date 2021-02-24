@@ -2,6 +2,7 @@ package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.comparators.PlainTextEqualsComparator;
 import au.com.origin.snapshots.comparators.SnapshotComparator;
+import au.com.origin.snapshots.reporters.DebugFileSnapshotReporter;
 import au.com.origin.snapshots.reporters.PlainTextSnapshotReporter;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
@@ -9,9 +10,7 @@ import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Snapshot Configuration
@@ -131,7 +130,7 @@ public interface SnapshotConfig {
      * @return custom reporter functions
      */
     default List<SnapshotReporter> getReporters() {
-        return Collections.singletonList(new PlainTextSnapshotReporter());
+        return Arrays.asList(new PlainTextSnapshotReporter(), new DebugFileSnapshotReporter());
     }
 
     /**

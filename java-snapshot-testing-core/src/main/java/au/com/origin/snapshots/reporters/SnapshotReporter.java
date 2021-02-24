@@ -1,8 +1,9 @@
 package au.com.origin.snapshots.reporters;
 
+import au.com.origin.snapshots.SnapshotContext;
+
 public interface SnapshotReporter {
-
     boolean supportsFormat(String outputFormat);
-
-    void report(String snapshotName, String rawSnapshot, String currentObject);
+    void reportFailure(SnapshotContext context);
+    void reportSuccess(SnapshotContext snapshotContext);
 }
