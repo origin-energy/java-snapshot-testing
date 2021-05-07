@@ -30,4 +30,13 @@ public class NestedClassTest {
             expect("Hello World").toMatchSnapshot();
         }
     }
+
+    @Nested
+    class NestedClassWithoutSnapshot {
+
+        @Test
+        public void helloWorldTest() {
+            assertThat(true).isTrue();
+        }
+    }
 }

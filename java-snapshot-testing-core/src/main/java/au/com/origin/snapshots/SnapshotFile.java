@@ -114,13 +114,15 @@ class SnapshotFile {
     @SneakyThrows
     public void cleanup() {
         Path path = Paths.get(this.fileName);
-        if (Files.size(path) == 0) {
-            deleteDebugFile();
-            delete();
-        } else {
-            String content = new String(Files.readAllBytes(Paths.get(this.fileName)));
-            String modified = onSaveSnapshotFile.apply(testClass, content);
-            Files.write(path, modified.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+        if (Files.exists(path)) {
+            if (Files.size(path) == 0) {
+                deleteDebugFile();
+                delete();
+            } else {
+                String content = new String(Files.readAllBytes(Paths.get(this.fileName)));
+                String modified = onSaveSnapshotFile.apply(testClass, content);
+                Files.write(path, modified.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+            }
         }
     }
 }
