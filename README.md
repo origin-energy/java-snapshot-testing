@@ -14,14 +14,13 @@
 Then java-snapshot-testing might just be what you are looking for! 
 
 ## Advantages of Snapshot Testing
-It's useful for deterministic tests. That is, running the same tests multiple times on a component that hasn't changed 
-should produce the same results every time. You're responsible for making sure your generated snapshots do not include 
-platform specific or other non-deterministic data. 
-
 - Great for testing JSON interfaces ensuring you don't break clients
 - Fast and easy to test
 - Will implicitly test areas of your code you did not think about
 - Great of testing dynamic objects
+
+You're responsible for making sure your generated snapshots do not include
+platform specific or other non-deterministic data.
 
 ## Disadvantages of Snapshot Testing
 - You need to ensure your test is deterministic for all fields (there are ways to ignore things like dates)
@@ -41,23 +40,15 @@ We currently support:
 - [JUnit5](https://search.maven.org/search?q=a:java-snapshot-testing-junit5)
 - [Spock](https://search.maven.org/search?q=a:java-snapshot-testing-spock)
 
-### Using the latest SNAPSHOT (excuse the pun)
-Gradle
-```
-repositories {
-    // ...
-    maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
-}
+In addition - for `.json()` tests, you need jackson on your classpath
 
-dependencies {
-    // ...
-
-    // Replace {FRAMEWORK} with you testing framework
-    // Replace {X.X.X} with the version number from `/gradle.properties`
-    testCompile "io.github.origin-energy:java-snapshot-testing-{FRAMEWORK}:{X.X.X}-SNAPSHOT"
-}
+Gradle example
+```groovy
+    // Required java-snapshot-testing peer dependencies
+   testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
+   testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+   testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
+   testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
 ```
 
 ## How does it work?
@@ -405,6 +396,13 @@ public class SnapshotExtensionUsedTest {
 ## Automatically updating a snapshot via `-PupdateSnapshot=filter`
 Often - after analysing each snapshot and verifying it is correct, 
 you will need to generate a new baseline for the snapshots.
+
+Note that you may need to do some Gradle trickery to make this visible to your actual tests
+```groovy
+test {
+    systemProperty "updateSnapshot", project.getProperty("updateSnapshot")
+}
+```
 
 Instead of deleting or manually modifying each snapshot you can pass `-PupdateSnapshot` which is equivalent to the `--updateSnapshot` flag in [Jest](https://jestjs.io/docs/en/snapshot-testing#updating-snapshots)
 
