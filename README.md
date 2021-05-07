@@ -52,13 +52,13 @@ Gradle example
 ```
 
 ## How does it work?
-1. When a test runs for the first time, a `.snap` file is created in a `__snapshots__` subdirectory
+1. When a test runs for the first time, a `.snap` file is created in a `__snapshots__` sub-directory
 1. On subsequent test runs, the `.snap` file is compared with the one produced by the test
 1. If they don't match, the test fails and a `.snap.debug` with the conflict is created
 1. It is then your job to decide if you have introduced a regression or intentionally changed the output (Use your IDE file comparison tools to compare the two files or refer to the terminal output)
 1. If you have introduced a regression you will need to fix your code
 1. If you have intentionally changed the output you can manually modify the `.snap` file to make it pass or delete it and it will be generated again from scratch
-1. One you fix the test, the `*.snap.debug` file will get deleted
+1. Once you fix the test, the `*.snap.debug` file will get deleted
 
 ## What is a Snapshot?
 A text representation of your java object (toString() or JSON).
@@ -173,9 +173,9 @@ class SpockExtensionUsedSpec extends Specification {
     ```java
       SnapshotMatcher.validateSnapshots();
     ```
-1. In test methods setup your expectations (only one allowed per method)
+1. In tour test methods, setup your expectations
     ```java
-    SnapshotMatcher.expect(something).toMatchSnapshot()
+    SnapshotMatcher.expect(something).toMatchSnapshot();
     ```
 
 ## Resolving conflicting snapshot comparison via `*.snap.debug`
@@ -267,45 +267,50 @@ For example,this following will exclude the rendering of Lists without changing 
 This is good because you shouldn't need to add annotations to your source code for testing purposes only.
 
 ```java
-public class HibernateSnapshotSerializer implements SnapshotSerializer {
+import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer;
+import au.com.originenergy.user.entity.BaseEntity;
+import au.com.originenergy.user.entity.Customer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-    private final JacksonSnapshotSerializer jacksonSerializer = new JacksonSnapshotSerializer() {
-        @Override
-        public void configure(ObjectMapper objectMapper) {
-            super.configure(objectMapper);
+import java.time.Instant;
+import java.util.List;
+import java.util.Set;
 
-            // Ignore Hibernate Lists to prevent infinite recursion
-            objectMapper.addMixIn(List.class, IgnoreTypeMixin.class);
+public class HibernateSnapshotSerializer extends DeterministicJacksonSnapshotSerializer {
 
-            // Ignore Fields that Hibernate generates for us automatically
-            objectMapper.addMixIn(BaseEntity.class, IgnoreHibernateEntityFields.class);
-        }
-    };
+   @Override
+   public void configure(ObjectMapper objectMapper) {
+      super.configure(objectMapper);
 
-    @Override
-    public String apply(Object[] objects) {
-        return jacksonSerializer.apply(objects);
-    }
+      // Ignore Hibernate Lists to prevent infinite recursion
+      objectMapper.addMixIn(List.class, IgnoreTypeMixin.class);
+      objectMapper.addMixIn(Set.class, IgnoreTypeMixin.class);
 
-    @JsonIgnoreType
-    class IgnoreTypeMixin {}
+      // Ignore Fields that Hibernate generates for us automatically
+      objectMapper.addMixIn(BaseEntity.class, IgnoreHibernateEntityFields.class);
+   }
 
-    abstract class IgnoreHibernateEntityFields {
-        @JsonIgnore
-        abstract Long getId();
+   @JsonIgnoreType
+   class IgnoreTypeMixin {}
 
-        @JsonIgnore
-        abstract Instant getCreatedDate();
+   abstract class IgnoreHibernateEntityFields {
+      @JsonIgnore
+      abstract Long getId();
 
-        @JsonIgnore
-        abstract Instant getLastModifiedDate();
+      @JsonIgnore
+      abstract Instant getCreatedDate();
 
-        @JsonIgnore
-        abstract Customer getCustomer();
+      @JsonIgnore
+      abstract Instant getLastModifiedDate();
 
-        @JsonIgnore
-        abstract Customer getAccount();
-    }
+      @JsonIgnore
+      abstract Customer getCustomer();
+
+      @JsonIgnore
+      abstract Customer getAccount();
+   }
 }
 ```
 
