@@ -24,7 +24,6 @@ subprojects { subproject ->
         classifier = ''
         relocate 'org.assertj', 'shadow.org.assertj'
         relocate 'org.apache.commons', 'shadow.org.apache.commons'
-        relocate 'com.fasterxml.jackson', 'shadow.com.fasterxml.jackson'
     }
 
     dependencies {
