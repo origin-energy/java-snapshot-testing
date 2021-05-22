@@ -30,35 +30,35 @@ public class SnapshotMatcher {
 
     /**
      * Execute before any tests have run for a given class
-     * @param defaultConfig configuration to use
+     * @param frameworkSnapshotConfig configuration to use
      * @param failOnOrphans should the test break if snapshots exist with no matching method in the test class
      * @param testClass     reference to class under test
      */
-    public static void start(SnapshotConfig defaultConfig, boolean failOnOrphans, Class<?> testClass) {
+    public static void start(SnapshotConfig frameworkSnapshotConfig, boolean failOnOrphans, Class<?> testClass) {
         try {
             UseSnapshotConfig customConfig = testClass.getAnnotation(UseSnapshotConfig.class);
-            SnapshotConfig resolvedConfig = customConfig == null ? defaultConfig : customConfig.value().newInstance();
+            SnapshotConfig snapshotConfig = customConfig == null ? frameworkSnapshotConfig : customConfig.value().newInstance();
 
             // Matcher.quoteReplacement required for Windows
             String testFilename = testClass.getName().replaceAll("\\.", Matcher.quoteReplacement(File.separator)) + ".snap";
 
             File fileUnderTest = new File(testFilename);
-            File snapshotDir = new File(fileUnderTest.getParentFile(), resolvedConfig.getSnapshotFolder());
+            File snapshotDir = new File(fileUnderTest.getParentFile(), snapshotConfig.getSnapshotFolder());
 
             // Support legacy trailing space syntax
-            String testSrcDir = resolvedConfig.getOutputDir();
-            String testSrcDirNoTrailing = testSrcDir.endsWith("/") ? resolvedConfig.getOutputDir().substring(0, testSrcDir.length()-1) : resolvedConfig.getOutputDir();
+            String testSrcDir = snapshotConfig.getOutputDir();
+            String testSrcDirNoTrailing = testSrcDir.endsWith("/") ? testSrcDir.substring(0, testSrcDir.length()-1) : testSrcDir;
             SnapshotFile snapshotFile = new SnapshotFile(
                     testSrcDirNoTrailing,
                     snapshotDir.getPath() + File.separator + fileUnderTest.getName(),
                     testClass,
-                    resolvedConfig::onSaveSnapshotFile
+                    snapshotConfig::onSaveSnapshotFile
             );
 
             SnapshotVerifier snapshotVerifier = new SnapshotVerifier(
                 testClass,
                 snapshotFile,
-                resolvedConfig,
+                snapshotConfig,
                 failOnOrphans
             );
             SNAPSHOT_TEST_IN_PROGRESS.set(true);

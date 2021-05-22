@@ -13,6 +13,45 @@
 **Want a better way?**
 Then java-snapshot-testing might just be what you are looking for! 
 
+## Quick Start
+1. Add test dependencies (Junit5 + gradle example)
+```groovy
+testImplementation 'io.github.origin-energy:java-snapshot-testing-junit5:2.+'
+testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
+testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
+testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
+```
+
+2. Create `snapshot.properties` and configure your global settings. Be sure to set `output-dir` appropriately for you JVM language.
+
+- /src/test/java/resources/snapshot.config
+ ```text
+serializer=au.com.origin.snapshots.serializers.ToStringSnapshotSerializer
+comparator=au.com.origin.snapshots.comparators.PlainTextEqualsComparator
+reporters=au.com.origin.snapshots.reporters.PlainTextSnapshotReporter
+snapshot-dir=__snapshots__
+output-dir=src/test/java
+ci-env-var=CI
+```
+
+3. Enable snapshot testing and write your first test
+```java
+@ExtendWith({SnapshotExtension.class})
+public class MyFirstSnapshotTest {
+
+   @Test
+   public void helloWorldTest() {
+      expect("Hello World").toMatchSnapshot();
+   }
+}
+```
+
+4. Run your test
+
+Bingo - you should now see you snapshot in the `__snapshots__` folder created next to your test.
+Try changing `"Hello World"` to `"Hello Universe"` and watch it fail.
+
 ## Advantages of Snapshot Testing
 - Great for testing JSON interfaces ensuring you don't break clients
 - Fast and easy to test
@@ -30,9 +69,9 @@ platform specific or other non-deterministic data.
 ## Installation [Maven](https://search.maven.org/search?q=java-snapshot-testing)
 
 These docs are for the latest `-SNAPSHOT` version published to maven central.
-Select the branch `release/X.X.X` matching your maven dependency to get correct documentation for your version.
+Select the branch `tags/X.X.X` matching your maven dependency to get correct documentation for your version.
 
-Only if you want to integrate with non supported framework. [Show me how!](#custom-framework)
+Only if you want to integrate with an unsupported framework. [Show me how!](#using-an-unsupported-framework)
 - [Core](https://search.maven.org/search?q=a:java-snapshot-testing-core)
 
 We currently support:
@@ -65,7 +104,7 @@ A text representation of your java object (toString() or JSON).
 
 **String snapshot example**
 ```java
-// By default `.string()` is the default so not strictly required (unless you override the default!)
+// `.string()` is the default so not strictly required (unless you override the default!)
 expect("hello world", "Hello world again!").string().toMatchSnapshot();
 ```
 ```text
@@ -187,6 +226,28 @@ Often your IDE has an excellent file comparison tool.
 
 **Note:** `*.snap.debug` files should never be checked into version control so consider adding it to your `.gitignore`
 
+## snapshot.properties (required as of v2.4.0)
+This file allows you to conveniently setup global defaults
+
+|     key      |  Description                                                                                     |
+|--------------|--------------------------------------------------------------------------------------------------|
+|serializer    | Class name of the [serializer](#supplying-a-custom-snapshotserializer)                           |
+|comparator    | Class name of the [comparator](#supplying-a-custom-snapshotcomparator)                           |
+|reporters     | Comma separated list of class names to use as [reporters](#supplying-a-custom-snapshotreporter)  |
+|snapshot-dir  | Name of sub-folder holding your snapshots                                                        |
+|output-dir    | Base directory of your test files (although it can be a different directory if you want)         |
+|ci-env-var    | Name of environment variable used to detect if we are running on a Build Server                  |
+
+For example:
+ ```text
+serializer=au.com.origin.snapshots.serializers.ToStringSnapshotSerializer
+comparator=au.com.origin.snapshots.comparators.PlainTextEqualsComparator
+reporters=au.com.origin.snapshots.reporters.PlainTextSnapshotReporter
+snapshot-dir=__snapshots__
+output-dir=src/test/java
+ci-env-var=CI
+```
+
 ## Parameterized tests
 In cases where the same test runs multiple times with different parameters you need to set the `scenario` and it must be unique for each run
 
@@ -223,12 +284,14 @@ Currently, we support three different serializers
 | ToStringSnapshotSerializer (default)   | .string()      | uses the `toString()` method                                                                                                | 
 | JacksonSnapshotSerializer              | .json()        | uses [jackson](https://github.com/FasterXML/jackson) to convert a class to a snapshot                                       |
 | DeterministicJacksonSnapshotSerializer | .orderedJson() | extension of JacksonSnapshotSerializer that also orders Collections for situations where the order changes on multiple runs | 
+| Base64SnapshotSerializer               |                | use for images or other binary sources that output a `byte[]`.  The output is encoded to Base64                             |
 
 Serializers are pluggable, so you can write you own by implementing the `SnapshotSerializer` interface.
 
 Serializers are resolved in the following order.
 - (method level) explicitly `expect(...).serializer(ToStringSerializer.class).toMatchSnapshot();`
 - (class level) explicitly `@UseSnapshotConfig` which gets read from the `getSerializer()` method
+- (properties) explicitly via snapshot.properties
 - (global) implicitly via `SnapshotConfig` default for your test framework 
 
 ```java
@@ -263,16 +326,16 @@ Sometimes the default serialization doesn't work for you. An example is Hibernat
 
 You can supply any serializer you like Gson, Jackson or something else.
 
-For example,this following will exclude the rendering of Lists without changing the source code to include `@JsonIgnore`.
+For example, the following will exclude the rendering of Lists without changing the source code to include `@JsonIgnore`.
 This is good because you shouldn't need to add annotations to your source code for testing purposes only.
 
 ```java
 import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer;
 import au.com.originenergy.user.entity.BaseEntity;
 import au.com.originenergy.user.entity.Customer;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreType;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import shadow.com.fasterxml.jackson.annotation.JsonIgnore;
+import shadow.com.fasterxml.jackson.annotation.JsonIgnoreType;
+import shadow.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
 import java.util.List;
@@ -323,8 +386,9 @@ This should work for most cases. Custom implementations of `SnapshotComparator` 
 
 Comparators follow the same resolution order as Serializers
 1. method 
-2. class
-3. global
+1. class
+1. snapshot.properties
+1. global
 
 ### Example: JsonObjectComparator
 The default comparator may be too strict for certain types of data.
