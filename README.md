@@ -13,8 +13,8 @@
 **Want a better way?**
 Then java-snapshot-testing might just be what you are looking for! 
 
-## Quick Start
-1. Add test dependencies (Junit5 + gradle example)
+## Quick Start (Junit5 + Gradle example)
+1. Add test dependencies
 ```groovy
 testImplementation 'io.github.origin-energy:java-snapshot-testing-junit5:2.+'
 testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
@@ -25,7 +25,7 @@ testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.
 
 2. Create `snapshot.properties` and configure your global settings. Be sure to set `output-dir` appropriately for you JVM language.
 
-- /src/test/java/resources/snapshot.config
+- /src/test/java/resources/snapshot.properties
  ```text
 serializer=au.com.origin.snapshots.serializers.ToStringSnapshotSerializer
 comparator=au.com.origin.snapshots.comparators.PlainTextEqualsComparator
@@ -50,7 +50,7 @@ public class MyFirstSnapshotTest {
 4. Run your test
 
 Bingo - you should now see you snapshot in the `__snapshots__` folder created next to your test.
-Try changing `"Hello World"` to `"Hello Universe"` and watch it fail.
+Try changing `"Hello World"` to `"Hello Universe"` and watch it fail with a `.debug` file.
 
 ## Advantages of Snapshot Testing
 - Great for testing JSON interfaces ensuring you don't break clients
@@ -69,7 +69,7 @@ platform specific or other non-deterministic data.
 ## Installation [Maven](https://search.maven.org/search?q=java-snapshot-testing)
 
 These docs are for the latest `-SNAPSHOT` version published to maven central.
-Select the branch `tags/X.X.X` matching your maven dependency to get correct documentation for your version.
+Select the tag `X.X.X` matching your maven dependency to get correct documentation for your version.
 
 Only if you want to integrate with an unsupported framework. [Show me how!](#using-an-unsupported-framework)
 - [Core](https://search.maven.org/search?q=a:java-snapshot-testing-core)
