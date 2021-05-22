@@ -1,5 +1,6 @@
 package au.com.origin.snapshots.spock
 
+import au.com.origin.snapshots.PropertyResolvingSnapshotConfig
 import au.com.origin.snapshots.SnapshotConfig
 import au.com.origin.snapshots.SnapshotConfigInjector
 import au.com.origin.snapshots.SnapshotMatcher
@@ -9,7 +10,7 @@ import org.spockframework.runtime.model.SpecInfo
 class SnapshotExtension extends AbstractAnnotationDrivenExtension<EnableSnapshots> implements SnapshotConfigInjector {
 
     void visitSpecAnnotation(EnableSnapshots annotation, SpecInfo spec) {
-        SnapshotMatcher.start(new SpockSnapshotConfig(),false, spec.reflection)
+        SnapshotMatcher.start(getSnapshotConfig(),false, spec.reflection)
     }
 
     void visitSpec(SpecInfo spec) {
@@ -18,6 +19,6 @@ class SnapshotExtension extends AbstractAnnotationDrivenExtension<EnableSnapshot
 
     @Override
     SnapshotConfig getSnapshotConfig() {
-        return new SpockSnapshotConfig()
+        return new PropertyResolvingSnapshotConfig()
     }
 }

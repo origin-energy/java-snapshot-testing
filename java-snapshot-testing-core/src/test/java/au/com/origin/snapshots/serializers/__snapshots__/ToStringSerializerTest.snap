@@ -1,3 +1,0 @@
-au.com.origin.snapshots.serializers.ToStringSnapshotSerializerTest.canUseSnapshotConfigAnnotationAtClassLevel=[
-ToStringSerializerTest.Dummy(id=1, name=John Doe)
-]

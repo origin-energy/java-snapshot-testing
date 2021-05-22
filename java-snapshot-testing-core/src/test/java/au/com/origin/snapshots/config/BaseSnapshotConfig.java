@@ -3,11 +3,17 @@ package au.com.origin.snapshots.config;
 
 import au.com.origin.snapshots.ReflectionUtilities;
 import au.com.origin.snapshots.SnapshotConfig;
+import au.com.origin.snapshots.comparators.PlainTextEqualsComparator;
+import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
+import au.com.origin.snapshots.reporters.PlainTextSnapshotReporter;
+import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class BaseSnapshotConfig implements SnapshotConfig {
@@ -48,6 +54,16 @@ public class BaseSnapshotConfig implements SnapshotConfig {
     }
 
     @Override
+    public String getOutputDir() {
+        return "src/test/java";
+    }
+
+    @Override
+    public String getSnapshotDir() {
+        return "__snapshots__";
+    }
+
+    @Override
     public Class<?> getTestClass() {
         try {
             return Class.forName(findStackTraceElement().getClassName());
@@ -65,6 +81,16 @@ public class BaseSnapshotConfig implements SnapshotConfig {
     @Override
     public SnapshotSerializer getSerializer() {
         return new JacksonSnapshotSerializer();
+    }
+
+    @Override
+    public SnapshotComparator getComparator() {
+        return new PlainTextEqualsComparator();
+    }
+
+    @Override
+    public List<SnapshotReporter> getReporters() {
+        return Collections.singletonList(new PlainTextSnapshotReporter());
     }
 
     @Override

@@ -1,5 +1,5 @@
 package au.com.origin.snapshots.serializers;
 
 public enum SerializerType {
-    TEXT, JSON;
+    TEXT, JSON, BASE64;
 }

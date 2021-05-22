@@ -1,6 +1,5 @@
 package au.com.origin.snapshots
 
-import au.com.origin.snapshots.spock.SpockSnapshotConfig
 import spock.lang.Specification
 
 class SpockSnapshotConfigSpec extends Specification {
@@ -11,7 +10,7 @@ class SpockSnapshotConfigSpec extends Specification {
 
     def "Should not update snapshot when not passed"() {
         when:
-        def snapshotConfig = new SpockSnapshotConfig()
+        def snapshotConfig = new PropertyResolvingSnapshotConfig()
 
         then:
         !snapshotConfig.updateSnapshot().isPresent()
@@ -22,7 +21,7 @@ class SpockSnapshotConfigSpec extends Specification {
         System.setProperty(SnapshotConfig.JVM_UPDATE_SNAPSHOTS_PARAMETER, 'example')
 
         when:
-        def snapshotConfig = new SpockSnapshotConfig()
+        def snapshotConfig = new PropertyResolvingSnapshotConfig()
 
         then:
         snapshotConfig.updateSnapshot().get() == 'example'

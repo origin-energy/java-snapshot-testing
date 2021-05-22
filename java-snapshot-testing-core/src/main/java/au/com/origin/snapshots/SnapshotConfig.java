@@ -1,15 +1,10 @@
 package au.com.origin.snapshots;
 
-import au.com.origin.snapshots.comparators.PlainTextEqualsComparator;
 import au.com.origin.snapshots.comparators.SnapshotComparator;
-import au.com.origin.snapshots.reporters.PlainTextSnapshotReporter;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
-import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
-import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,19 +14,12 @@ import java.util.Optional;
  *
  * Implement this interface when integrating `java-snapshot-testing` with a custom testing library
  *
- * For frameworks - consider extending the framework implementation instead
  */
 public interface SnapshotConfig {
     String JVM_UPDATE_SNAPSHOTS_PARAMETER = "updateSnapshot";
 
     /**
-     * The base directory where files get written (excluding package directories)
-     * default: "src/test/java"
-     *
-     * You might want to override if you have tests under "src/test/integration" for example
-     *
      * @deprecated Use getOutputDir() instead
-     * @return test src folder
      */
     @Deprecated
     default String getTestDir() {
@@ -46,8 +34,14 @@ public interface SnapshotConfig {
      *
      * @return snapshot output folder
      */
-    default String getOutputDir() {
-        return "src/test/java";
+    String getOutputDir();
+
+    /**
+     * @deprecated - use getSnapshotDir() instead
+     */
+    @Deprecated
+    default String getSnapshotFolder() {
+        return getSnapshotDir();
     }
 
     /**
@@ -55,9 +49,7 @@ public interface SnapshotConfig {
      *
      * @return name of subdirectory
      */
-    default String getSnapshotFolder() {
-        return "__snapshots__";
-    }
+    String getSnapshotDir();
 
     /**
      * Optional
@@ -66,7 +58,9 @@ public interface SnapshotConfig {
      *
      * @return class under test
      */
-    Class<?> getTestClass();
+    default Class<?> getTestClass() {
+        throw new RuntimeException("You forgot to to apply your testing framework annotations/rules for enabling snapshot matching.  See docs related to your framework for details.");
+    }
 
     /**
      * Optional
@@ -76,7 +70,9 @@ public interface SnapshotConfig {
      * @param testClass class under test
      * @return method under tests
      */
-    Method getTestMethod(Class<?> testClass);
+    default Method getTestMethod(Class<?> testClass) {
+        throw new RuntimeException("You forgot to to apply your testing framework annotations/rules for enabling snapshot matching.  See docs related to your framework for details.");
+    }
 
     /**
      * Optional
@@ -93,9 +89,7 @@ public interface SnapshotConfig {
      *
      * @return custom serialization function
      */
-    default SnapshotSerializer getSerializer() {
-        return new ToStringSnapshotSerializer();
-    }
+    SnapshotSerializer getSerializer();
 
     /**
      * Optional
@@ -115,9 +109,7 @@ public interface SnapshotConfig {
      *
      * @return custom comparator function
      */
-    default SnapshotComparator getComparator() {
-        return new PlainTextEqualsComparator();
-    }
+    SnapshotComparator getComparator();
 
     /**
      * Optional
@@ -130,9 +122,7 @@ public interface SnapshotConfig {
      *
      * @return custom reporter functions
      */
-    default List<SnapshotReporter> getReporters() {
-        return Collections.singletonList(new PlainTextSnapshotReporter());
-    }
+    List<SnapshotReporter> getReporters();
 
     /**
      * Optional
@@ -145,12 +135,9 @@ public interface SnapshotConfig {
      * If this method returns true, meaning we're running on a CI environment, no new snapshots are created
      * and an error is thrown instead to prevent tests from silently passing when snapshots are not found.
      *
-     * Default logic to determine if running on a CI environment is to check for the presence of a 'CI' env variable
-     * Override this method if a custom CI detection logic is required.
+     * Often to determine if running on a CI environment is to check for the presence of a 'CI' env variable
      *
      * @return boolean indicating if we're running on a CI environment or not
      */
-    default boolean isCI() {
-        return StringUtils.isNotEmpty(System.getenv("CI"));
-    }
+    boolean isCI();
 }

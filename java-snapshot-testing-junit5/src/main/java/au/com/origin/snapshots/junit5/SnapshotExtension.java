@@ -1,5 +1,6 @@
 package au.com.origin.snapshots.junit5;
 
+import au.com.origin.snapshots.PropertyResolvingSnapshotConfig;
 import au.com.origin.snapshots.SnapshotConfig;
 import au.com.origin.snapshots.SnapshotConfigInjector;
 import au.com.origin.snapshots.SnapshotMatcher;
@@ -38,7 +39,7 @@ public class SnapshotExtension implements AfterAllCallback, BeforeAllCallback, B
 
     @Override
     public SnapshotConfig getSnapshotConfig() {
-        return new JUnit5SnapshotConfig();
+        return new PropertyResolvingSnapshotConfig();
     }
 
 
