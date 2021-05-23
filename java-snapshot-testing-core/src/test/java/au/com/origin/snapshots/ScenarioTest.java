@@ -4,7 +4,8 @@ import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import org.junit.jupiter.api.Test;
 
-import static au.com.origin.snapshots.SnapshotMatcher.*;
+import static au.com.origin.snapshots.SnapshotMatcher.start;
+import static au.com.origin.snapshots.SnapshotMatcher.validateSnapshots;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ScenarioTest {

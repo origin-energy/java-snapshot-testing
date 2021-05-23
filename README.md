@@ -16,11 +16,18 @@ Then java-snapshot-testing might just be what you are looking for!
 ## Quick Start (Junit5 + Gradle example)
 1. Add test dependencies
 ```groovy
+// In this case we are using the JUnit5 testing framework
 testImplementation 'io.github.origin-energy:java-snapshot-testing-junit5:2.+'
+
+// Many will want to serialize into JSON.  In this case you should also add the Jackson plugin
+testImplementation 'io.github.origin-energy:java-snapshot-testing-plugin-jackson:2.+'
 testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
 testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
 testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
 testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
+
+// slf4j logging implementation if you don't already have one
+testImplementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
 ```
 
 2. Create `snapshot.properties` and configure your global settings. Be sure to set `output-dir` appropriately for you JVM language.
@@ -28,6 +35,7 @@ testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.
 - /src/test/java/resources/snapshot.properties
  ```text
 serializer=au.com.origin.snapshots.serializers.ToStringSnapshotSerializer
+serializer.json=au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer
 comparator=au.com.origin.snapshots.comparators.PlainTextEqualsComparator
 reporters=au.com.origin.snapshots.reporters.PlainTextSnapshotReporter
 snapshot-dir=__snapshots__
@@ -43,6 +51,17 @@ public class MyFirstSnapshotTest {
    @Test
    public void helloWorldTest() {
       expect("Hello World").toMatchSnapshot();
+   }
+
+   @Test
+   public void jsonSerializationTest() {
+      Map<String, Object> map = new HashMap<>();
+      map.put("name", "John Doe");
+      map.put("age", 40);
+      
+      expect(map)
+        .serializer("json")
+        .toMatchSnapshot();
    }
 }
 ```
@@ -79,16 +98,17 @@ We currently support:
 - [JUnit5](https://search.maven.org/search?q=a:java-snapshot-testing-junit5)
 - [Spock](https://search.maven.org/search?q=a:java-snapshot-testing-spock)
 
-In addition - for `.json()` tests, you need jackson on your classpath
-
-Gradle example
-```groovy
-    // Required java-snapshot-testing peer dependencies
-   testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
-   testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
-   testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
-   testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
-```
+Plugins
+- [Jackson for JSON serialization](https://search.maven.org/search?q=a:java-snapshot-testing-plugin-jackson)
+  - You need jackson on your classpath
+    Gradle example
+    ```groovy
+        // Required java-snapshot-testing peer dependencies
+       testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
+       testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+       testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
+       testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
+    ```
 
 ## How does it work?
 1. When a test runs for the first time, a `.snap` file is created in a `__snapshots__` sub-directory
@@ -104,8 +124,7 @@ A text representation of your java object (toString() or JSON).
 
 **String snapshot example**
 ```java
-// `.string()` is the default so not strictly required (unless you override the default!)
-expect("hello world", "Hello world again!").string().toMatchSnapshot();
+expect("hello world", "Hello world again!").toMatchSnapshot();
 ```
 ```text
 au.com.example.company.HelloWorldTest.helloWorld=[
@@ -116,7 +135,7 @@ Hello world again!
 
 **JSON Snapshot Example**
 ```java
-expect(userDto).json().toMatchSnapshot();
+expect(userDto).serializer("json").toMatchSnapshot();
 ```
 ```text
 au.com.example.company.UserEndpointTest.shouldReturnCustomerData=[
@@ -229,18 +248,20 @@ Often your IDE has an excellent file comparison tool.
 ## snapshot.properties (required as of v2.4.0)
 This file allows you to conveniently setup global defaults
 
-|     key      |  Description                                                                                     |
-|--------------|--------------------------------------------------------------------------------------------------|
-|serializer    | Class name of the [serializer](#supplying-a-custom-snapshotserializer)                           |
-|comparator    | Class name of the [comparator](#supplying-a-custom-snapshotcomparator)                           |
-|reporters     | Comma separated list of class names to use as [reporters](#supplying-a-custom-snapshotreporter)  |
-|snapshot-dir  | Name of sub-folder holding your snapshots                                                        |
-|output-dir    | Base directory of your test files (although it can be a different directory if you want)         |
-|ci-env-var    | Name of environment variable used to detect if we are running on a Build Server                  |
+|     key          |  Description                                                                                                   |
+|------------------|----------------------------------------------------------------------------------------------------------------|
+|serializer        | Class name of the [serializer](#supplying-a-custom-snapshotserializer), default serializer                     |
+|serializer.{name} | Class name of the [serializer](#supplying-a-custom-snapshotserializer), accessible via `.serializer("{name}")` |
+|comparator        | Class name of the [comparator](#supplying-a-custom-snapshotcomparator)                                         |
+|reporters         | Comma separated list of class names to use as [reporters](#supplying-a-custom-snapshotreporter)                |
+|snapshot-dir      | Name of sub-folder holding your snapshots                                                                      |
+|output-dir        | Base directory of your test files (although it can be a different directory if you want)                       |
+|ci-env-var        | Name of environment variable used to detect if we are running on a Build Server                                |
 
 For example:
  ```text
 serializer=au.com.origin.snapshots.serializers.ToStringSnapshotSerializer
+serializer.json=au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer
 comparator=au.com.origin.snapshots.comparators.PlainTextEqualsComparator
 reporters=au.com.origin.snapshots.reporters.PlainTextSnapshotReporter
 snapshot-dir=__snapshots__
@@ -279,30 +300,34 @@ The serializer determines how a class gets converted into a string.
 
 Currently, we support three different serializers
 
-| Serializer                             | Alias          | Description                                                                                                                 |
-|----------------------------------------|----------------|-----------------------------------------------------------------------------------------------------------------------------|
-| ToStringSnapshotSerializer (default)   | .string()      | uses the `toString()` method                                                                                                | 
-| JacksonSnapshotSerializer              | .json()        | uses [jackson](https://github.com/FasterXML/jackson) to convert a class to a snapshot                                       |
-| DeterministicJacksonSnapshotSerializer | .orderedJson() | extension of JacksonSnapshotSerializer that also orders Collections for situations where the order changes on multiple runs | 
-| Base64SnapshotSerializer               |                | use for images or other binary sources that output a `byte[]`.  The output is encoded to Base64                             |
+### Shipped with core
+| Serializer                             | Description                                                                                                                 |
+|----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| ToStringSnapshotSerializer             | uses the `toString()` method                                                                                                | 
+| Base64SnapshotSerializer               | use for images or other binary sources that output a `byte[]`.  The output is encoded to Base64                             |
+
+### Shipped with Jackson plugin
+| Serializer                             | Description                                                                                                                 |
+|----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| JacksonSnapshotSerializer              | uses [jackson](https://github.com/FasterXML/jackson) to convert a class to a snapshot                                       |
+| DeterministicJacksonSnapshotSerializer | extension of JacksonSnapshotSerializer that also orders Collections for situations where the order changes on multiple runs | 
 
 Serializers are pluggable, so you can write you own by implementing the `SnapshotSerializer` interface.
 
 Serializers are resolved in the following order.
-- (method level) explicitly `expect(...).serializer(ToStringSerializer.class).toMatchSnapshot();`
+- (method level) explicitly `expect(...).serializer(ToStringSerializer.class).toMatchSnapshot();` or via property file `expect(...).serializer("json").toMatchSnapshot();`
 - (class level) explicitly `@UseSnapshotConfig` which gets read from the `getSerializer()` method
-- (properties) explicitly via snapshot.properties
-- (global) implicitly via `SnapshotConfig` default for your test framework 
+- (properties) implicitly via `snapshot.properties`
 
 ```java
 @ExtendWith(SnapshotExtension.class)
 @UseSnapshotConfig(LowercaseToStringSnapshotConfig.class)
 public class SnapshotExtensionUsedTest {
-
+   
     @Test
     public void aliasMethodTest() {
         expect(new TestObject())
-                .orderedJson() // <------ Using alias() method
+                .serializer("json") // <------ Using snapshot.properties
                 .toMatchSnapshot();
     }
 
@@ -388,7 +413,6 @@ Comparators follow the same resolution order as Serializers
 1. method 
 1. class
 1. snapshot.properties
-1. global
 
 ### Example: JsonObjectComparator
 The default comparator may be too strict for certain types of data.

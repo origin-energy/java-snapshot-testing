@@ -1,67 +1,15 @@
 au.com.origin.snapshots.SnapshotUtilsTest.shouldExtractArgsFromFakeMethod=[
-  {
-    "FakeObject.fakeMethod": [
-      {
-        "arg0": "test1",
-        "arg1": 1,
-        "arg2": [
-          "listTest1"
-        ]
-      },
-      {
-        "arg0": "test2",
-        "arg1": 2,
-        "arg2": [
-          "listTest1",
-          "listTest2"
-        ]
-      }
-    ]
-  }
+{FakeObject.fakeMethod=[{arg0=test1, arg1=1, arg2=[listTest1]}, {arg0=test2, arg1=2, arg2=[listTest1, listTest2]}]}
 ]
 
 
 au.com.origin.snapshots.SnapshotUtilsTest.shouldExtractArgsFromFakeMethodWithComplexFakeObject=[
-  {
-    "FakeObject.fakeMethodWithComplexObject": [
-      {
-        "arg0": {
-          "id": "idMock"
-        }
-      }
-    ]
-  },
-  {
-    "FakeObject.fakeMethodWithComplexObject": [
-      {
-        "arg0": {
-          "id": "idMock",
-          "name": "nameMock"
-        }
-      }
-    ]
-  }
+{FakeObject.fakeMethodWithComplexObject=[{arg0=FakeObject(id=idMock, value=null, name=null, fakeObject=null)}]}
+{FakeObject.fakeMethodWithComplexObject=[{arg0=FakeObject(id=idMock, value=null, name=nameMock, fakeObject=null)}]}
 ]
 
 
 au.com.origin.snapshots.SnapshotUtilsTest.shouldExtractArgsFromFakeMethodWithComplexObject=[
-  {
-    "FakeObject.fakeMethodWithComplexFakeObject": [
-      {
-        "arg0": {
-          "id": "idMock"
-        }
-      }
-    ]
-  },
-  {
-    "FakeObject.fakeMethodWithComplexFakeObject": [
-      {
-        "arg0": {
-          "id": "idMock",
-          "name": "nameMock"
-        }
-      }
-    ]
-  }
+{FakeObject.fakeMethodWithComplexFakeObject=[{arg0=FakeObject(id=idMock, value=null, name=null, fakeObject=null)}]}
+{FakeObject.fakeMethodWithComplexFakeObject=[{arg0=FakeObject(id=idMock, value=null, name=nameMock, fakeObject=null)}]}
 ]

@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * This Serializer converts a byte[] into a base64 encoded string.  If the input is not
+ * a byte[] it will be converted using `.getBytes()` method
+ */
 public class Base64SnapshotSerializer implements SnapshotSerializer {
   private static final ToStringSnapshotSerializer toStringSnapshotSerializer =
       new ToStringSnapshotSerializer();

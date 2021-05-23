@@ -3,7 +3,10 @@ package au.com.origin.snapshots;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -27,20 +30,12 @@ public class UpdateSnapshotPropertyTest {
   public void afterEach() throws Exception {
     File file = new File("src/test/java/au/com/origin/snapshots/__snapshots__/UpdateSnapshotPropertyTest.snap");
     String content = "au.com.origin.snapshots.UpdateSnapshotPropertyTest.shouldNotUpdateSnapshot=[\n" +
-            "  {\n" +
-            "    \"id\": \"ERROR\",\n" +
-            "    \"value\": 1,\n" +
-            "    \"name\": \"anyName1\"\n" +
-            "  }\n" +
+            "FakeObject(id=ERROR, value=1, name=anyName1, fakeObject=null)\n"+
             "]\n" +
             "\n" +
             "\n" +
             "au.com.origin.snapshots.UpdateSnapshotPropertyTest.shouldUpdateSnapshot=[\n" +
-            "  {\n" +
-            "    \"id\": \"ERROR\",\n" +
-            "    \"value\": 1,\n" +
-            "    \"name\": \"anyName1\"\n" +
-            "  }\n" +
+            "FakeObject(id=ERROR, value=2, name=anyName2, fakeObject=null)\n"+
             "]";
     Files.write(file.toPath(), content.getBytes());
   }
@@ -54,20 +49,12 @@ public class UpdateSnapshotPropertyTest {
     String content = new String(Files.readAllBytes(Paths.get("src/test/java/au/com/origin/snapshots/__snapshots__/UpdateSnapshotPropertyTest.snap")));
     Assertions.assertThat(content).isEqualTo(
             "au.com.origin.snapshots.UpdateSnapshotPropertyTest.shouldNotUpdateSnapshot=[\n" +
-            "  {\n" +
-            "    \"id\": \"ERROR\",\n" +
-            "    \"value\": 1,\n" +
-            "    \"name\": \"anyName1\"\n" +
-            "  }\n" +
+            "FakeObject(id=ERROR, value=1, name=anyName1, fakeObject=null)\n"+
             "]\n" +
             "\n" +
             "\n" +
             "au.com.origin.snapshots.UpdateSnapshotPropertyTest.shouldUpdateSnapshot=[\n" +
-            "  {\n" +
-            "    \"id\": \"anyId2\",\n" +
-            "    \"value\": 2,\n" +
-            "    \"name\": \"anyName2\"\n" +
-            "  }\n" +
+            "FakeObject(id=anyId2, value=2, name=anyName2, fakeObject=null)\n"+
             "]"
     );
   }
@@ -82,7 +69,7 @@ public class UpdateSnapshotPropertyTest {
   @Test
   void shouldNotUpdateSnapshot() {
     start(new BaseSnapshotConfig());
-    System.setProperty(SnapshotConfig.JVM_UPDATE_SNAPSHOTS_PARAMETER, "ClassNotFound");
+    System.setProperty(SnapshotConfig.JVM_UPDATE_SNAPSHOTS_PARAMETER, "true");
     assertThrows(
             SnapshotMatchException.class,
             expect(FakeObject.builder().id("anyId1").value(1).name("anyName1").build())::toMatchSnapshot,

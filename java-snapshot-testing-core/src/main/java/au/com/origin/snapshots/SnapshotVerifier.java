@@ -5,14 +5,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.util.Arrays.isNullOrEmpty;
 
@@ -60,7 +60,7 @@ public class SnapshotVerifier {
         }
         if (unusedRawSnapshots.size() > 0) {
             String errorMessage = "All unused Snapshots:\n"
-                    + StringUtils.join(unusedRawSnapshots, "\n")
+                    + String.join("\n", unusedRawSnapshots)
                     + "\n\nHave you deleted tests? Have you renamed a test method?";
             if (failOnOrphans) {
                 log.warn(errorMessage);
@@ -76,7 +76,8 @@ public class SnapshotVerifier {
         Object[] objects = new Object[1];
         objects[0] = firstObject;
         if (!isNullOrEmpty(others)) {
-            objects = ArrayUtils.addAll(objects, others);
+            objects = Stream.concat(Arrays.stream(objects), Arrays.stream(others))
+                .toArray(Object[]::new);
         }
         return objects;
     }

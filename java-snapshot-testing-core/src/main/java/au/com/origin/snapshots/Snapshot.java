@@ -3,13 +3,12 @@ package au.com.origin.snapshots;
 import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
-import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer;
-import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
-import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.With;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -77,6 +76,17 @@ public class Snapshot {
     }
 
     /**
+     * Apply a custom serializer for this snapshot
+     *
+     * @param name - the {name} attribute serializer.{name} from snapshot.properties
+     * @return Snapshot
+     */
+    public Snapshot serializer(String name) {
+        this.snapshotSerializer = SnapshotProperties.getInstance("serializer." + name);
+        return this;
+    }
+
+    /**
      * Apply a custom comparator for this snapshot
      *
      * @param comparator your custom comparator
@@ -100,31 +110,12 @@ public class Snapshot {
     }
 
     /**
-     * Alias for serializer(new ToStringSerializer())
-     * @return Snapshot
-     */
-    public Snapshot string() {
-        return serializer(new ToStringSnapshotSerializer());
-    }
-
-    /**
-     * Alias for serializer(new JacksonSnapshotSerializer())
-     * @return Snapshot
-     */
-    public Snapshot json() {
-        return serializer(new JacksonSnapshotSerializer());
-    }
-
-    /**
-     * Alias for serializer(new DeterministicJacksonSnapshotSerializer())
-     * @return Snapshot
-     */
-    public Snapshot orderedJson() {
-        return serializer(new DeterministicJacksonSnapshotSerializer());
-    }
-
-    /**
-     * Apply a custom serializer for this snapshot
+     * Apply a custom serializer for this snapshot.
+     * @see au.com.origin.snapshots.serializers.SnapshotSerializer
+     *
+     * Example implementations
+     * @see au.com.origin.snapshots.serializers.ToStringSnapshotSerializer
+     * @see au.com.origin.snapshots.serializers.Base64SnapshotSerializer
      *
      * @param serializer your custom serializer
      * @return this
@@ -212,7 +203,7 @@ public class Snapshot {
     }
 
     String getSnapshotName() {
-        String scenarioFormat = StringUtils.isBlank(scenario) ? "" : "[" + scenario + "]";
+        String scenarioFormat = scenario  == null ? "" : "[" + scenario + "]";
         return testClass.getName() + "." + testMethod.getName() + scenarioFormat + "=";
     }
 }

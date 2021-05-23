@@ -1,8 +1,9 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
-import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
+import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
+import au.com.origin.snapshots.serializers.UppercaseToStringSerializer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -54,11 +55,6 @@ public class SnapshotIntegrationTest {
     matchInsidePrivate();
   }
 
-  private void matchInsidePrivate() {
-    expect(FakeObject.builder().id("anyPrivate").value(5).name("anyPrivate").build())
-        .toMatchSnapshot();
-  }
-
   @Test
   void shouldThrowSnapshotMatchException() {
     assertThrows(
@@ -69,13 +65,18 @@ public class SnapshotIntegrationTest {
   }
 
   @Test
-  void shouldThrowStackOverflowError() {
-    // Create cycle JSON
-    FakeObject fakeObject1 = FakeObject.builder().id("anyId1").value(1).name("anyName1").build();
-    FakeObject fakeObject2 = FakeObject.builder().id("anyId2").value(2).name("anyName2").build();
-    fakeObject1.setFakeObject(fakeObject2);
-    fakeObject2.setFakeObject(fakeObject1);
-
-    assertThrows(SnapshotExtensionException.class, () -> expect(fakeObject1).toMatchSnapshot());
+  void shouldSnapshotUsingSerializerClass() {
+    expect("Hello World").serializer(UppercaseToStringSerializer.class).toMatchSnapshot();
   }
+
+  @Test
+  void shouldSnapshotUsingSerializerPropertyName() {
+    expect("Hello World").serializer("lowercase").toMatchSnapshot();
+  }
+
+  private void matchInsidePrivate() {
+    expect(FakeObject.builder().id("anyPrivate").value(5).name("anyPrivate").build())
+        .toMatchSnapshot();
+  }
+
 }

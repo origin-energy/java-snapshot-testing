@@ -19,14 +19,6 @@ public interface SnapshotConfig {
     String JVM_UPDATE_SNAPSHOTS_PARAMETER = "updateSnapshot";
 
     /**
-     * @deprecated Use getOutputDir() instead
-     */
-    @Deprecated
-    default String getTestDir() {
-        return getOutputDir();
-    }
-
-    /**
      * The base directory where files get written (excluding package directories)
      * default: "src/test/java"
      *
@@ -35,14 +27,6 @@ public interface SnapshotConfig {
      * @return snapshot output folder
      */
     String getOutputDir();
-
-    /**
-     * @deprecated - use getSnapshotDir() instead
-     */
-    @Deprecated
-    default String getSnapshotFolder() {
-        return getSnapshotDir();
-    }
 
     /**
      * Subdirectory to store snapshots in

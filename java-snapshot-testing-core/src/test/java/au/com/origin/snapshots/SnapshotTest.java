@@ -3,8 +3,8 @@ package au.com.origin.snapshots;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
-import au.com.origin.snapshots.serializers.*;
-import lombok.*;
+import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
+import lombok.SneakyThrows;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +17,10 @@ import org.opentest4j.AssertionFailedError;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,7 +34,7 @@ class SnapshotTest {
   private static final SnapshotConfig DEFAULT_CONFIG = new BaseSnapshotConfig();
   private static final String FILE_PATH = "src/test/java/anyFilePath";
   private static final String SNAPSHOT_NAME = "java.lang.String.toString=";
-  private static final String SNAPSHOT = "java.lang.String.toString=[\n  \"anyObject\"\n]";
+  private static final String SNAPSHOT = "java.lang.String.toString=[\nanyObject\n]";
 
   private SnapshotFile snapshotFile;
 
@@ -83,7 +86,7 @@ class SnapshotTest {
             snapshotFile,
             String.class,
             String.class.getDeclaredMethod("toString"),
-                new JacksonSnapshotSerializer(),
+                new ToStringSnapshotSerializer(),
             "anyObject").scenario("hello world");
     assertThat(snapshotWithScenario.getSnapshotName())
         .isEqualTo("java.lang.String.toString[hello world]=");
@@ -99,7 +102,7 @@ class SnapshotTest {
             String.class,
             String.class.getDeclaredMethod("toString"),
             null,
-            new JacksonSnapshotSerializer(),
+            new ToStringSnapshotSerializer(),
             "anyObject");
     assertThat(snapshotWithoutScenario.getSnapshotName()).isEqualTo("java.lang.String.toString=");
   }
@@ -109,7 +112,7 @@ class SnapshotTest {
   void shouldOverwriteSnapshotsWhenParamIsPassed() {
     SnapshotConfig mockConfig = Mockito.mock(SnapshotConfig.class);
     Mockito.when(mockConfig.updateSnapshot()).thenReturn(Optional.of(""));
-    Mockito.when(mockConfig.getSerializer()).thenReturn(new JacksonSnapshotSerializer());
+    Mockito.when(mockConfig.getSerializer()).thenReturn(new ToStringSnapshotSerializer());
     SnapshotFile snapshotFile = Mockito.mock(SnapshotFile.class);
     Set<String> set = new HashSet<>();
     set.add("java.lang.String.toString[hello world]=[{" + "\"a\": \"b\"" + "}]");
@@ -124,7 +127,7 @@ class SnapshotTest {
             "anyObject").scenario("hello world");
     snapshot.toMatchSnapshot();
     Mockito.verify(snapshotFile)
-        .push("java.lang.String.toString[hello world]=[\n" + "  \"anyObject\"\n" + "]");
+        .push("java.lang.String.toString[hello world]=[\nanyObject\n]");
   }
 
   @SneakyThrows
@@ -181,7 +184,7 @@ class SnapshotTest {
       Snapshot failingSnapshot = snapshot
               .withCurrent(new Object[]{"hola"})
               .withSnapshotFile(snapshotFile)
-              .serializer(new DeterministicJacksonSnapshotSerializer())
+              .serializer(new ToStringSnapshotSerializer())
               .reporters(reporters.toArray(SnapshotReporter[]::new));
 
       try {

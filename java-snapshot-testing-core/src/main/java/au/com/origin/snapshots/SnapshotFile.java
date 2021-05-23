@@ -3,10 +3,12 @@ package au.com.origin.snapshots;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiFunction;
@@ -14,9 +16,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
-class SnapshotFile {
+public class SnapshotFile {
 
-    private static final String SPLIT_STRING = "\n\n\n";
+    public static final String SPLIT_STRING = "\n\n\n";
 
     private final String fileName;
     private final Class<?> testClass;
@@ -46,7 +48,7 @@ class SnapshotFile {
             }
 
             String fileText = fileContent.toString();
-            if (StringUtils.isNotBlank(fileText)) {
+            if (!"".equals(fileText.trim())) {
                 rawSnapshots =
                     Stream.of(fileContent.toString().split(SPLIT_STRING))
                         .map(String::trim)
@@ -104,7 +106,7 @@ class SnapshotFile {
         File file = createFileIfNotExists();
 
         try (FileOutputStream fileStream = new FileOutputStream(file, false)) {
-            byte[] myBytes = StringUtils.join(rawSnapshots, SPLIT_STRING).getBytes();
+            byte[] myBytes = String.join(SPLIT_STRING, rawSnapshots).getBytes();
             fileStream.write(myBytes);
         } catch (IOException e) {
             e.printStackTrace();
