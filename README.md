@@ -49,7 +49,7 @@ ci-env-var=CI
 public class MyFirstSnapshotTest {
 
    @Test
-   public void helloWorldTest() {
+   public void toStringSerializationTest() {
       expect("Hello World").toMatchSnapshot();
    }
 
@@ -160,13 +160,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class SnapshotExtensionUsedTest {
 
     @Test
-    public void shouldUseExtension() {
+    public void myTest1() {
         // Verify your snapshot
         SnapshotMatcher.expect("Hello World").toMatchSnapshot();
     }
 
     @Test
-    public void exampleSnapshot() {
+    public void myTest2() {
         SnapshotMatcher.expect("Hello World Again").toMatchSnapshot();
     }
 }
@@ -186,13 +186,13 @@ public class SnapshotRuleUsedTest {
     @Rule public SnapshotRule snapshotRule = new SnapshotRule();
 
     @Test
-    public void shouldUseExtension() {
+    public void myTest1() {
         // Verify your snapshot
         SnapshotMatcher.expect("Hello World").toMatchSnapshot();
     }
 
     @Test
-    public void shouldUseExtensionAgain() {
+    public void myTest2() {
         SnapshotMatcher.expect("Hello World Again").toMatchSnapshot();
     }
 }
