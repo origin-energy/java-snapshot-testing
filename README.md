@@ -30,7 +30,7 @@ testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.
 testImplementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
 ```
 
-2. Create `snapshot.properties` and configure your global settings. Be sure to set `output-dir` appropriately for your JVM language.
+2. Create `snapshot.properties` and configure your global settings. Be sure to set `output-dir` appropriately for you JVM language.
 
 - /src/test/java/resources/snapshot.properties
  ```text
@@ -49,7 +49,7 @@ ci-env-var=CI
 public class MyFirstSnapshotTest {
 
    @Test
-   public void helloWorldTest() {
+   public void toStringSerializationTest() {
       expect("Hello World").toMatchSnapshot();
    }
 
@@ -160,13 +160,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class SnapshotExtensionUsedTest {
 
     @Test
-    public void shouldUseExtension() {
+    public void myTest1() {
         // Verify your snapshot
         SnapshotMatcher.expect("Hello World").toMatchSnapshot();
     }
 
     @Test
-    public void exampleSnapshot() {
+    public void myTest2() {
         SnapshotMatcher.expect("Hello World Again").toMatchSnapshot();
     }
 }
@@ -186,13 +186,13 @@ public class SnapshotRuleUsedTest {
     @Rule public SnapshotRule snapshotRule = new SnapshotRule();
 
     @Test
-    public void shouldUseExtension() {
+    public void myTest1() {
         // Verify your snapshot
         SnapshotMatcher.expect("Hello World").toMatchSnapshot();
     }
 
     @Test
-    public void shouldUseExtensionAgain() {
+    public void myTest2() {
         SnapshotMatcher.expect("Hello World Again").toMatchSnapshot();
     }
 }
