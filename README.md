@@ -30,7 +30,7 @@ testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.
 testImplementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
 ```
 
-2. Create `snapshot.properties` and configure your global settings. Be sure to set `output-dir` appropriately for you JVM language.
+2. Create `snapshot.properties` and configure your global settings. Be sure to set `output-dir` appropriately for your JVM language.
 
 - /src/test/java/resources/snapshot.properties
  ```text
