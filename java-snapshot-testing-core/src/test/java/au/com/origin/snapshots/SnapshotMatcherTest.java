@@ -1,7 +1,6 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,20 +29,20 @@ class SnapshotMatcherTest {
   static void afterAll() throws IOException {
     SnapshotMatcher.validateSnapshots();
     File f = new File(FILE_PATH);
-    assertThat(StringUtils.join(Files.readAllLines(f.toPath()), "\n"))
+    assertThat(String.join("\n", Files.readAllLines(f.toPath())))
         .isEqualTo(
             "au.com.origin.snapshots.SnapshotMatcherTest.should1ShowSnapshotSuccessfully=[\n"
-                + "  \"any type of object\"\n"
+                + "any type of object\n"
                 + "]\n\n\n"
                 + "au.com.origin.snapshots.SnapshotMatcherTest.should2SecondSnapshotExecutionSuccessfully=[\n"
-                + "  \"any second type of object\",\n"
-                + "  \"any third type of object\"\n"
+                + "any second type of object\n"
+                + "any third type of object\n"
                 + "]");
     Files.delete(Paths.get(FILE_PATH));
   }
 
   @Test
-  void should1ShowSnapshotSuccessfully() throws IOException {
+  void should1ShowSnapshotSuccessfully() {
     SnapshotMatcher.expect("any type of object").toMatchSnapshot();
     File f = new File(FILE_PATH);
     if (!f.exists() || f.isDirectory()) {
@@ -52,7 +51,7 @@ class SnapshotMatcherTest {
   }
 
   @Test
-  void should2SecondSnapshotExecutionSuccessfully() throws IOException {
+  void should2SecondSnapshotExecutionSuccessfully() {
     SnapshotMatcher.expect("any second type of object", "any third type of object")
             .toMatchSnapshot();
     File f = new File(FILE_PATH);

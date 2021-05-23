@@ -43,7 +43,7 @@ public class SnapshotMatcher {
             String testFilename = testClass.getName().replaceAll("\\.", Matcher.quoteReplacement(File.separator)) + ".snap";
 
             File fileUnderTest = new File(testFilename);
-            File snapshotDir = new File(fileUnderTest.getParentFile(), snapshotConfig.getSnapshotFolder());
+            File snapshotDir = new File(fileUnderTest.getParentFile(), snapshotConfig.getSnapshotDir());
 
             // Support legacy trailing space syntax
             String testSrcDir = snapshotConfig.getOutputDir();

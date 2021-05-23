@@ -1,12 +1,10 @@
 package au.com.origin.snapshots;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
+@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

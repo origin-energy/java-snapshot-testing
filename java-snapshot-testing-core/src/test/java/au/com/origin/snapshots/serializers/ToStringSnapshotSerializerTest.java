@@ -38,6 +38,12 @@ public class ToStringSnapshotSerializerTest {
         assertThat(serializer.getOutputFormat()).isEqualTo("TEXT");
     }
 
+    @Test
+    void shouldReplaceThreeConsecutiveNewLines() {
+        String result = serializer.apply(new Object[] { "John\n\n\nDoe" });
+        assertThat(result).isEqualTo("[\nJohn\n.\n.\nDoe\n]");
+    }
+
     @AllArgsConstructor
     @Data
     private static class Dummy {

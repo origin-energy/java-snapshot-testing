@@ -23,7 +23,6 @@ subprojects { subproject ->
     shadowJar {
         classifier = ''
         relocate 'org.assertj', 'shadow.org.assertj'
-        relocate 'org.apache.commons', 'shadow.org.apache.commons'
     }
 
     dependencies {

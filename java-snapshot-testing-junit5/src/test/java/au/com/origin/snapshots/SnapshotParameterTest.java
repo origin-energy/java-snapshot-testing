@@ -1,6 +1,7 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.junit5.SnapshotExtension;
+import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -17,7 +18,7 @@ class SnapshotParameterTest {
         SnapshotMatcher.expect("Duplicates are OK").toMatchSnapshot();
         SnapshotMatcher.expect("Duplicates are OK").toMatchSnapshot();
         SnapshotMatcher.expect("Additional snapshots need to include a scenario").scenario("Scenario1").toMatchSnapshot();
-        SnapshotMatcher.expect(testInput).json().scenario(scenario).toMatchSnapshot();
+        SnapshotMatcher.expect(testInput).serializer(JacksonSnapshotSerializer.class).scenario(scenario).toMatchSnapshot();
     }
 
     static Stream<Arguments> testData() {

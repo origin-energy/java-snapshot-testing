@@ -1,24 +1,19 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
-import au.com.origin.snapshots.config.ToStringSnapshotConfig;
-import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
+import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static au.com.origin.snapshots.SnapshotMatcher.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class onSaveSnapshotFileTest {
 
@@ -42,11 +37,11 @@ public class onSaveSnapshotFileTest {
         assertFalse(Files.exists(Paths.get(SNAPSHOT_FILE_PATH)));
 
         start(CUSTOM_SNAPSHOT_CONFIG);
-        expect("Hello World").string().toMatchSnapshot();
+        expect("Hello World").serializer(ToStringSnapshotSerializer.class).toMatchSnapshot();
         validateSnapshots();
 
         File f = new File(SNAPSHOT_FILE_PATH);
-        assertThat(StringUtils.join(Files.readAllLines(f.toPath()), "\n"))
+        assertThat(String.join("\n", Files.readAllLines(f.toPath())))
                 .isEqualTo(
                     "HEADER\n"
                     + "au.com.origin.snapshots.onSaveSnapshotFileTest.shouldAllowFileModificationsBeforeFinishingTest=[\n"

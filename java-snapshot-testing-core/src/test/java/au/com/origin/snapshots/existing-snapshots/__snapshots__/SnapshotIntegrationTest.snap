@@ -1,52 +1,37 @@
 au.com.origin.snapshots.SnapshotIntegrationTest.shouldMatchSnapshotFour=[
-  {
-    "id": "anyId4",
-    "value": 4,
-    "name": "any\n\n\nName4"
-  }
+FakeObject(id=anyId4, value=4, name=any
+.
+.
+Name4, fakeObject=null)
 ]
 
 
 au.com.origin.snapshots.SnapshotIntegrationTest.shouldMatchSnapshotInsidePrivateMethod=[
-  {
-    "id": "anyPrivate",
-    "value": 5,
-    "name": "anyPrivate"
-  }
+FakeObject(id=anyPrivate, value=5, name=anyPrivate, fakeObject=null)
 ]
 
 
 au.com.origin.snapshots.SnapshotIntegrationTest.shouldMatchSnapshotOne=[
-  {
-    "id": "anyId1",
-    "value": 1,
-    "name": "anyName1"
-  }
+FakeObject(id=anyId1, value=1, name=anyName1, fakeObject=null)
 ]
 
 
 au.com.origin.snapshots.SnapshotIntegrationTest.shouldMatchSnapshotThree=[
-  {
-    "id": "anyId3",
-    "value": 3,
-    "name": "anyName3"
-  }
+FakeObject(id=anyId3, value=3, name=anyName3, fakeObject=null)
 ]
 
 
 au.com.origin.snapshots.SnapshotIntegrationTest.shouldMatchSnapshotTwo=[
-  {
-    "id": "anyId2",
-    "value": 2,
-    "name": "anyName2"
-  }
+FakeObject(id=anyId2, value=2, name=anyName2, fakeObject=null)
 ]
 
 
+au.com.origin.snapshots.SnapshotIntegrationTest.shouldSnapshotUsingSerializerClass=HELLO WORLD
+
+
+au.com.origin.snapshots.SnapshotIntegrationTest.shouldSnapshotUsingSerializerPropertyName=hello world
+
+
 au.com.origin.snapshots.SnapshotIntegrationTest.shouldThrowSnapshotMatchException=[
-  {
-    "id": "anyId5",
-    "value": 7,
-    "name": "anyName5"
-  }
+FakeObject(id=anyId5, value=7, name=anyName5, fakeObject=null)
 ]

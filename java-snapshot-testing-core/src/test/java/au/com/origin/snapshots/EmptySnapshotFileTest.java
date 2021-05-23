@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static au.com.origin.snapshots.SnapshotMatcher.*;
+import static au.com.origin.snapshots.SnapshotMatcher.start;
+import static au.com.origin.snapshots.SnapshotMatcher.validateSnapshots;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EmptySnapshotFileTest {

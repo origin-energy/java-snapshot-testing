@@ -1,21 +1,27 @@
 apply from: "../gradle/publishing.gradle"
 
 dependencies {
-    implementation project(':java-snapshot-testing-core')
+    compileOnly project(':java-snapshot-testing-core')
+
+    // Client needs to supply their own versions
+    compileOnly 'com.fasterxml.jackson.core:jackson-core:2.11.3'
+    compileOnly 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+    compileOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
+    compileOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
+    compileOnly 'org.slf4j:slf4j-api:2.0.0-alpha0'
 
     // User supplied Junit5 version
     compileOnly 'org.junit.jupiter:junit-jupiter-api:5.3.2'
     compileOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
 
     // Testing
+    testImplementation project(':java-snapshot-testing-core')
     testImplementation 'org.slf4j:slf4j-simple:2.0.0-alpha0'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.3.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
     testImplementation 'org.assertj:assertj-core:3.11.1'
 
-    // Required java-snapshot-testing peer dependencies
-    testImplementation project(':java-snapshot-testing-plugin-jackson')
     testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
     testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
     testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
@@ -29,7 +35,7 @@ publishing {
         myPublication(MavenPublication) {
             artifact shadowJar
             groupId 'io.github.origin-energy'
-            artifactId 'java-snapshot-testing-junit5'
+            artifactId 'java-snapshot-testing-plugin-jackson'
         }
     }
 }

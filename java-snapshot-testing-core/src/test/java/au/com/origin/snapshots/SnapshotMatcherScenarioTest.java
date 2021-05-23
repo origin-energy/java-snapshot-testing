@@ -1,7 +1,6 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,14 +29,14 @@ class SnapshotMatcherScenarioTest {
   static void afterAll() throws IOException {
     SnapshotMatcher.validateSnapshots();
     File f = new File(FILE_PATH);
-    assertThat(StringUtils.join(Files.readAllLines(f.toPath()), "\n"))
+    assertThat(String.join("\n", Files.readAllLines(f.toPath())))
         .isEqualTo(
             "au.com.origin.snapshots.SnapshotMatcherScenarioTest.should1ShowSnapshotSuccessfully[Scenario A]=[\n"
-                + "  \"any type of object\"\n"
+                + "any type of object\n"
                 + "]\n\n\n"
                 + "au.com.origin.snapshots.SnapshotMatcherScenarioTest.should2SecondSnapshotExecutionSuccessfully[Scenario B]=[\n"
-                + "  \"any second type of object\",\n"
-                + "  \"any third type of object\"\n"
+                + "any second type of object\n"
+                + "any third type of object\n"
                 + "]");
     Files.delete(Paths.get(FILE_PATH));
   }
