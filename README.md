@@ -30,7 +30,7 @@ testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.
 testImplementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
 ```
 
-2. Create `snapshot.properties` and configure your global settings. Be sure to set `output-dir` appropriately for you JVM language.
+2. Create `snapshot.properties` and configure your global settings. Be sure to set `output-dir` appropriately for your JVM language.
 
 - /src/test/java/resources/snapshot.properties
  ```text
@@ -45,31 +45,54 @@ ci-env-var=CI
 
 3. Enable snapshot testing and write your first test
 ```java
+import au.com.origin.snapshots.junit5.SnapshotExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static au.com.origin.snapshots.SnapshotMatcher.expect;
+
 @ExtendWith({SnapshotExtension.class})
 public class MyFirstSnapshotTest {
 
-   @Test
-   public void toStringSerializationTest() {
-      expect("Hello World").toMatchSnapshot();
-   }
+  @Test
+  public void toStringSerializationTest() {
+    expect("Hello World").toMatchSnapshot();
+  }
 
-   @Test
-   public void jsonSerializationTest() {
-      Map<String, Object> map = new HashMap<>();
-      map.put("name", "John Doe");
-      map.put("age", 40);
-      
-      expect(map)
+  @Test
+  public void jsonSerializationTest() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("name", "John Doe");
+    map.put("age", 40);
+
+    expect(map)
         .serializer("json")
         .toMatchSnapshot();
-   }
+  }
 }
 ```
 
 4. Run your test
 
-Bingo - you should now see you snapshot in the `__snapshots__` folder created next to your test.
+Bingo - you should now see your snapshot in the `__snapshots__` folder created next to your test.
 Try changing `"Hello World"` to `"Hello Universe"` and watch it fail with a `.debug` file.
+
+```text
+au.com.origin.snapshots.MyFirstSnapshotTest.jsonSerializationTest=[
+  {
+    "age": 40,
+    "name": "John Doe"
+  }
+]
+
+
+au.com.origin.snapshots.MyFirstSnapshotTest.toStringSerializationTest=[
+Hello World
+]
+```
 
 ## Advantages of Snapshot Testing
 - Great for testing JSON interfaces ensuring you don't break clients
@@ -100,8 +123,7 @@ We currently support:
 
 Plugins
 - [Jackson for JSON serialization](https://search.maven.org/search?q=a:java-snapshot-testing-plugin-jackson)
-  - You need jackson on your classpath
-    Gradle example
+  - You need jackson on your classpath (Gradle example)
     ```groovy
         // Required java-snapshot-testing peer dependencies
        testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
@@ -155,6 +177,8 @@ import au.com.origin.snapshots.junit5.SnapshotExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import static au.com.origin.snapshots.SnapshotMatcher.expect;
+
 // Ensure you extend your test class with the SnapshotExtension
 @ExtendWith(SnapshotExtension.class)
 public class SnapshotExtensionUsedTest {
@@ -162,12 +186,12 @@ public class SnapshotExtensionUsedTest {
     @Test
     public void myTest1() {
         // Verify your snapshot
-        SnapshotMatcher.expect("Hello World").toMatchSnapshot();
+        expect("Hello World").toMatchSnapshot();
     }
 
     @Test
     public void myTest2() {
-        SnapshotMatcher.expect("Hello World Again").toMatchSnapshot();
+        expect("Hello World Again").toMatchSnapshot();
     }
 }
 ```
@@ -179,6 +203,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static au.com.origin.snapshots.SnapshotMatcher.expect;
+
 public class SnapshotRuleUsedTest {
 
     // Ensure you instantiate these rules
@@ -188,12 +214,12 @@ public class SnapshotRuleUsedTest {
     @Test
     public void myTest1() {
         // Verify your snapshot
-        SnapshotMatcher.expect("Hello World").toMatchSnapshot();
+        expect("Hello World").toMatchSnapshot();
     }
 
     @Test
     public void myTest2() {
-        SnapshotMatcher.expect("Hello World Again").toMatchSnapshot();
+        expect("Hello World Again").toMatchSnapshot();
     }
 }
 ```
@@ -203,12 +229,14 @@ public class SnapshotRuleUsedTest {
 import au.com.origin.snapshots.spock.EnableSnapshots
 import spock.lang.Specification
 
+import static au.com.origin.snapshots.SnapshotMatcher.expect;
+
 // Ensure you enable snapshot testing support
 @EnableSnapshots
 class SpockExtensionUsedSpec extends Specification {
     def "Should use extension"() {
         when:
-        SnapshotMatcher.expect("Hello World").toMatchSnapshot()
+        expect("Hello World").toMatchSnapshot()
 
         then:
         true
@@ -357,7 +385,6 @@ This is good because you shouldn't need to add annotations to your source code f
 ```java
 import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer;
 import au.com.originenergy.user.entity.BaseEntity;
-import au.com.originenergy.user.entity.Customer;
 import shadow.com.fasterxml.jackson.annotation.JsonIgnore;
 import shadow.com.fasterxml.jackson.annotation.JsonIgnoreType;
 import shadow.com.fasterxml.jackson.databind.ObjectMapper;
@@ -392,12 +419,6 @@ public class HibernateSnapshotSerializer extends DeterministicJacksonSnapshotSer
 
       @JsonIgnore
       abstract Instant getLastModifiedDate();
-
-      @JsonIgnore
-      abstract Customer getCustomer();
-
-      @JsonIgnore
-      abstract Customer getAccount();
    }
 }
 ```
