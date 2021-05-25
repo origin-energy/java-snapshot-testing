@@ -1,0 +1,11 @@
+au.com.origin.snapshots.docs.MyFirstSnapshotTest.jsonSerializationTest=[
+  {
+    "age": 40,
+    "name": "John Doe"
+  }
+]
+
+
+au.com.origin.snapshots.docs.MyFirstSnapshotTest.toStringSerializationTest=[
+Hello World
+]

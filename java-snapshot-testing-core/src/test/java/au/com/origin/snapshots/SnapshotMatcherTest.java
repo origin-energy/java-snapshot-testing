@@ -4,6 +4,7 @@ import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -20,14 +21,16 @@ class SnapshotMatcherTest {
   private static final String FILE_PATH =
       "src/test/java/au/com/origin/snapshots/__snapshots__/SnapshotMatcherTest.snap";
 
+  static SnapshotVerifier snapshotVerifier;
+
   @BeforeAll
   static void beforeAll() {
-    SnapshotMatcher.start(new BaseSnapshotConfig());
+    snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), SnapshotMatcherTest.class);
   }
 
   @AfterAll
   static void afterAll() throws IOException {
-    SnapshotMatcher.validateSnapshots();
+    snapshotVerifier.validateSnapshots();
     File f = new File(FILE_PATH);
     assertThat(String.join("\n", Files.readAllLines(f.toPath())))
         .isEqualTo(
@@ -42,8 +45,9 @@ class SnapshotMatcherTest {
   }
 
   @Test
-  void should1ShowSnapshotSuccessfully() {
-    SnapshotMatcher.expect("any type of object").toMatchSnapshot();
+  void should1ShowSnapshotSuccessfully(TestInfo testInfo) {
+    Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
+    expect.toMatchSnapshot("any type of object");
     File f = new File(FILE_PATH);
     if (!f.exists() || f.isDirectory()) {
       throw new RuntimeException("File should exist here");
@@ -51,9 +55,9 @@ class SnapshotMatcherTest {
   }
 
   @Test
-  void should2SecondSnapshotExecutionSuccessfully() {
-    SnapshotMatcher.expect("any second type of object", "any third type of object")
-            .toMatchSnapshot();
+  void should2SecondSnapshotExecutionSuccessfully(TestInfo testInfo) {
+    Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
+    expect.toMatchSnapshot("any second type of object", "any third type of object");
     File f = new File(FILE_PATH);
     if (!f.exists() || f.isDirectory()) {
       throw new RuntimeException("File should exist here");

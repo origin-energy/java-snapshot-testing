@@ -4,6 +4,7 @@ import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -20,14 +21,16 @@ class SnapshotMatcherScenarioTest {
   private static final String FILE_PATH =
       "src/test/java/au/com/origin/snapshots/__snapshots__/SnapshotMatcherScenarioTest.snap";
 
+  static SnapshotVerifier snapshotVerifier;
+
   @BeforeAll
   static void beforeAll() {
-    SnapshotMatcher.start(new BaseSnapshotConfig());
+    snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), SnapshotMatcherScenarioTest.class);
   }
 
   @AfterAll
   static void afterAll() throws IOException {
-    SnapshotMatcher.validateSnapshots();
+    snapshotVerifier.validateSnapshots();
     File f = new File(FILE_PATH);
     assertThat(String.join("\n", Files.readAllLines(f.toPath())))
         .isEqualTo(
@@ -42,8 +45,9 @@ class SnapshotMatcherScenarioTest {
   }
 
   @Test
-  void should1ShowSnapshotSuccessfully() throws IOException {
-    SnapshotMatcher.expect("any type of object").scenario("Scenario A").toMatchSnapshot();
+  void should1ShowSnapshotSuccessfully(TestInfo testInfo) {
+    Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
+    expect.scenario("Scenario A").toMatchSnapshot("any type of object");
     File f = new File(FILE_PATH);
     if (!f.exists() || f.isDirectory()) {
       throw new RuntimeException("File should exist here");
@@ -51,10 +55,11 @@ class SnapshotMatcherScenarioTest {
   }
 
   @Test
-  void should2SecondSnapshotExecutionSuccessfully() throws IOException {
-    SnapshotMatcher.expect("any second type of object", "any third type of object")
-            .scenario("Scenario B")
-            .toMatchSnapshot();
+  void should2SecondSnapshotExecutionSuccessfully(TestInfo testInfo) {
+    Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
+    expect
+        .scenario("Scenario B")
+        .toMatchSnapshot("any second type of object", "any third type of object");
     File f = new File(FILE_PATH);
     if (!f.exists() || f.isDirectory()) {
       throw new RuntimeException("File should exist here");

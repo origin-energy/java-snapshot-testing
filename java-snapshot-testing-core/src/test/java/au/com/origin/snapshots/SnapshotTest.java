@@ -42,7 +42,7 @@ class SnapshotTest {
 
   @BeforeEach
   void setUp() throws NoSuchMethodException, IOException {
-    snapshotFile = new SnapshotFile(DEFAULT_CONFIG.getOutputDir(), "anyFilePath", this.getClass(), (a, b) -> b);
+    snapshotFile = new SnapshotFile(DEFAULT_CONFIG.getOutputDir(), "anyFilePath", SnapshotTest.class, (a, b) -> b);
     snapshot =
         new Snapshot(
             DEFAULT_CONFIG,
@@ -86,8 +86,9 @@ class SnapshotTest {
             snapshotFile,
             String.class,
             String.class.getDeclaredMethod("toString"),
-                new ToStringSnapshotSerializer(),
-            "anyObject").scenario("hello world");
+            new ToStringSnapshotSerializer(),
+            "anyObject");
+    snapshotWithScenario.setScenario("hello world");
     assertThat(snapshotWithScenario.getSnapshotName())
         .isEqualTo("java.lang.String.toString[hello world]=");
   }
@@ -124,7 +125,8 @@ class SnapshotTest {
             snapshotFile,
             String.class,
             String.class.getDeclaredMethod("toString"),
-            "anyObject").scenario("hello world");
+            "anyObject");
+    snapshot.setScenario("hello world");
     snapshot.toMatchSnapshot();
     Mockito.verify(snapshotFile)
         .push("java.lang.String.toString[hello world]=[\nanyObject\n]");
@@ -134,82 +136,85 @@ class SnapshotTest {
   @Test
   void shouldFailWhenRunningOnCiWithoutExistingSnapshot() {
     BaseSnapshotConfig ciSnapshotConfig = new BaseSnapshotConfig() {
-        @Override
-        public boolean isCI() {
-            return true;
-        }
+      @Override
+      public boolean isCI() {
+        return true;
+      }
     };
 
     Snapshot ciSnapshot = new Snapshot(
-            ciSnapshotConfig,
-            new SnapshotFile(ciSnapshotConfig.getOutputDir(), "blah", this.getClass(), (a, b) -> b),
-            String.class,
-            String.class.getDeclaredMethod("toString"),
-            "anyObject");
+        ciSnapshotConfig,
+        new SnapshotFile(ciSnapshotConfig.getOutputDir(), "blah", SnapshotTest.class, (a, b) -> b),
+        String.class,
+        String.class.getDeclaredMethod("toString"),
+        "anyObject");
 
     Assertions.assertThatThrownBy(ciSnapshot::toMatchSnapshot)
-            .hasMessage("Snapshot [java.lang.String.toString=] not found. Has this snapshot been committed ?");
+        .hasMessage("Snapshot [java.lang.String.toString=] not found. Has this snapshot been committed ?");
   }
 
   @SneakyThrows
   @Test
   void shouldAggregateMultipleFailures() {
-      SnapshotFile snapshotFile = Mockito.mock(SnapshotFile.class);
-      Set<String> set = new HashSet<>();
-      set.add("java.lang.String.toString=[\n  \"hello\"\n]");
-      Mockito.when(snapshotFile.getRawSnapshots()).thenReturn(set);
+    SnapshotFile snapshotFile = Mockito.mock(SnapshotFile.class);
+    Set<String> set = new HashSet<>();
+    set.add("java.lang.String.toString=[\n  \"hello\"\n]");
+    Mockito.when(snapshotFile.getRawSnapshots()).thenReturn(set);
 
-      Stream<BiConsumer<String, String>> reportingFunctions = Stream.of(
-              (rawSnapshot, currentObject) -> assertThat(currentObject).isEqualTo(rawSnapshot), // assertj
-              org.junit.jupiter.api.Assertions::assertEquals, // junit jupiter
-              (rawSnapshot, currentObject) -> {
-                  String message = String.join(System.lineSeparator(),
-                          "Expected : ", rawSnapshot, "Actual : ", currentObject);
-                  throw new AssertionFailedError(message, rawSnapshot, currentObject); // opentest4j
-              }
-      );
+    Stream<BiConsumer<String, String>> reportingFunctions = Stream.of(
+        (rawSnapshot, currentObject) -> assertThat(currentObject).isEqualTo(rawSnapshot), // assertj
+        org.junit.jupiter.api.Assertions::assertEquals, // junit jupiter
+        (rawSnapshot, currentObject) -> {
+          String message = String.join(System.lineSeparator(),
+              "Expected : ", rawSnapshot, "Actual : ", currentObject);
+          throw new AssertionFailedError(message, rawSnapshot, currentObject); // opentest4j
+        }
+    );
 
-      Stream<SnapshotReporter> reporters = reportingFunctions.map(consumer -> new SnapshotReporter() {
-          @Override
-          public boolean supportsFormat(String outputFormat) {
-              return true;
-          }
-
-          @Override
-          public void report(String snapshotName, String rawSnapshot, String currentObject) {
-              consumer.accept(rawSnapshot, currentObject);
-          }
-      });
-
-      Snapshot failingSnapshot = snapshot
-              .withCurrent(new Object[]{"hola"})
-              .withSnapshotFile(snapshotFile)
-              .serializer(new ToStringSnapshotSerializer())
-              .reporters(reporters.toArray(SnapshotReporter[]::new));
-
-      try {
-          failingSnapshot.toMatchSnapshot();
-      }
-      catch (Throwable m) {
-          String cleanMessage = m.getMessage()
-                  .replace("<\"", "")
-                  .replace("<", "")
-                  .replaceAll("\n", "")
-                  .replaceAll("\r", "")
-                  .replaceAll("\t", "")
-                  .replace("\">", " ")
-                  .replace(">", " ")
-                  .replace("]", "")
-                  .replace("java.lang.String.toString=[", "")
-                  .replaceAll(" +", " ");
-
-          assertThat(cleanMessage).containsPattern("Expecting.*hola.*to be equal to.*hello.*but was not"); // assertj
-          assertThat(cleanMessage).containsPattern("expected.*hello.*but was.*hola"); // junit jupiter
-          assertThat(cleanMessage).containsPattern("Expected.*hello.*Actual.*hola"); // opentest4j
-
-          return;
+    Stream<SnapshotReporter> reporters = reportingFunctions.map(consumer -> new SnapshotReporter() {
+      @Override
+      public boolean supportsFormat(String outputFormat) {
+        return true;
       }
 
-      Assertions.fail("Expected an error to be thrown");
+      @Override
+      public void report(String snapshotName, String rawSnapshot, String currentObject) {
+        consumer.accept(rawSnapshot, currentObject);
+      }
+    });
+
+    Snapshot failingSnapshot = new Snapshot(
+        DEFAULT_CONFIG,
+        snapshotFile,
+        String.class,
+        String.class.getDeclaredMethod("toString"),
+        "hola"
+    );
+    failingSnapshot.setSnapshotSerializer(new ToStringSnapshotSerializer());
+    failingSnapshot.setSnapshotReporters(reporters.collect(Collectors.toList()));
+
+    try {
+      failingSnapshot.toMatchSnapshot();
+    } catch (Throwable m) {
+      String cleanMessage = m.getMessage()
+          .replace("<\"", "")
+          .replace("<", "")
+          .replaceAll("\n", "")
+          .replaceAll("\r", "")
+          .replaceAll("\t", "")
+          .replace("\">", " ")
+          .replace(">", " ")
+          .replace("]", "")
+          .replace("java.lang.String.toString=[", "")
+          .replaceAll(" +", " ");
+
+      assertThat(cleanMessage).containsPattern("Expecting.*hola.*to be equal to.*hello.*but was not"); // assertj
+      assertThat(cleanMessage).containsPattern("expected.*hello.*but was.*hola"); // junit jupiter
+      assertThat(cleanMessage).containsPattern("Expected.*hello.*Actual.*hola"); // opentest4j
+
+      return;
+    }
+
+    Assertions.fail("Expected an error to be thrown");
   }
 }

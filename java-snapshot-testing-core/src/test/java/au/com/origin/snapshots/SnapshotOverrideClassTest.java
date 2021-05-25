@@ -1,22 +1,19 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-
-import static au.com.origin.snapshots.SnapshotMatcher.start;
-import static au.com.origin.snapshots.SnapshotMatcher.validateSnapshots;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 public class SnapshotOverrideClassTest extends SnapshotSuperClassTest {
 
-  @BeforeAll
-  static void beforeAll() {
-    start(new BaseSnapshotConfig());
+  @BeforeEach
+  void beforeEach() {
+    snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), SnapshotOverrideClassTest.class);
   }
 
-  @AfterAll
-  static void afterAll() {
-    validateSnapshots();
+  @AfterEach
+  void afterEach() {
+    snapshotVerifier.validateSnapshots();
   }
 
   @Override

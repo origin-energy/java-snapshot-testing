@@ -10,33 +10,32 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static au.com.origin.snapshots.SnapshotMatcher.expect;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith({SnapshotExtension.class})
 public class NestedClassTest {
 
-    @AfterAll
-    public static void afterAll() {
-        Path path = Paths.get("src/test/java/au/com/origin/snapshots/__snapshots__/NestedClassTest.snap");
-        assertThat(Files.exists(path)).isFalse();
+  @AfterAll
+  public static void afterAll() {
+    Path path = Paths.get("src/test/java/au/com/origin/snapshots/__snapshots__/NestedClassTest.snap");
+    assertThat(Files.exists(path)).isFalse();
+  }
+
+  @Nested
+  class NestedClass {
+
+    @Test
+    public void helloWorldTest(Expect expect) {
+      expect.toMatchSnapshot("Hello World");
     }
+  }
 
-    @Nested
-    class NestedClass {
+  @Nested
+  class NestedClassWithoutSnapshot {
 
-        @Test
-        public void helloWorldTest() {
-            expect("Hello World").toMatchSnapshot();
-        }
+    @Test
+    public void helloWorldTest() {
+      assertThat(true).isTrue();
     }
-
-    @Nested
-    class NestedClassWithoutSnapshot {
-
-        @Test
-        public void helloWorldTest() {
-            assertThat(true).isTrue();
-        }
-    }
+  }
 }

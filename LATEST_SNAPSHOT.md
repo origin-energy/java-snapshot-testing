@@ -1,5 +1,7 @@
 # Using and testing the latest SNAPSHOT (excuse the pun) from maven central
+
 Gradle
+
 ```
 repositories {
     // ...

@@ -1,0 +1,4 @@
+java.util.Optional.shouldExtractArgsFromFakeMethodWithComplexObject=[
+{FakeObject.fakeMethodWithComplexObject=[{arg0=BackwardCompatilbleTest.FakeObject(id=idMock, value=null, name=null)}]}
+{FakeObject.fakeMethodWithComplexObject=[{arg0=BackwardCompatilbleTest.FakeObject(id=idMock, value=null, name=nameMock)}]}
+]

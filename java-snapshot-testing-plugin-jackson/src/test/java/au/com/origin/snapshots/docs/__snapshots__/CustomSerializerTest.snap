@@ -1,0 +1,5 @@
+au.com.origin.snapshots.docs.CustomSerializerTest.test1=[
+  {
+    "somethingElse": "This should render"
+  }
+]

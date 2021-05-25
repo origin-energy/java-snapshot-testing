@@ -14,9 +14,10 @@ public enum SnapshotProperties {
   INSTANCE;
 
   Properties snapshotProperties = new Properties();
+
   SnapshotProperties() {
     try {
-      InputStream in = SnapshotMatcher.class.getResourceAsStream("/snapshot.properties");
+      InputStream in = SnapshotProperties.class.getResourceAsStream("/snapshot.properties");
       snapshotProperties.load(in);
     } catch (Exception e) {
       // It's ok, if the SnapshotConfig implementation attempts to get a property they will receive a MissingSnapshotPropertiesKeyException
@@ -51,7 +52,7 @@ public enum SnapshotProperties {
       Class<?> clazz = Class.forName(className);
       return (T) clazz.newInstance();
     } catch (Exception e) {
-      throw new RuntimeException("Unable to instantiate class "+className, e);
+      throw new RuntimeException("Unable to instantiate class " + className, e);
     }
   }
 }

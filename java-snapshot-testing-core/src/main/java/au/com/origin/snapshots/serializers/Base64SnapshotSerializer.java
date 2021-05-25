@@ -19,7 +19,7 @@ public class Base64SnapshotSerializer implements SnapshotSerializer {
     List<?> encoded = Arrays.stream(objects)
         .filter(Objects::nonNull)
         .map(it -> {
-          byte[] bytes = it instanceof byte[] ? (byte[])it : it.toString().getBytes();
+          byte[] bytes = it instanceof byte[] ? (byte[]) it : it.toString().getBytes();
           return Base64.getEncoder().encodeToString(bytes);
         })
         .collect(Collectors.toList());
