@@ -1,0 +1,9 @@
+au.com.origin.snapshots.docs.JUnit5ResolutionHierarchyExample.aliasMethodTest=[
+  { }
+]
+
+
+au.com.origin.snapshots.docs.JUnit5ResolutionHierarchyExample.customSerializerTest=THIS IS A SNAPSHOT OF THE TOSTRING() METHOD
+
+
+au.com.origin.snapshots.docs.JUnit5ResolutionHierarchyExample.lowercaseTest=this is a snapshot of the tostring() method

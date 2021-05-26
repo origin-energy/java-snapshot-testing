@@ -9,5 +9,5 @@ import java.lang.annotation.*;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UseSnapshotConfig {
-    Class<? extends SnapshotConfig> value();
+  Class<? extends SnapshotConfig> value();
 }

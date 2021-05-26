@@ -6,17 +6,17 @@ import spock.lang.Specification
 @EnableSnapshots
 class SpockExtensionUsedSpec extends Specification {
 
-    def "Should use extension"() {
+    def "Should use extension"(Expect expect) {
         when:
-        SnapshotMatcher.expect("Hello World").toMatchSnapshot()
+        expect.toMatchSnapshot("Hello World")
 
         then:
         true
     }
 
-    def "Should use extension again"() {
+    def "Should use extension again"(Expect expect) {
         when:
-        SnapshotMatcher.expect("Hello World", "Hello World Again").toMatchSnapshot()
+        expect.toMatchSnapshot("Hello World", "Hello World Again")
 
         then:
         true

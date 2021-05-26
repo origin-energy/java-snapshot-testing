@@ -8,18 +8,18 @@ import java.util.stream.Collectors;
 
 public class ToStringSnapshotConfig extends BaseSnapshotConfig {
 
-    @Override
-    public SnapshotSerializer getSerializer() {
-        return new SnapshotSerializer() {
-            @Override
-            public String getOutputFormat() {
-                return SerializerType.TEXT.name();
-            }
+  @Override
+  public SnapshotSerializer getSerializer() {
+    return new SnapshotSerializer() {
+      @Override
+      public String getOutputFormat() {
+        return SerializerType.TEXT.name();
+      }
 
-            @Override
-            public String apply(Object[] objects) {
-                return Arrays.stream(objects).map(Object::toString).collect(Collectors.joining());
-            }
-        };
-    }
+      @Override
+      public String apply(Object[] objects) {
+        return Arrays.stream(objects).map(Object::toString).collect(Collectors.joining());
+      }
+    };
+  }
 }

@@ -1,30 +1,22 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static au.com.origin.snapshots.SnapshotMatcher.expect;
+import org.junit.jupiter.api.TestInfo;
 
 class PrivateCalledMethodTest {
 
-  @BeforeAll
-  static void beforeAll() {
-    SnapshotMatcher.start(new BaseSnapshotConfig());
-  }
-
-  @AfterAll
-  static void afterAll() {
-    SnapshotMatcher.validateSnapshots();
-  }
-
   @Test
-  void testName() {
-    testBasedOnArgs("testContent");
+  void testName(TestInfo testInfo) {
+    SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
+    testBasedOnArgs("testContent", testInfo);
+    snapshotVerifier.validateSnapshots();
   }
 
-  private void testBasedOnArgs(String arg) {
-    expect(arg).toMatchSnapshot();
+  private void testBasedOnArgs(String arg, TestInfo testInfo) {
+    SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
+    Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
+    expect.toMatchSnapshot(arg);
+    snapshotVerifier.validateSnapshots();
   }
 }

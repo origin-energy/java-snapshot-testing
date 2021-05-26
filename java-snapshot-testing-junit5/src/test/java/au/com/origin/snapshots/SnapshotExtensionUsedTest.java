@@ -7,13 +7,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(SnapshotExtension.class)
 public class SnapshotExtensionUsedTest {
 
-    @Test
-    public void shouldUseExtension() {
-        SnapshotMatcher.expect("Hello World").toMatchSnapshot();
-    }
+  @Test
+  public void shouldUseExtension(Expect expect) {
+    expect.toMatchSnapshot("Hello World");
+  }
 
-    @Test
-    public void shouldUseExtensionAgain() {
-        SnapshotMatcher.expect("Hello World", "Hello World Again").toMatchSnapshot();
-    }
+  @Test
+  public void shouldUseExtensionAgain(Expect expect) {
+    expect.toMatchSnapshot("Hello World", "Hello World Again");
+  }
 }

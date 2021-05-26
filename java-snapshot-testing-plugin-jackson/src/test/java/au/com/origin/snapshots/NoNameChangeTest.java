@@ -1,15 +1,14 @@
 package au.com.origin.snapshots;
 
-import au.com.origin.snapshots.comparators.PlainTextEqualsComparator;
-import au.com.origin.snapshots.reporters.PlainTextSnapshotReporter;
-import au.com.origin.snapshots.serializers.*;
+import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer;
+import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * These classes are likely defined in snapshot.properties as a string.
- *
+ * <p>
  * The clients IDE will not complain if they change so ensure they don't
  */
 public class NoNameChangeTest {
