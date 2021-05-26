@@ -4,6 +4,8 @@
 # Java Snapshot Testing
 - Inspired by [facebook's Jest framework](https://facebook.github.io/jest/docs/en/snapshot-testing.html)
 
+🎉 3.X is live - parallel test support, easily override configuration via `snapshot.properties` yet *.snap format remains unchanged! This release will require some mechanical refactoring for those upgrading as `expect` is now injected as a test method parameter.
+
 ## The testing framework loved by ~~lazy~~ productive devs
 
 - Tired of needing to `assertThat(foo).isEqualTo("bar")` again & again?
@@ -669,7 +671,7 @@ Add an SLF4J Provider such as`testImplementation("org.slf4j:slf4j-simple:2.0.0-a
 
 **My test source files are not in `src/test/java`**
 
-Solution: Override `getOutputDir()` in SnapshotConfig and return the correct path
+Solution: Override `output-dir` in `snapshot.properties`
 
 **I see the following error in JSON snapshots `java.lang.NoSuchFieldError: BINARY`**
 
