@@ -405,7 +405,9 @@ class SpockWithParametersExample extends Specification {
 
 The serializer determines how a class gets converted into a string.
 
-Currently, we support three different serializers
+Serializers are pluggable, so you can write you own by implementing the `SnapshotSerializer` interface.
+
+Currently, we support the following serializers. 
 
 ### Shipped with core
 
@@ -420,8 +422,6 @@ Currently, we support three different serializers
 |----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
 | JacksonSnapshotSerializer              | uses [jackson](https://github.com/FasterXML/jackson) to convert a class to a snapshot                                       |
 | DeterministicJacksonSnapshotSerializer | extension of JacksonSnapshotSerializer that also orders Collections for situations where the order changes on multiple runs | 
-
-Serializers are pluggable, so you can write you own by implementing the `SnapshotSerializer` interface.
 
 Serializers are resolved in the following order.
 
