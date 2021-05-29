@@ -5,6 +5,8 @@ import au.com.origin.snapshots.SnapshotVerifier
 import org.spockframework.runtime.extension.IMethodInterceptor
 import org.spockframework.runtime.extension.IMethodInvocation
 
+import java.lang.reflect.Method
+
 // Based on this issue: https://github.com/spockframework/spock/issues/652
 class SnapshotMethodInterceptor implements IMethodInterceptor {
 
@@ -16,6 +18,8 @@ class SnapshotMethodInterceptor implements IMethodInterceptor {
 
     @Override
     void intercept(IMethodInvocation invocation) throws Throwable {
+        updateInstanceVariable(invocation.instance, invocation.feature.featureMethod.reflection)
+
         def parameterCount = invocation.method.reflection.parameterCount
         if (parameterCount > invocation.arguments.length) {
             def newArguments = new Object[parameterCount]
@@ -28,5 +32,15 @@ class SnapshotMethodInterceptor implements IMethodInterceptor {
             }
         }
         invocation.proceed()
+    }
+
+    private void updateInstanceVariable(Object testInstance, Method testMethod) {
+        testInstance.class.declaredFields
+            .find { it.getType() == Expect.class }
+            ?.with {
+                Expect expect = Expect.of(snapshotVerifier, testMethod)
+                it.setAccessible(true)
+                it.set(testInstance, expect)
+            }
     }
 }

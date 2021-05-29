@@ -1,5 +1,6 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.annotations.SnapshotName;
 import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
@@ -131,6 +132,10 @@ public class Snapshot {
 
   String getSnapshotName() {
     String scenarioFormat = scenario == null ? "" : "[" + scenario + "]";
-    return testClass.getName() + "." + testMethod.getName() + scenarioFormat + "=";
+    SnapshotName snapshotName = testMethod.getAnnotation(SnapshotName.class);
+    String pathFormat = snapshotName == null ?
+        testClass.getName() + "." + testMethod.getName() :
+        snapshotName.value();
+    return pathFormat + scenarioFormat + "=";
   }
 }

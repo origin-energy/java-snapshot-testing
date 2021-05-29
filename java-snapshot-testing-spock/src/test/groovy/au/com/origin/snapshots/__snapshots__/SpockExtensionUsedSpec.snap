@@ -1,9 +1,39 @@
-au.com.origin.snapshots.SpockExtensionUsedSpec.$spock_feature_0_0=[
+DataTable example 1[letter A]=[
+A
+]
+
+
+DataTable example 1[letter B]=[
+B
+]
+
+
+DataTable example 1[letter C]=[
+C
+]
+
+
+DataTable example 2[letter]=[
+A
+]
+
+
+DataTable example 2[number]=[
+1
+]
+
+
+Should use extension again=[
+Hello World
+Hello World Again
+]
+
+
+Should use extension via instance variable=[
 Hello World
 ]
 
 
-au.com.origin.snapshots.SpockExtensionUsedSpec.$spock_feature_0_1=[
+Should use extension=[
 Hello World
-Hello World Again
 ]

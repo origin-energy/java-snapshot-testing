@@ -12,6 +12,8 @@ import java.util.stream.Stream;
 @ExtendWith({SnapshotExtension.class})
 class SnapshotParameterTest {
 
+  private Expect expect;
+
   static Stream<Arguments> testData() {
 
     return Stream.of(
@@ -31,5 +33,14 @@ class SnapshotParameterTest {
     expect.toMatchSnapshot("Duplicates are OK");
     expect.scenario("Scenario1").toMatchSnapshot("Additional snapshots need to include a scenario");
     expect.serializer(JacksonSnapshotSerializer.class).scenario(scenario).toMatchSnapshot(testInput);
+  }
+
+  @ParameterizedTest
+  @MethodSource("au.com.origin.snapshots.SnapshotParameterTest#testData")
+  void shouldSupportParameterizedTestViaInstanceVariable(String scenario, String testInput) {
+    this.expect.toMatchSnapshot("Duplicates are OK");
+    this.expect.toMatchSnapshot("Duplicates are OK");
+    this.expect.scenario("Scenario1").toMatchSnapshot("Additional snapshots need to include a scenario");
+    this.expect.serializer(JacksonSnapshotSerializer.class).scenario(scenario).toMatchSnapshot(testInput);
   }
 }

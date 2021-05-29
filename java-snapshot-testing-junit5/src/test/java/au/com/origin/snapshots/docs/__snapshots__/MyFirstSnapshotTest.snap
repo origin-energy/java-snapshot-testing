@@ -6,6 +6,6 @@ au.com.origin.snapshots.docs.MyFirstSnapshotTest.jsonSerializationTest=[
 ]
 
 
-au.com.origin.snapshots.docs.MyFirstSnapshotTest.toStringSerializationTest=[
+i_can_give_custom_names_to_my_snapshots=[
 Hello World
 ]

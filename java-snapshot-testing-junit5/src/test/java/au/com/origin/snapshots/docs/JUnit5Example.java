@@ -9,12 +9,16 @@ import au.com.origin.snapshots.Expect;
 @ExtendWith({SnapshotExtension.class})
 public class JUnit5Example {
 
+  // Option 1: inject Expect as an instance variable
+  private Expect expect;
+
   @Test
-  public void myTest1(Expect expect) {
+  public void myTest1() {
     // Verify your snapshot
     expect.toMatchSnapshot("Hello World");
   }
 
+  // Option 2: inject Expect into the method signature
   @Test
   public void myTest2(Expect expect) {
     expect.toMatchSnapshot("Hello World Again");
