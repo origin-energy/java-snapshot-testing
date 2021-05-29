@@ -1,8 +1,8 @@
-au.com.origin.snapshots.docs.SpockWithParametersExample.$spock_feature_0_0[letter]=[
+convert_to_uppercase[letter]=[
 A
 ]
 
 
-au.com.origin.snapshots.docs.SpockWithParametersExample.$spock_feature_0_0[number]=[
+convert_to_uppercase[number]=[
 1
 ]

@@ -1,5 +1,6 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.annotations.SnapshotName;
 import au.com.origin.snapshots.annotations.UseSnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
@@ -41,6 +42,8 @@ public class SnapshotVerifier {
    */
   public SnapshotVerifier(SnapshotConfig frameworkSnapshotConfig, Class<?> testClass, boolean failOnOrphans) {
     try {
+      verifyNoConflictingSnapshotNames(testClass);
+
       UseSnapshotConfig customConfig = testClass.getAnnotation(UseSnapshotConfig.class);
       SnapshotConfig snapshotConfig = customConfig == null ? frameworkSnapshotConfig : customConfig.value().newInstance();
 
@@ -67,6 +70,23 @@ public class SnapshotVerifier {
 
     } catch (IOException | InstantiationException | IllegalAccessException e) {
       throw new SnapshotExtensionException(e.getMessage());
+    }
+  }
+
+  private void verifyNoConflictingSnapshotNames(Class<?> testClass) {
+    Map<String, List<String>> allSnapshotAnnotationNames = Arrays.stream(testClass.getDeclaredMethods())
+        .filter(it -> it.isAnnotationPresent(SnapshotName.class))
+        .map(it -> it.getAnnotation(SnapshotName.class))
+        .map(SnapshotName::value)
+        .collect(Collectors.groupingBy(String::toString));
+
+    boolean hasDuplicateSnapshotNames = allSnapshotAnnotationNames.entrySet()
+        .stream()
+        .filter(it -> it.getValue().size() > 1)
+        .peek(it -> log.error("Oops, looks like you set the same name of two separate snapshots @SnapshotName(\"{}\") in class {}", it.getKey(), testClass.getName()))
+        .count() > 0;
+    if (hasDuplicateSnapshotNames) {
+      throw new SnapshotExtensionException("Duplicate @SnapshotName annotations found!");
     }
   }
 
@@ -102,7 +122,7 @@ public class SnapshotVerifier {
           + String.join("\n", unusedRawSnapshots)
           + "\n\nHave you deleted tests? Have you renamed a test method?";
       if (failOnOrphans) {
-        log.warn(errorMessage);
+        log.error(errorMessage);
         throw new SnapshotMatchException("ERROR: Found orphan snapshots");
       } else {
         log.warn(errorMessage);

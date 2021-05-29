@@ -1,3 +1,8 @@
-au.com.origin.snapshots.docs.SpockExample.$spock_feature_0_0=[
+should_use_extension=[
+Hello World
+]
+
+
+should_use_extension_as_mehod_argument=[
 Hello World
 ]

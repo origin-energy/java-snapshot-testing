@@ -9,14 +9,14 @@ We welcome contributions to this project by both internal and external parties
 1. Make your code changes
 1. Ensure you commit message is descriptive as it acts as the changelog. Mark any breaking changes with `BREAKING`.
    Include a rectification strategy if you introduce a `BREAKING` change.
-1. Ensure `README.md` is updated if needed.
+1. Ensure `README.md` is updated if needed. All code samples in the README should have corresponding (actual sames) in the various docs/ folders
 1. Submit a pull request back to `master` branch (or the branch you are contributing to)
 1. Ensure Github Actions build passes
 1. Await reviews
 1. Once merged into `master` a `SNAPSHOT` build will be available for consumption
    immediately [here](https://oss.sonatype.org/content/repositories/snapshots/io/github/origin-energy/). Note that
    snapshots change regularly and cannot be relied upon.
-1. Hard Releases will by made once enough features have been added.
+1. Hard Releases will br made once enough features have been added.
 
 ## Building
 
@@ -33,7 +33,10 @@ We welcome contributions to this project by both internal and external parties
 Ensure you add `mavenLocal()` to your consuming project and the dependency verison matches that in your local `.m2`
 folder
 
-# Deploying to maven central
+# Uploading to maven central
+see `.github/workflows/release.yml`
+
+# Uploading to maven central (manually)
 
 Gradle release plugin is not currently working so this is a manual process at the moment.
 
@@ -51,7 +54,7 @@ gpg --export-secret-key YOUR_KEY_ID > ~/.gnupg/secring.gpg
 
 ## Preparing
 
-1. Create a branch `release/<VersionNumber>`
+1. Create a tag `X.X.X`
 1. Update `gradle.properties` and remove `-SNAPSHOT` from the version number
 1. Check this file into version control and push the branch to the remote
 1. run

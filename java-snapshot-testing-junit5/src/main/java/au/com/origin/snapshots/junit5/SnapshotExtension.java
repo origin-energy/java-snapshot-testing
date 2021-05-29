@@ -6,8 +6,9 @@ import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.engine.descriptor.ClassTestDescriptor;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
-public class SnapshotExtension implements AfterAllCallback, BeforeAllCallback, SnapshotConfigInjector, ParameterResolver {
+public class SnapshotExtension implements AfterAllCallback, BeforeAllCallback, SnapshotConfigInjector, ParameterResolver, BeforeEachCallback {
 
   private SnapshotVerifier snapshotVerifier;
 
@@ -66,4 +67,21 @@ public class SnapshotExtension implements AfterAllCallback, BeforeAllCallback, S
     return new Expect(snapshotVerifier, extensionContext.getTestMethod().orElseThrow(() -> new RuntimeException("getTestMethod() is missing")));
   }
 
+  @Override
+  public void beforeEach(ExtensionContext context) {
+    if (context.getTestInstance().isPresent() && context.getTestMethod().isPresent()) {
+      Arrays.stream(context.getTestClass().get().getDeclaredFields())
+          .filter(it -> it.getType() == Expect.class)
+          .findFirst()
+          .ifPresent(field -> {
+            Expect expect = Expect.of(snapshotVerifier, context.getTestMethod().get());
+            field.setAccessible(true);
+            try {
+              field.set(context.getTestInstance().get(), expect);
+            } catch (IllegalAccessException e) {
+              throw new RuntimeException(e);
+            }
+          });
+    }
+  }
 }

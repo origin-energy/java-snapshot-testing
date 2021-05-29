@@ -10,15 +10,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @UseSnapshotConfig(LowercaseToStringSnapshotConfig.class)
 public class JUnit5ResolutionHierarchyExample {
 
+  private Expect expect;
+
   @Test
-  public void aliasMethodTest(Expect expect) {
+  public void aliasMethodTest() {
     expect
         .serializer("json") // <------ Using snapshot.properties
         .toMatchSnapshot(new TestObject());
   }
 
   @Test
-  public void customSerializerTest(Expect expect) {
+  public void customSerializerTest() {
     expect
         .serializer(UppercaseToStringSerializer.class)  // <------ Using custom serializer
         .toMatchSnapshot(new TestObject());
@@ -26,7 +28,7 @@ public class JUnit5ResolutionHierarchyExample {
 
   // Read from LowercaseToStringSnapshotConfig defined on the class
   @Test
-  public void lowercaseTest(Expect expect) {
+  public void lowercaseTest() {
     expect.toMatchSnapshot(new TestObject());
   }
 }

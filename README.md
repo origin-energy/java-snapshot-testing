@@ -4,7 +4,7 @@
 # Java Snapshot Testing
 - Inspired by [facebook's Jest framework](https://facebook.github.io/jest/docs/en/snapshot-testing.html)
 
-🎉 3.X is live - parallel test support, easily override configuration via `snapshot.properties` yet *.snap format remains unchanged! This release will require some mechanical refactoring for those upgrading as `expect` is now injected as a test method parameter.
+🎉 3.X is live - parallel test support, easily override configuration via `snapshot.properties` yet *.snap format remains unchanged! This release will require some mechanical refactoring for those upgrading as `expect` is no longer a static method.
 
 ## The testing framework loved by ~~lazy~~ productive devs
 
@@ -21,10 +21,10 @@ Then java-snapshot-testing might just be what you are looking for!
 
 ```groovy
 // In this case we are using the JUnit5 testing framework
-testImplementation 'io.github.origin-energy:java-snapshot-testing-junit5:3.0.+'
+testImplementation 'io.github.origin-energy:java-snapshot-testing-junit5:3.1.+'
 
 // Many will want to serialize into JSON.  In this case you should also add the Jackson plugin
-testImplementation 'io.github.origin-energy:java-snapshot-testing-plugin-jackson:3.0.+'
+testImplementation 'io.github.origin-energy:java-snapshot-testing-plugin-jackson:3.1.+'
 testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
 testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
 testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
@@ -41,6 +41,7 @@ testImplementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
 
  ```text
 serializer=au.com.origin.snapshots.serializers.ToStringSnapshotSerializer
+serializer.base64=au.com.origin.snapshots.serializers.Base64SnapshotSerializer
 serializer.json=au.com.origin.snapshots.serializers.JacksonSnapshotSerializer
 serializer.orderedJson=au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer
 comparator=au.com.origin.snapshots.comparators.PlainTextEqualsComparator
@@ -53,8 +54,9 @@ ci-env-var=CI
 3. Enable snapshot testing and write your first test
 
 ```java
-package au.com.origin.snapshots.docs
-    
+package au.com.origin.snapshots.docs;
+
+import au.com.origin.snapshots.annotations.SnapshotName;
 import au.com.origin.snapshots.junit5.SnapshotExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,13 +68,16 @@ import au.com.origin.snapshots.Expect;
 @ExtendWith({SnapshotExtension.class})
 public class MyFirstSnapshotTest {
 
+  private Expect expect;
+
+  @SnapshotName("i_can_give_custom_names_to_my_snapshots")
   @Test
-  public void toStringSerializationTest(Expect expect) {
+  public void toStringSerializationTest() {
     expect.toMatchSnapshot("Hello World");
   }
 
   @Test
-  public void jsonSerializationTest(Expect expect) {
+  public void jsonSerializationTest() {
     Map<String, Object> map = new HashMap<>();
     map.put("name", "John Doe");
     map.put("age", 40);
@@ -81,6 +86,7 @@ public class MyFirstSnapshotTest {
         .serializer("json")
         .toMatchSnapshot(map);
   }
+
 }
 ```
 
@@ -98,7 +104,7 @@ au.com.origin.snapshots.docs.MyFirstSnapshotTest.jsonSerializationTest=[
 ]
 
 
-au.com.origin.snapshots.docs.MyFirstSnapshotTest.toStringSerializationTest=[
+i_can_give_custom_names_to_my_snapshots=[
 Hello World
 ]
 ```
@@ -194,6 +200,10 @@ au.com.example.company.UserEndpointTest.shouldReturnCustomerData=[
 
 # Usage Examples
 
+All frameworks allow injection of the `Expect expect` via instance variable or method argument. In cases where
+parameterised tests are used, it's often better to use an instance variable in order to avoid conflicts with
+the underlying data table.
+
 ## [JUnit 5](https://junit.org/junit5)
 
 ```java
@@ -208,12 +218,16 @@ import au.com.origin.snapshots.Expect;
 @ExtendWith({SnapshotExtension.class})
 public class JUnit5Example {
 
+  // Option 1: inject Expect as an instance variable
+  private Expect expect;
+
   @Test
-  public void myTest1(Expect expect) {
+  public void myTest1() {
     // Verify your snapshot
     expect.toMatchSnapshot("Hello World");
   }
 
+  // Option 2: inject Expect into the method signature
   @Test
   public void myTest2(Expect expect) {
     expect.toMatchSnapshot("Hello World Again");
@@ -226,6 +240,7 @@ public class JUnit5Example {
 ```java
 package au.com.origin.snapshots.docs;
 
+import au.com.origin.snapshots.annotations.SnapshotName;
 import au.com.origin.snapshots.junit4.SnapshotRunner;
 import au.com.origin.snapshots.Expect;
 import org.junit.Test;
@@ -235,13 +250,19 @@ import org.junit.runner.RunWith;
 @RunWith(SnapshotRunner.class)
 public class JUnit4Example {
 
+  // Option 1: inject Expect as an instance variable
+  private Expect expect;
+
+  @SnapshotName("my first test")
   @Test
-  public void myTest1(Expect expect) {
+  public void myTest1() {
     // Verify your snapshot
     expect.toMatchSnapshot("Hello World");
   }
 
+  @SnapshotName("my second test")
   @Test
+  // Option 2: inject Expect into the method signature
   public void myTest2(Expect expect) {
     expect.toMatchSnapshot("Hello World Again");
   }
@@ -253,14 +274,32 @@ public class JUnit4Example {
 ```groovy
 package au.com.origin.snapshots.docs
 
+import au.com.origin.snapshots.annotations.SnapshotName
 import au.com.origin.snapshots.spock.EnableSnapshots
 import spock.lang.Specification
-import au.com.origin.snapshots.Expect;
+
+import au.com.origin.snapshots.Expect
 
 // Ensure you enable snapshot testing support
 @EnableSnapshots
 class SpockExample extends Specification {
-    def "Should use extension"(Expect expect) {
+
+    // Option 1: inject Expect as an instance variable
+    private Expect expect
+
+    // With spock tests you should always use @SnapshotName - otherwise they become coupled to test order
+    @SnapshotName("should_use_extension")
+    def "Should use extension"() {
+        when:
+        expect.toMatchSnapshot("Hello World")
+
+        then:
+        true
+    }
+
+    @SnapshotName("should_use_extension_as_mehod_argument")
+    // Option 2: inject Expect into the method signature
+    def "Should use extension as method argument"(Expect expect) {
         when:
         expect.toMatchSnapshot("Hello World")
 
@@ -286,7 +325,7 @@ Any framework can support the library as long as it follows the following rules:
     ```
 1. For each test class, setup your expectations
     ```java
-       Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
+       Expect expect = Expect.of(snapshotVerifier, testMethod);
        expect.toMatchSnapshot("Something");
     ```
    
@@ -327,6 +366,29 @@ public class CustomFrameworkExample {
 }
 ```
 
+## Supplying your own snapshot name via @SnapshotName
+By default, snapshots use the full method name as the identifier 
+For example
+```text
+au.com.origin.snapshots.docs.MyFirstSnapshotTest.helloWorldTest=[
+Hello World
+]
+```
+
+This strategy has a number of problems
+- it's long and unwieldy
+- if the method name or class name changes, your tests become orphans
+- The Spock framework tests use a generated method name that is based on index (Spock tests should always use `@SnapshotName`)
+
+You can supply a more meaningful name to your snapshot using `@SnapshotName("your_custom_name")`
+This will generate as follows
+```
+your_custom_name=[
+Hello World
+]
+```
+
+Much more concise and not affected by class name or method name refactoring.
 
 ## Resolving conflicting snapshot comparison via `*.snap.debug`
 
@@ -356,7 +418,8 @@ For example:
 
  ```text
 serializer=au.com.origin.snapshots.serializers.ToStringSnapshotSerializer
-serializer.json=au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer
+serializer.base64=au.com.origin.snapshots.serializers.Base64SnapshotSerializer
+serializer.json=au.com.origin.snapshots.serializers.JacksonSnapshotSerializer
 serializer.orderedJson=au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer
 comparator=au.com.origin.snapshots.comparators.PlainTextEqualsComparator
 reporters=au.com.origin.snapshots.reporters.PlainTextSnapshotReporter
@@ -380,23 +443,26 @@ expect.scenario(params).toMatchSnapshot("Something");
 package au.com.origin.snapshots.docs
 
 import au.com.origin.snapshots.Expect
+import au.com.origin.snapshots.annotations.SnapshotName
 import au.com.origin.snapshots.spock.EnableSnapshots
 import spock.lang.Specification
 
 @EnableSnapshots
 class SpockWithParametersExample extends Specification {
 
-    // Note: "expect" will get injected later so can remain begin as null in the data-table 
-    def 'Convert #scenario to uppercase'(def scenario, def value, Expect expect) {
+    private Expect expect
+
+    @SnapshotName("convert_to_uppercase")
+    def 'Convert #scenario to uppercase'() {
         when: 'I convert to uppercase'
         String result = value.toUpperCase();
         then: 'Should convert letters to uppercase'
         // Check you snapshot against your output using a unique scenario
         expect.scenario(scenario).toMatchSnapshot(result)
         where:
-        scenario | value | expect
-        'letter' | 'a'   | null
-        'number' | '1'   | null
+        scenario | value
+        'letter' | 'a'
+        'number' | '1'
     }
 }
 ```
