@@ -6,7 +6,7 @@
 
 🎉 3.X is live - parallel test support, easily override configuration via `snapshot.properties` yet *.snap format remains unchanged! This release will require some mechanical refactoring for those upgrading as `expect` is no longer a static method.
 
-## The testing framework loved by ~~lazy~~ productive devs
+## The testing framework loved by ~~lazy~~ __productive__ devs
 
 - Tired of needing to `assertThat(foo).isEqualTo("bar")` again & again?
 - Are you just wanting to ensure you don't break - for example - REST interfaces
