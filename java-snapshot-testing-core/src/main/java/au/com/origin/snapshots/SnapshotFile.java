@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -70,7 +71,7 @@ public class SnapshotFile {
       file.createNewFile();
 
       try (FileOutputStream fileStream = new FileOutputStream(file, false)) {
-        fileStream.write(snapshot.getBytes());
+        fileStream.write(snapshot.getBytes(StandardCharsets.UTF_8));
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -107,7 +108,7 @@ public class SnapshotFile {
     File file = createFileIfNotExists();
 
     try (FileOutputStream fileStream = new FileOutputStream(file, false)) {
-      byte[] myBytes = String.join(SPLIT_STRING, rawSnapshots).getBytes();
+      byte[] myBytes = String.join(SPLIT_STRING, rawSnapshots).getBytes(StandardCharsets.UTF_8);
       fileStream.write(myBytes);
     } catch (IOException e) {
       e.printStackTrace();
@@ -124,7 +125,7 @@ public class SnapshotFile {
       } else {
         String content = new String(Files.readAllBytes(Paths.get(this.fileName)));
         String modified = onSaveSnapshotFile.apply(testClass, content);
-        Files.write(path, modified.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+        Files.write(path, modified.getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
       }
     }
   }
