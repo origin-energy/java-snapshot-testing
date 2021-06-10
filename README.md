@@ -6,6 +6,8 @@
 
 🎉 3.X is live - parallel test support, easily override configuration via `snapshot.properties` yet *.snap format remains unchanged! This release will require some mechanical refactoring for those upgrading as `expect` is no longer a static method.
 
+Upgrade guide from 2.X to 3.X [here](https://github.com/origin-energy/java-snapshot-testing/discussions/73)
+
 ## The testing framework loved by ~~lazy~~ __productive__ devs
 
 - Tired of needing to `assertThat(foo).isEqualTo("bar")` again & again?
