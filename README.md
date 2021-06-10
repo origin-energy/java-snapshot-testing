@@ -21,10 +21,10 @@ Then java-snapshot-testing might just be what you are looking for!
 
 ```groovy
 // In this case we are using the JUnit5 testing framework
-testImplementation 'io.github.origin-energy:java-snapshot-testing-junit5:3.1.+'
+testImplementation 'io.github.origin-energy:java-snapshot-testing-junit5:3.2.+'
 
 // Many will want to serialize into JSON.  In this case you should also add the Jackson plugin
-testImplementation 'io.github.origin-energy:java-snapshot-testing-plugin-jackson:3.1.+'
+testImplementation 'io.github.origin-energy:java-snapshot-testing-plugin-jackson:3.2.+'
 testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
 testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
 testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
