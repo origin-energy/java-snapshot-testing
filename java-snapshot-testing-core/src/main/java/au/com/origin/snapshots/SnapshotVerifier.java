@@ -1,6 +1,5 @@
 package au.com.origin.snapshots;
 
-import au.com.origin.snapshots.annotations.SnapshotName;
 import au.com.origin.snapshots.annotations.UseSnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
@@ -42,8 +41,6 @@ public class SnapshotVerifier {
    */
   public SnapshotVerifier(SnapshotConfig frameworkSnapshotConfig, Class<?> testClass, boolean failOnOrphans) {
     try {
-      verifyNoConflictingSnapshotNames(testClass);
-
       UseSnapshotConfig customConfig = testClass.getAnnotation(UseSnapshotConfig.class);
       SnapshotConfig snapshotConfig = customConfig == null ? frameworkSnapshotConfig : customConfig.value().newInstance();
 
@@ -73,23 +70,6 @@ public class SnapshotVerifier {
     }
   }
 
-  private void verifyNoConflictingSnapshotNames(Class<?> testClass) {
-    Map<String, List<String>> allSnapshotAnnotationNames = Arrays.stream(testClass.getDeclaredMethods())
-        .filter(it -> it.isAnnotationPresent(SnapshotName.class))
-        .map(it -> it.getAnnotation(SnapshotName.class))
-        .map(SnapshotName::value)
-        .collect(Collectors.groupingBy(String::toString));
-
-    boolean hasDuplicateSnapshotNames = allSnapshotAnnotationNames.entrySet()
-        .stream()
-        .filter(it -> it.getValue().size() > 1)
-        .peek(it -> log.error("Oops, looks like you set the same name of two separate snapshots @SnapshotName(\"{}\") in class {}", it.getKey(), testClass.getName()))
-        .count() > 0;
-    if (hasDuplicateSnapshotNames) {
-      throw new SnapshotExtensionException("Duplicate @SnapshotName annotations found!");
-    }
-  }
-
   @SneakyThrows
   public Snapshot expectCondition(Method testMethod, Object firstObject, Object... others) {
     Object[] objects = mergeObjects(firstObject, others);
@@ -102,7 +82,7 @@ public class SnapshotVerifier {
   public void validateSnapshots() {
     Set<String> rawSnapshots = snapshotFile.getRawSnapshots();
     Set<String> snapshotNames =
-        calledSnapshots.stream().map(Snapshot::getSnapshotName).collect(Collectors.toSet());
+        calledSnapshots.stream().map(Snapshot::getQualifiedName).collect(Collectors.toSet());
     List<String> unusedRawSnapshots = new ArrayList<>();
 
     for (String rawSnapshot : rawSnapshots) {

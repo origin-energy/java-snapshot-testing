@@ -1,6 +1,7 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
+import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -21,14 +22,12 @@ class ScenarioTest {
   }
 
   @Test
-  void canTakeTheSameSnapshotTwice(TestInfo testInfo) {
+  void canNotAcceptTheSameSnapshotTwice(TestInfo testInfo) {
     SnapshotVerifier snapshotVerifier = new SnapshotVerifier(DEFAULT_CONFIG, testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     expect.toMatchSnapshot("Default Snapshot");
-    expect.toMatchSnapshot("Default Snapshot");
     expect.scenario("scenario").toMatchSnapshot("Scenario Snapshot");
-    expect.scenario("scenario").toMatchSnapshot("Scenario Snapshot");
-    snapshotVerifier.validateSnapshots();
+    assertThrows(SnapshotExtensionException.class, () -> expect.scenario("scenario").toMatchSnapshot("Scenario Snapshot"));
   }
 
   @Test

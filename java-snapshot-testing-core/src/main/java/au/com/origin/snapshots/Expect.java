@@ -19,6 +19,7 @@ public class Expect {
   private SnapshotComparator snapshotComparator;
   private List<SnapshotReporter> snapshotReporters;
   private String scenario;
+  private String name;
 
   public static Expect of(SnapshotVerifier snapshotVerifier, Method method) {
     return new Expect(snapshotVerifier, method);
@@ -44,6 +45,9 @@ public class Expect {
     if (scenario != null) {
       snapshot.setScenario(scenario);
     }
+    if (name != null) {
+      snapshot.setName(name);
+    }
     snapshot.toMatchSnapshot();
   }
 
@@ -55,7 +59,7 @@ public class Expect {
    * the scenario() to overcome this restriction.  Ensure each scenario is unique.
    *
    * @param scenario - unique scenario description
-   * @return Snapshot
+   * @return this
    */
   public Expect scenario(String scenario) {
     this.scenario = scenario;
@@ -66,7 +70,7 @@ public class Expect {
    * Apply a custom serializer for this snapshot
    *
    * @param serializer your custom serializer
-   * @return Snapshot
+   * @return this
    */
   public Expect serializer(SnapshotSerializer serializer) {
     this.snapshotSerializer = serializer;
@@ -77,7 +81,7 @@ public class Expect {
    * Apply a custom serializer for this snapshot
    *
    * @param name - the {name} attribute serializer.{name} from snapshot.properties
-   * @return Snapshot
+   * @return this
    */
   public Expect serializer(String name) {
     this.snapshotSerializer = SnapshotProperties.getInstance("serializer." + name);
@@ -88,7 +92,7 @@ public class Expect {
    * Apply a custom comparator for this snapshot
    *
    * @param comparator your custom comparator
-   * @return Snapshot
+   * @return this
    */
   public Expect comparator(SnapshotComparator comparator) {
     this.snapshotComparator = comparator;
@@ -100,7 +104,7 @@ public class Expect {
    * This will replace the default reporters defined in the config
    *
    * @param reporters your custom reporters
-   * @return Snapshot
+   * @return this
    */
   public Expect reporters(SnapshotReporter... reporters) {
     this.snapshotReporters = Arrays.asList(reporters);
@@ -121,6 +125,18 @@ public class Expect {
   @SneakyThrows
   public Expect serializer(Class<? extends SnapshotSerializer> serializer) {
     this.snapshotSerializer = serializer.getConstructor().newInstance();
+    return this;
+  }
+
+  /**
+   * Give a custom name to your snapshot instead of relying on the
+   * generated {package-name}.{class-name}.{method-name} implementation
+   *
+   * @param name name to give to your snapshot in the generated *.snap file
+   * @return this
+   */
+  public Expect name(String name) {
+    this.name = name;
     return this;
   }
 

@@ -9,10 +9,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,6 +30,8 @@ public class Snapshot {
   private List<SnapshotReporter> snapshotReporters;
   @Setter
   private String scenario;
+  @Setter
+  private String name;
 
   Snapshot(
       SnapshotConfig snapshotConfig,
@@ -51,10 +50,12 @@ public class Snapshot {
     this.snapshotComparator = snapshotConfig.getComparator();
     this.snapshotReporters = snapshotConfig.getReporters();
     this.scenario = null;
+    this.name = defaultName();
   }
 
 
   public void toMatchSnapshot() {
+    snapshotFile.verifyNoDuplicates(name);
 
     Set<String> rawSnapshots = snapshotFile.getRawSnapshots();
 
@@ -69,7 +70,7 @@ public class Snapshot {
 
     if (rawSnapshot != null) {
       // Match existing Snapshot
-      if (!snapshotComparator.matches(getSnapshotName(), rawSnapshot, currentObject)) {
+      if (!snapshotComparator.matches(name, rawSnapshot, currentObject)) {
         snapshotFile.createDebugFile(currentObject.trim());
 
         List<SnapshotReporter> reporters = snapshotReporters
@@ -86,7 +87,7 @@ public class Snapshot {
 
         for (SnapshotReporter reporter : reporters) {
           try {
-            reporter.report(getSnapshotName(), rawSnapshot, currentObject);
+            reporter.report(name, rawSnapshot, currentObject);
           } catch (Throwable t) {
             errors.add(t);
           }
@@ -99,7 +100,7 @@ public class Snapshot {
     } else {
       if (this.isCI) {
         log.error("We detected you are running on a CI Server - if this is incorrect please override the isCI() method in SnapshotConfig");
-        throw new SnapshotMatchException("Snapshot [" + getSnapshotName() + "] not found. Has this snapshot been committed ?");
+        throw new SnapshotMatchException("Snapshot [" + name + "] not found. Has this snapshot been committed ?");
       } else {
         log.warn("We detected you are running on a developer machine - if this is incorrect please override the isCI() method in SnapshotConfig");
         // Create New Snapshot
@@ -111,7 +112,7 @@ public class Snapshot {
 
   private boolean shouldUpdateSnapshot() {
     if (snapshotConfig.updateSnapshot().isPresent()) {
-      return getSnapshotName().contains(snapshotConfig.updateSnapshot().get());
+      return name.contains(snapshotConfig.updateSnapshot().get());
     } else {
       return false;
     }
@@ -119,7 +120,7 @@ public class Snapshot {
 
   private String getRawSnapshot(Collection<String> rawSnapshots) {
     for (String rawSnapshot : rawSnapshots) {
-      if (rawSnapshot.contains(getSnapshotName())) {
+      if (rawSnapshot.contains(getQualifiedName())) {
         return rawSnapshot;
       }
     }
@@ -127,15 +128,18 @@ public class Snapshot {
   }
 
   private String takeSnapshot() {
-    return getSnapshotName() + snapshotSerializer.apply(current);
+    return getQualifiedName() + snapshotSerializer.apply(current);
   }
 
-  String getSnapshotName() {
-    String scenarioFormat = scenario == null ? "" : "[" + scenario + "]";
+  private String defaultName() {
     SnapshotName snapshotName = testMethod.getAnnotation(SnapshotName.class);
-    String pathFormat = snapshotName == null ?
+    return snapshotName == null ?
         testClass.getName() + "." + testMethod.getName() :
         snapshotName.value();
-    return pathFormat + scenarioFormat + "=";
+  }
+
+  String getQualifiedName() {
+    String scenarioFormat = scenario == null ? "" : "[" + scenario + "]";
+    return name + scenarioFormat + "=";
   }
 }

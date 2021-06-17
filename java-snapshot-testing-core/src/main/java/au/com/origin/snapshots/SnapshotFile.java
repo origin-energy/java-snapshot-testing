@@ -1,5 +1,6 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Collections;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -127,6 +126,18 @@ public class SnapshotFile {
         String modified = onSaveSnapshotFile.apply(testClass, content);
         Files.write(path, modified.getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
       }
+    }
+  }
+
+  public void verifyNoDuplicates(String snapshotName) {
+    List<String> snapthosNames = rawSnapshots.stream()
+        .map(it -> it.split("="))
+        .map(it -> it[0])
+        .collect(Collectors.toList());
+
+    if (snapthosNames.contains(snapshotName)) {
+      log.error("Oops, looks like you set the same name of two separate snapshots \"{}\" in class {}", snapshotName, testClass.getName());
+      throw new SnapshotExtensionException("Duplicate snapshot names found!");
     }
   }
 }

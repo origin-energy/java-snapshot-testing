@@ -1,7 +1,7 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
-import au.com.origin.snapshots.exceptions.SnapshotMatchException;
+import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
 import lombok.SneakyThrows;
@@ -59,7 +59,7 @@ class SnapshotTest {
 
   @Test
   void shouldGetSnapshotNameSuccessfully() {
-    String snapshotName = snapshot.getSnapshotName();
+    String snapshotName = snapshot.getQualifiedName();
     assertThat(snapshotName).isEqualTo(SNAPSHOT_NAME);
   }
 
@@ -74,7 +74,7 @@ class SnapshotTest {
   void shouldMatchSnapshotWithException() {
     snapshotFile.push(SNAPSHOT_NAME + "anyWrongSnapshot");
 
-    assertThrows(SnapshotMatchException.class, snapshot::toMatchSnapshot);
+    assertThrows(SnapshotExtensionException.class, snapshot::toMatchSnapshot);
   }
 
   @SneakyThrows
@@ -89,7 +89,7 @@ class SnapshotTest {
             new ToStringSnapshotSerializer(),
             "anyObject");
     snapshotWithScenario.setScenario("hello world");
-    assertThat(snapshotWithScenario.getSnapshotName())
+    assertThat(snapshotWithScenario.getQualifiedName())
         .isEqualTo("java.lang.String.toString[hello world]=");
   }
 
@@ -105,7 +105,7 @@ class SnapshotTest {
             null,
             new ToStringSnapshotSerializer(),
             "anyObject");
-    assertThat(snapshotWithoutScenario.getSnapshotName()).isEqualTo("java.lang.String.toString=");
+    assertThat(snapshotWithoutScenario.getQualifiedName()).isEqualTo("java.lang.String.toString=");
   }
 
   @SneakyThrows
