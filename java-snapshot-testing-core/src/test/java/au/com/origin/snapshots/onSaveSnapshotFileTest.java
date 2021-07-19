@@ -37,7 +37,7 @@ public class onSaveSnapshotFileTest {
 
     SnapshotVerifier snapshotVerifier = new SnapshotVerifier(CUSTOM_SNAPSHOT_CONFIG, testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
-    expect.serializer(ToStringSnapshotSerializer.class).toMatchSnapshot("Hello World");
+    expect.serializer(ToStringSnapshotSerializer.class).toMatchSnapshot("Hello Wörld");
     snapshotVerifier.validateSnapshots();
 
     File f = new File(SNAPSHOT_FILE_PATH);
@@ -45,7 +45,7 @@ public class onSaveSnapshotFileTest {
         .isEqualTo(
             "HEADER\n"
                 + "au.com.origin.snapshots.onSaveSnapshotFileTest.shouldAllowFileModificationsBeforeFinishingTest=[\n"
-                + "Hello World\n"
+                + "Hello Wörld\n"
                 + "]\n"
                 + "FOOTER");
   }

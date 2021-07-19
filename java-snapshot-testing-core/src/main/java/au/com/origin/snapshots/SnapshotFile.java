@@ -123,7 +123,7 @@ public class SnapshotFile {
         deleteDebugFile();
         delete();
       } else {
-        String content = new String(Files.readAllBytes(Paths.get(this.fileName)));
+        String content = new String(Files.readAllBytes(Paths.get(this.fileName)), StandardCharsets.UTF_8);
         String modified = onSaveSnapshotFile.apply(testClass, content);
         Files.write(path, modified.getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
       }
