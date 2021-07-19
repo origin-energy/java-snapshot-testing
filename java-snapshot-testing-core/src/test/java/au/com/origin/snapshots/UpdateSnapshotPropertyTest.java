@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -44,7 +45,7 @@ public class UpdateSnapshotPropertyTest {
     expect.toMatchSnapshot(FakeObject.builder().id("anyId2").value(2).name("anyName2").build());
     snapshotVerifier.validateSnapshots();
 
-    String content = new String(Files.readAllBytes(Paths.get("src/test/java/au/com/origin/snapshots/__snapshots__/UpdateSnapshotPropertyTest.snap")));
+    String content = new String(Files.readAllBytes(Paths.get("src/test/java/au/com/origin/snapshots/__snapshots__/UpdateSnapshotPropertyTest.snap")), StandardCharsets.UTF_8);
     Assertions.assertThat(content).isEqualTo(
         "au.com.origin.snapshots.UpdateSnapshotPropertyTest.shouldNotUpdateSnapshot=[\n" +
             "FakeObject(id=ERROR, value=1, name=anyName1, fakeObject=null)\n" +
