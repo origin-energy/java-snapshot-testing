@@ -12,9 +12,15 @@ subprojects { subproject ->
     subproject.apply plugin: 'java-library'
     subproject.apply plugin: 'com.github.johnrengelman.shadow'
     subproject.apply plugin: 'maven-publish'
+    subproject.apply plugin: 'java'
 
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
+
+    compileJava.options.encoding = 'UTF-8'
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
 
     repositories {
         mavenCentral()
