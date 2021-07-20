@@ -36,7 +36,7 @@ public class SnapshotFile {
 
     StringBuilder fileContent = new StringBuilder();
 
-    try (BufferedReader br = new BufferedReader(new FileReader(this.fileName))) {
+    try (BufferedReader br = new BufferedReader(new FileReader(this.fileName, StandardCharsets.UTF_8))) {
 
       String sCurrentLine;
 
