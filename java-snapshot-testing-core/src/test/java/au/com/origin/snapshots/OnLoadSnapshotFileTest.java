@@ -25,7 +25,7 @@ public class OnLoadSnapshotFileTest {
   @BeforeAll
   static void beforeAll() throws IOException {
     Files.deleteIfExists(Paths.get(SNAPSHOT_FILE_PATH));
-    String snapshotFileContent = "au.com.origin.snapshots.onLoadSnapshotFileTest.shouldLoadFileWithCorrectEncodingForCompare=[\n"
+    String snapshotFileContent = "au.com.origin.snapshots.OnLoadSnapshotFileTest.shouldLoadFileWithCorrectEncodingForCompare=[\n"
         + "any special characters that need correct encoding äöüèéàè\n"
         + "]";
    createSnapshotFile(snapshotFileContent);
@@ -44,7 +44,7 @@ public class OnLoadSnapshotFileTest {
     File f = new File(SNAPSHOT_FILE_PATH);
     assertThat(String.join("\n", Files.readAllLines(f.toPath())))
         .isEqualTo(
-            "au.com.origin.snapshots.onLoadSnapshotFileTest.shouldLoadFileWithCorrectEncodingForCompare=[\n"
+            "au.com.origin.snapshots.OnLoadSnapshotFileTest.shouldLoadFileWithCorrectEncodingForCompare=[\n"
                 + "any special characters that need correct encoding äöüèéàè\n"
                 + "]");
   }
