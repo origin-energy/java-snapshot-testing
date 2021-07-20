@@ -17,9 +17,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-public class onLoadSnapshotFileTest {
+public class OnLoadSnapshotFileTest {
 
-  private static final String SNAPSHOT_FILE_PATH = "src/test/java/au/com/origin/snapshots/__snapshots__/onLoadSnapshotFileTest.snap";
+  private static final String SNAPSHOT_FILE_PATH = "src/test/java/au/com/origin/snapshots/__snapshots__/OnLoadSnapshotFileTest.snap";
   private final SnapshotConfig CUSTOM_SNAPSHOT_CONFIG = new BaseSnapshotConfig();
 
   @BeforeAll
