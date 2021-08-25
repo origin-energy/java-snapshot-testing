@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,8 +24,8 @@ public class UpdateSnapshotPropertyTest {
     System.clearProperty(SnapshotConfig.JVM_UPDATE_SNAPSHOTS_PARAMETER);
   }
 
-  @AfterEach
-  public void afterEach() throws Exception {
+  @BeforeEach
+  public void beforeEach() throws Exception {
     File file = new File("src/test/java/au/com/origin/snapshots/__snapshots__/UpdateSnapshotPropertyTest.snap");
     String content = "au.com.origin.snapshots.UpdateSnapshotPropertyTest.shouldNotUpdateSnapshot=[\n" +
         "FakeObject(id=ERROR, value=1, name=anyName1, fakeObject=null)\n" +
@@ -34,12 +35,16 @@ public class UpdateSnapshotPropertyTest {
         "au.com.origin.snapshots.UpdateSnapshotPropertyTest.shouldUpdateSnapshot=[\n" +
         "FakeObject(id=ERROR, value=2, name=anyName2, fakeObject=null)\n" +
         "]";
-    Files.write(file.toPath(), content.getBytes());
+    Path parentDir = file.getParentFile().toPath();
+    if (!Files.exists(parentDir)) {
+      Files.createDirectories(parentDir);
+    }
+    Files.write(file.toPath(), content.getBytes(StandardCharsets.UTF_8));
   }
 
   @Test
   void shouldUpdateSnapshot(TestInfo testInfo) throws IOException {
-    SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
+    SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get(), false);
     System.setProperty(SnapshotConfig.JVM_UPDATE_SNAPSHOTS_PARAMETER, "");
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     expect.toMatchSnapshot(FakeObject.builder().id("anyId2").value(2).name("anyName2").build());
@@ -67,7 +72,7 @@ public class UpdateSnapshotPropertyTest {
 
   @Test
   void shouldNotUpdateSnapshot(TestInfo testInfo) {
-    SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
+    SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get(), false);
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     System.setProperty(SnapshotConfig.JVM_UPDATE_SNAPSHOTS_PARAMETER, "true");
     assertThrows(
