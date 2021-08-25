@@ -27,10 +27,13 @@ subprojects { subproject ->
 
     dependencies {
         // Lombok
-        compileOnly 'org.projectlombok:lombok:1.18.16'
-        annotationProcessor 'org.projectlombok:lombok:1.18.16'
-        testCompileOnly 'org.projectlombok:lombok:1.18.16'
-        testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
+        compileOnly 'org.projectlombok:lombok:1.18.20'
+        annotationProcessor 'org.projectlombok:lombok:1.18.20'
+        testCompileOnly 'org.projectlombok:lombok:1.18.20'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+        // Logging implementation
+        compileOnly 'org.slf4j:slf4j-api:2.0.0-alpha0'
     }
 
     // Adds verbose logging for TravisCI

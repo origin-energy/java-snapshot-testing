@@ -1,17 +1,21 @@
 apply from: "../gradle/publishing.gradle"
 
+ext {
+    junitVersion = '5.7.2'
+}
+
 dependencies {
     implementation project(':java-snapshot-testing-core')
 
     // User supplied Junit5 version
-    compileOnly 'org.junit.jupiter:junit-jupiter-api:5.3.2'
-    compileOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
+    compileOnly "org.junit.jupiter:junit-jupiter-api:${project.junitVersion}"
+    compileOnly "org.junit.jupiter:junit-jupiter-engine:${project.junitVersion}"
 
     // Testing
     testImplementation 'org.slf4j:slf4j-simple:2.0.0-alpha0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.3.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
+    testImplementation "org.junit.jupiter:junit-jupiter-params:${project.junitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${project.junitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:${project.junitVersion}"
     testImplementation 'org.assertj:assertj-core:3.11.1'
 
     // Required java-snapshot-testing peer dependencies

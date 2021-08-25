@@ -2,12 +2,15 @@ package au.com.origin.snapshots.junit5;
 
 import au.com.origin.snapshots.*;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.*;
+import org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor;
 import org.junit.jupiter.engine.descriptor.ClassTestDescriptor;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
+@Slf4j
 public class SnapshotExtension implements AfterAllCallback, BeforeAllCallback, SnapshotConfigInjector, ParameterResolver, BeforeEachCallback {
 
   private SnapshotVerifier snapshotVerifier;
@@ -42,19 +45,24 @@ public class SnapshotExtension implements AfterAllCallback, BeforeAllCallback, S
     try {
       Field field = context.getClass().getSuperclass().getDeclaredField("testDescriptor");
       field.setAccessible(true);
-      ClassTestDescriptor classTestDescriptor = (ClassTestDescriptor) field.get(context);
-      return classTestDescriptor.getChildren().size() > 1;
-    } catch (NoSuchFieldException | IllegalAccessException | ClassCastException e) {
-      e.printStackTrace();
-      System.err.println(
+      Object testDescriptor = field.get(context);
+      if (testDescriptor instanceof ClassTestDescriptor) { // Junit 5.3.2
+        ClassTestDescriptor classTestDescriptor = (ClassTestDescriptor) testDescriptor;
+        return classTestDescriptor.getChildren().size() > 1;
+      } else if (testDescriptor instanceof ClassBasedTestDescriptor) { // Junit 5.7.2
+        ClassBasedTestDescriptor classTestDescriptor = (ClassBasedTestDescriptor) testDescriptor;
+        return classTestDescriptor.getChildren().size() > 1;
+      }
+    } catch (Exception e) {
+      log.error(
           "FAILED: (Java Snapshot Testing) Unable to get JUnit5 ClassTestDescriptor!\n" +
               "Ensure you are using Junit5 >= 5.3.2\n" +
               "This may be due to JUnit5 changing their private api as we use reflection to access it\n" +
               "Log a support ticket https://github.com/origin-energy/java-snapshot-testing/issues and supply your JUnit5 version\n" +
               "Setting failOnOrphans=true as this is the safest option." +
-              "This means that running a test alone (say from the IDE) will fail the snapshot, you need to run the entire class.");
-      return true;
+              "This means that running a test alone (say from the IDE) will fail the snapshot, you need to run the entire class.", e);
     }
+    return true;
   }
 
   @Override
