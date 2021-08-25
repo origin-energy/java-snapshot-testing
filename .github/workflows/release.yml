@@ -9,11 +9,11 @@ on:
       release_version:
         description: 'Release Version'
         required: true
-        default: '2.X.X'
+        default: '3.X.X'
       close_and_release:
         description: 'Close & Release Staging Repository'
         required: true
-        default: 'false'
+        default: 'true'
 
 jobs:
   release:
