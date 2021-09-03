@@ -204,7 +204,9 @@ au.com.example.company.UserEndpointTest.shouldReturnCustomerData=[
 
 All frameworks allow injection of the `Expect expect` via instance variable or method argument. In cases where
 parameterised tests are used, it's often better to use an instance variable in order to avoid conflicts with
-the underlying data table.
+the underlying data table. 
+
+Note: Due to the above restriction, method argument injection is destined for removal in future versions.
 
 ## [JUnit 5](https://junit.org/junit5)
 
@@ -270,6 +272,40 @@ public class JUnit4Example {
   }
 }
 ```
+
+In order to run alongside another JUnit4 test runner such as `@RunWith(Parameterized.class)`, you need to use the 
+Rule based configuration instead.
+
+```java
+package au.com.origin.snapshots.docs;
+
+import au.com.origin.snapshots.Expect;
+import au.com.origin.snapshots.annotations.SnapshotName;
+import au.com.origin.snapshots.junit4.SnapshotClassRule;
+import au.com.origin.snapshots.junit4.SnapshotRule;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+
+public class JUnit4RulesExample {
+
+    @ClassRule
+    public static SnapshotClassRule snapshotClassRule = new SnapshotClassRule();
+
+    @Rule
+    public SnapshotRule snapshotRule = new SnapshotRule(snapshotClassRule);
+
+    private Expect expect;
+
+    @SnapshotName("my first test")
+    @Test
+    public void myTest1() {
+        expect.toMatchSnapshot("Hello World");
+    }
+}
+```
+
+See the [ParameterizedTest](https://github.com/origin-energy/java-snapshot-testing/blob/master/java-snapshot-testing-junit4/src/test/java/au/com/origin/snapshots/ParameterizedTest.java) for an example implementation
 
 ## [Spock](http://spockframework.org/)
 

@@ -1,5 +1,6 @@
-package au.com.origin.snapshots;
+package au.com.origin.snapshots.docs;
 
+import au.com.origin.snapshots.Expect;
 import au.com.origin.snapshots.annotations.SnapshotName;
 import au.com.origin.snapshots.junit4.SnapshotClassRule;
 import au.com.origin.snapshots.junit4.SnapshotRule;
@@ -7,7 +8,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class SnapshotRuleUsedTest {
+public class JUnit4RulesExample {
 
   @ClassRule
   public static SnapshotClassRule snapshotClassRule = new SnapshotClassRule();
@@ -17,20 +18,10 @@ public class SnapshotRuleUsedTest {
 
   private Expect expect;
 
+  @SnapshotName("my first test")
   @Test
-  public void shouldUseExtensionViaInstanceVariable() {
-    this.expect.toMatchSnapshot("Hello World");
-  }
-
-  @Test
-  public void shouldUseExtensionAgainViaInstanceVariable() {
-    this.expect.toMatchSnapshot("Hello World", "Hello World Again");
-  }
-
-  @SnapshotName("hello_world")
-  @Test
-  public void shouldUseExtensionWithSnapshotName() {
+  public void myTest1() {
+    // Verify your snapshot
     expect.toMatchSnapshot("Hello World");
   }
-
 }

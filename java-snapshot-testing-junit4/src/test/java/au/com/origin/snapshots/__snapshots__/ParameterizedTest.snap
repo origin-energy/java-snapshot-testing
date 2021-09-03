@@ -1,0 +1,13 @@
+au.com.origin.snapshots.ParameterizedTest.test[test[letter=a]]=[
+a
+]
+
+
+au.com.origin.snapshots.ParameterizedTest.test[test[letter=b]]=[
+b
+]
+
+
+au.com.origin.snapshots.ParameterizedTest.test[test[letter=c]]=[
+c
+]
