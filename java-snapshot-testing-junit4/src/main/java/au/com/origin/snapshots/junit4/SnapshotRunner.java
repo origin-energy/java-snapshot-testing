@@ -1,6 +1,6 @@
 package au.com.origin.snapshots.junit4;
 
-import au.com.origin.snapshots.*;
+import au.com.origin.snapshots.SnapshotVerifier;
 import org.junit.Test;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -8,19 +8,38 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 
 /**
- * Loosely based on: https://stackoverflow.com/questions/27745691/how-to-combine-runwith-with-runwithparameterized-class
- * <p>
- * This implementation is restricted because it appears to not support Parameterized tests
+ * Runner to enable java-snapshot-testing
+ *
+ * If you are already using @RunWith for something else such as @RunWith(Parameterized.class)
+ * use these Rules instead.
+ *
+ * @see SnapshotClassRule
+ * @see SnapshotRule
+ *
+ * <pre>
+ * {@code
+ *   {@literal @}ClassRule
+ *   public static SnapshotClassRule snapshotClassRule = new SnapshotClassRule();
+ *
+ *   {@literal @}Rule
+ *   public SnapshotRule snapshotRule = new SnapshotRule(snapshotClassRule);
+ *
+ *   private Expect expect;
+ * }
+ * </pre>
+ *
+ * Loosely based on:
+ * https://stackoverflow.com/questions/27745691/how-to-combine-runwith-with-runwithparameterized-class
+ *
  */
-public class SnapshotRunner extends BlockJUnit4ClassRunner implements SnapshotConfigInjector {
+public class SnapshotRunner extends BlockJUnit4ClassRunner {
 
-  Object testInstance;
   SnapshotVerifier snapshotVerifier;
+
+  private SharedSnapshotHelpers helpers = new SharedSnapshotHelpers();
 
   public SnapshotRunner(Class<?> klass) throws InitializationError {
     super(klass);
@@ -30,15 +49,10 @@ public class SnapshotRunner extends BlockJUnit4ClassRunner implements SnapshotCo
   protected Statement methodInvoker(FrameworkMethod method, Object test) {
     boolean isTest = method.getMethod().isAnnotationPresent(Test.class);
     if (isTest) {
-      updateInstanceVariable(method.getMethod());
-      boolean shouldInjectMethodArgument = Arrays.asList(method.getMethod().getParameterTypes()).contains(Expect.class);
+      helpers.injectExpectInstanceVariable(snapshotVerifier, method.getMethod(), test);
+      boolean shouldInjectMethodArgument = helpers.hasExpectArgument(method);
       if (shouldInjectMethodArgument) {
-        return new Statement() {
-          @Override
-          public void evaluate() throws Throwable {
-            method.invokeExplosively(test, new Expect(snapshotVerifier, method.getMethod()));
-          }
-        };
+        return helpers.injectExpectMethodArgument(snapshotVerifier, method, test);
       }
     }
 
@@ -46,31 +60,8 @@ public class SnapshotRunner extends BlockJUnit4ClassRunner implements SnapshotCo
   }
 
   @Override
-  protected Object createTest() throws Exception {
-    testInstance = super.createTest();
-    return testInstance;
-  }
-
-  private void updateInstanceVariable(Method testMethod) {
-    Arrays.stream(testInstance.getClass().getDeclaredFields())
-        .filter(it -> it.getType() == Expect.class)
-        .findFirst()
-        .ifPresent(field -> {
-          Expect expect = Expect.of(snapshotVerifier, testMethod);
-          field.setAccessible(true);
-          try {
-            field.set(testInstance, expect);
-          } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-          }
-        });
-  }
-
-  @Override
   public void run(RunNotifier notifier) {
-    // We don't want the orphan check to happen when the user runs a single test in their IDE
-    boolean failOnOrphans = getDescription().getChildren().size() > 1;
-    snapshotVerifier = new SnapshotVerifier(getSnapshotConfig(), getTestClass().getJavaClass(), failOnOrphans);
+    snapshotVerifier = helpers.getSnapshotVerifier(getDescription());
     super.run(notifier);
     snapshotVerifier.validateSnapshots();
   }
@@ -78,11 +69,6 @@ public class SnapshotRunner extends BlockJUnit4ClassRunner implements SnapshotCo
   @Override
   protected void validateTestMethods(List<Throwable> errors) {
     // Disable as it checks for zero arguments
-  }
-
-  @Override
-  public SnapshotConfig getSnapshotConfig() {
-    return new PropertyResolvingSnapshotConfig();
   }
 
 }
