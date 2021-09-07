@@ -1,6 +1,8 @@
 package au.com.origin.snapshots.serializers;
 
+import au.com.origin.snapshots.Snapshot;
 import au.com.origin.snapshots.SnapshotFile;
+import au.com.origin.snapshots.SnapshotSerializerContext;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
@@ -15,8 +17,8 @@ import java.util.stream.Collectors;
 public class ToStringSnapshotSerializer implements SnapshotSerializer {
 
   @Override
-  public String apply(Object[] objects) {
-    return "[\n" + Arrays.stream(objects)
+  public Snapshot apply(Object[] objects, SnapshotSerializerContext gen) {
+    String body = "[\n" + Arrays.stream(objects)
         .map(Object::toString)
         .map(it -> {
           if (it.contains(SnapshotFile.SPLIT_STRING)) {
@@ -27,6 +29,7 @@ public class ToStringSnapshotSerializer implements SnapshotSerializer {
         })
         .collect(Collectors.joining("\n")) +
         "\n]";
+      return gen.toSnapshot(body);
   }
 
   @Override

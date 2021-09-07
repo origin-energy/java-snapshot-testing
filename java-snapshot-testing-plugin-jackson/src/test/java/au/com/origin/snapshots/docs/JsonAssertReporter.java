@@ -1,5 +1,6 @@
 package au.com.origin.snapshots.docs;
 
+import au.com.origin.snapshots.Snapshot;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.SerializerType;
 import lombok.SneakyThrows;
@@ -14,7 +15,7 @@ public class JsonAssertReporter implements SnapshotReporter {
 
   @Override
   @SneakyThrows
-  public void report(String snapshotName, String rawSnapshot, String currentObject) {
-    JSONAssert.assertEquals(rawSnapshot, currentObject, JSONCompareMode.STRICT);
+  public void report(Snapshot previous, Snapshot current) {
+    JSONAssert.assertEquals(previous.getBody(), current.getBody(), JSONCompareMode.STRICT);
   }
 }

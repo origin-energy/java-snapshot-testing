@@ -1,5 +1,6 @@
 package au.com.origin.snapshots.reporters;
 
+import au.com.origin.snapshots.Snapshot;
 import au.com.origin.snapshots.serializers.SerializerType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,11 +22,21 @@ class PlainTextSnapshotReporterTest {
 
   @Test
   void doReport() {
+    Snapshot snap1 = Snapshot.builder()
+            .name("snap1")
+            .scenario("A")
+            .body("[\nfoo\n]")
+            .build();
+    Snapshot snap2 = Snapshot.builder()
+            .name("snap1")
+            .scenario("A")
+            .body("[\nbar\n]")
+            .build();
     assertThatExceptionOfType(AssertionFailedError.class)
-        .isThrownBy(() -> REPORTER.report("snap1", "blah", "bloo"))
+        .isThrownBy(() -> REPORTER.report(snap1, snap2))
         .withMessageContaining("expecting:")
-        .withMessageContaining("[\"blah\"]")
+        .withMessageContaining("[\"foo\"]")
         .withMessageContaining("but was:")
-        .withMessageContaining("[\"bloo\"]");
+        .withMessageContaining("[\"bar\"]");
   }
 }

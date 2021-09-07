@@ -1,141 +1,82 @@
 package au.com.origin.snapshots;
 
-import au.com.origin.snapshots.annotations.SnapshotName;
-import au.com.origin.snapshots.comparators.SnapshotComparator;
-import au.com.origin.snapshots.exceptions.SnapshotMatchException;
-import au.com.origin.snapshots.reporters.SnapshotReporter;
-import au.com.origin.snapshots.serializers.SnapshotSerializer;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import au.com.origin.snapshots.exceptions.LogGithubIssueException;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-@Slf4j
-public class Snapshot {
+@EqualsAndHashCode
+@Builder
+@Getter
+@RequiredArgsConstructor
+public class Snapshot implements Comparable<Snapshot> {
 
-  private final SnapshotConfig snapshotConfig;
-  private final SnapshotFile snapshotFile;
-  private final Class<?> testClass;
-  private final Method testMethod;
-  private final Object[] current;
-  private final boolean isCI;
+    private final String name;
+    private final String scenario;
+    private final SnapshotHeader header;
+    private final String body;
 
-  @Setter
-  private SnapshotSerializer snapshotSerializer;
-  @Setter
-  private SnapshotComparator snapshotComparator;
-  @Setter
-  private List<SnapshotReporter> snapshotReporters;
-  @Setter
-  private String scenario;
-
-  Snapshot(
-      SnapshotConfig snapshotConfig,
-      SnapshotFile snapshotFile,
-      Class<?> testClass,
-      Method testMethod,
-      Object... current) {
-    this.snapshotConfig = snapshotConfig;
-    this.snapshotFile = snapshotFile;
-    this.testClass = testClass;
-    this.testMethod = testMethod;
-    this.current = current;
-
-    this.isCI = snapshotConfig.isCI();
-    this.snapshotSerializer = snapshotConfig.getSerializer();
-    this.snapshotComparator = snapshotConfig.getComparator();
-    this.snapshotReporters = snapshotConfig.getReporters();
-    this.scenario = null;
-  }
-
-
-  public void toMatchSnapshot() {
-
-    Set<String> rawSnapshots = snapshotFile.getRawSnapshots();
-
-    String rawSnapshot = getRawSnapshot(rawSnapshots);
-
-    String currentObject = takeSnapshot();
-
-    if (rawSnapshot != null && shouldUpdateSnapshot()) {
-      snapshotFile.getRawSnapshots().remove(rawSnapshot);
-      rawSnapshot = null;
+    @Override
+    public int compareTo(Snapshot other) {
+        return (name + scenario).compareTo(other.name + other.scenario);
     }
 
-    if (rawSnapshot != null) {
-      // Match existing Snapshot
-      if (!snapshotComparator.matches(getSnapshotName(), rawSnapshot, currentObject)) {
-        snapshotFile.createDebugFile(currentObject.trim());
+    public String getIdentifier() {
+        return scenario == null ? name : String.format("%s[%s]", name, scenario);
+    }
 
-        List<SnapshotReporter> reporters = snapshotReporters
-            .stream()
-            .filter(reporter -> reporter.supportsFormat(snapshotSerializer.getOutputFormat()))
-            .collect(Collectors.toList());
-
-        if (reporters.isEmpty()) {
-          String comparator = snapshotComparator.getClass().getSimpleName();
-          throw new IllegalStateException("No compatible reporters found for comparator " + comparator);
+    public static Snapshot parse(String rawText) {
+        String regex = "^(?<name>.*?)(\\[(?<scenario>.*)\\])?=(?<header>\\{.*\\})?(?<snapshot>(.*)$)";
+        Pattern p = Pattern.compile(regex, Pattern.DOTALL);
+        Matcher m = p.matcher(rawText);
+        boolean found = m.find();
+        if (!found) {
+            throw new LogGithubIssueException(
+                    "Corrupt Snapshot (REGEX matches = 0): possibly due to manual editing or our REGEX failing\n" +
+                    "Possible Solutions\n" +
+                    "1. Ensure you have not accidentally manually edited the snapshot file!\n" +
+                    "2. Compare the snapshot with GIT history"
+            );
         }
 
-        List<Throwable> errors = new ArrayList<>();
+        String name = m.group("name");
+        String scenario = m.group("scenario");
+        String header = m.group("header");
+        String snapshot = m.group("snapshot");
 
-        for (SnapshotReporter reporter : reporters) {
-          try {
-            reporter.report(getSnapshotName(), rawSnapshot, currentObject);
-          } catch (Throwable t) {
-            errors.add(t);
-          }
+        if (name == null || snapshot == null) {
+            throw new LogGithubIssueException(
+                    "Corrupt Snapshot (REGEX name or snapshot group missing): possibly due to manual editing or our REGEX failing\n" +
+                            "Possible Solutions\n" +
+                            "1. Ensure you have not accidentally manually edited the snapshot file\n" +
+                            "2. Compare the snapshot with your version control history"
+            );
         }
 
-        if (!errors.isEmpty()) {
-          throw new SnapshotMatchException("Error(s) matching snapshot(s)", errors);
-        }
-      }
-    } else {
-      if (this.isCI) {
-        log.error("We detected you are running on a CI Server - if this is incorrect please override the isCI() method in SnapshotConfig");
-        throw new SnapshotMatchException("Snapshot [" + getSnapshotName() + "] not found. Has this snapshot been committed ?");
-      } else {
-        log.warn("We detected you are running on a developer machine - if this is incorrect please override the isCI() method in SnapshotConfig");
-        // Create New Snapshot
-        snapshotFile.push(currentObject);
-      }
+        return Snapshot.builder()
+                .name(name)
+                .scenario(scenario)
+                .header(SnapshotHeader.fromJson(header))
+                .body(snapshot)
+                .build();
     }
-    snapshotFile.deleteDebugFile();
-  }
 
-  private boolean shouldUpdateSnapshot() {
-    if (snapshotConfig.updateSnapshot().isPresent()) {
-      return getSnapshotName().contains(snapshotConfig.updateSnapshot().get());
-    } else {
-      return false;
+    /**
+     * The raw string representation of the snapshot as it would appear in the *.snap file.
+     *
+     * @return raw snapshot
+     */
+    public String raw() {
+        String headerJson = (header == null) || (header.size() == 0) ? "" : header.toJson();
+        return getIdentifier() + "=" + headerJson + body;
     }
-  }
 
-  private String getRawSnapshot(Collection<String> rawSnapshots) {
-    for (String rawSnapshot : rawSnapshots) {
-      if (rawSnapshot.contains(getSnapshotName())) {
-        return rawSnapshot;
-      }
+    @Override
+    public String toString() {
+        return raw();
     }
-    return null;
-  }
-
-  private String takeSnapshot() {
-    return getSnapshotName() + snapshotSerializer.apply(current);
-  }
-
-  String getSnapshotName() {
-    String scenarioFormat = scenario == null ? "" : "[" + scenario + "]";
-    SnapshotName snapshotName = testMethod.getAnnotation(SnapshotName.class);
-    String pathFormat = snapshotName == null ?
-        testClass.getName() + "." + testMethod.getName() :
-        snapshotName.value();
-    return pathFormat + scenarioFormat + "=";
-  }
 }

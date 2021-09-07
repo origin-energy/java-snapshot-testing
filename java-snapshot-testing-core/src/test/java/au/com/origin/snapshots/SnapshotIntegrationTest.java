@@ -1,6 +1,7 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
+import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.serializers.UppercaseToStringSerializer;
 import org.junit.jupiter.api.AfterAll;
@@ -81,6 +82,7 @@ public class SnapshotIntegrationTest {
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     expect.serializer("lowercase").toMatchSnapshot("Hello World");
   }
+
 
   private void matchInsidePrivate(TestInfo testInfo) {
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());

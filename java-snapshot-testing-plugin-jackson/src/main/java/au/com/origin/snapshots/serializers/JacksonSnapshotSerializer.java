@@ -1,5 +1,7 @@
 package au.com.origin.snapshots.serializers;
 
+import au.com.origin.snapshots.Snapshot;
+import au.com.origin.snapshots.SnapshotSerializerContext;
 import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -65,9 +67,10 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
   }
 
   @Override
-  public String apply(Object[] objects) {
+  public Snapshot apply(Object[] objects, SnapshotSerializerContext gen) {
     try {
-      return objectMapper.writer(pp).writeValueAsString(objects);
+      String body = objectMapper.writer(pp).writeValueAsString(objects);
+      return  gen.toSnapshot(body);
     } catch (Exception e) {
       throw new SnapshotExtensionException("Jackson Serialization failed", e);
     }

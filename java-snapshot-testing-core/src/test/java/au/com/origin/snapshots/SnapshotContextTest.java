@@ -1,6 +1,7 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
+import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
@@ -20,7 +21,6 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -29,22 +29,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-class SnapshotTest {
+class SnapshotContextTest {
 
   private static final SnapshotConfig DEFAULT_CONFIG = new BaseSnapshotConfig();
   private static final String FILE_PATH = "src/test/java/anyFilePath";
-  private static final String SNAPSHOT_NAME = "java.lang.String.toString=";
+  private static final String SNAPSHOT_NAME = "java.lang.String.toString";
   private static final String SNAPSHOT = "java.lang.String.toString=[\nanyObject\n]";
 
   private SnapshotFile snapshotFile;
 
-  private Snapshot snapshot;
+  private SnapshotContext snapshotContext;
 
   @BeforeEach
   void setUp() throws NoSuchMethodException, IOException {
-    snapshotFile = new SnapshotFile(DEFAULT_CONFIG.getOutputDir(), "anyFilePath", SnapshotTest.class, (a, b) -> b);
-    snapshot =
-        new Snapshot(
+    snapshotFile = new SnapshotFile(DEFAULT_CONFIG.getOutputDir(), "anyFilePath", SnapshotContextTest.class, (a, b) -> b);
+    snapshotContext =
+        new SnapshotContext(
             DEFAULT_CONFIG,
             snapshotFile,
             String.class,
@@ -59,45 +59,45 @@ class SnapshotTest {
 
   @Test
   void shouldGetSnapshotNameSuccessfully() {
-    String snapshotName = snapshot.getSnapshotName();
+    String snapshotName = snapshotContext.resolveSnapshotIdentifier();
     assertThat(snapshotName).isEqualTo(SNAPSHOT_NAME);
   }
 
   @Test
   void shouldMatchSnapshotSuccessfully() {
-    snapshot.toMatchSnapshot();
-    assertThat(snapshotFile.getRawSnapshots())
-        .isEqualTo(Stream.of(SNAPSHOT).collect(Collectors.toCollection(TreeSet::new)));
+    snapshotContext.toMatchSnapshot();
+    assertThat(snapshotFile.getSnapshots().stream().findFirst().get().raw())
+        .isEqualTo(SNAPSHOT);
   }
 
   @Test
   void shouldMatchSnapshotWithException() {
-    snapshotFile.push(SNAPSHOT_NAME + "anyWrongSnapshot");
+    snapshotFile.push(Snapshot.parse(SNAPSHOT_NAME + "=anyWrongSnapshot"));
 
-    assertThrows(SnapshotMatchException.class, snapshot::toMatchSnapshot);
+    assertThrows(SnapshotMatchException.class, snapshotContext::toMatchSnapshot);
   }
 
   @SneakyThrows
   @Test
   void shouldRenderScenarioNameWhenSupplied() {
-    Snapshot snapshotWithScenario =
-        new Snapshot(
+    SnapshotContext snapshotContextWithScenario =
+        new SnapshotContext(
             DEFAULT_CONFIG,
             snapshotFile,
             String.class,
             String.class.getDeclaredMethod("toString"),
             new ToStringSnapshotSerializer(),
             "anyObject");
-    snapshotWithScenario.setScenario("hello world");
-    assertThat(snapshotWithScenario.getSnapshotName())
-        .isEqualTo("java.lang.String.toString[hello world]=");
+    snapshotContextWithScenario.setScenario("hello world");
+    assertThat(snapshotContextWithScenario.resolveSnapshotIdentifier())
+        .isEqualTo("java.lang.String.toString[hello world]");
   }
 
   @SneakyThrows
   @Test
   void shouldNotRenderScenarioNameWhenNull() {
-    Snapshot snapshotWithoutScenario =
-        new Snapshot(
+    SnapshotContext snapshotContextWithoutScenario =
+        new SnapshotContext(
             DEFAULT_CONFIG,
             snapshotFile,
             String.class,
@@ -105,7 +105,7 @@ class SnapshotTest {
             null,
             new ToStringSnapshotSerializer(),
             "anyObject");
-    assertThat(snapshotWithoutScenario.getSnapshotName()).isEqualTo("java.lang.String.toString=");
+    assertThat(snapshotContextWithoutScenario.resolveSnapshotIdentifier()).isEqualTo("java.lang.String.toString");
   }
 
   @SneakyThrows
@@ -115,21 +115,21 @@ class SnapshotTest {
     Mockito.when(mockConfig.updateSnapshot()).thenReturn(Optional.of(""));
     Mockito.when(mockConfig.getSerializer()).thenReturn(new ToStringSnapshotSerializer());
     SnapshotFile snapshotFile = Mockito.mock(SnapshotFile.class);
-    Set<String> set = new HashSet<>();
-    set.add("java.lang.String.toString[hello world]=[{" + "\"a\": \"b\"" + "}]");
-    Mockito.when(snapshotFile.getRawSnapshots()).thenReturn(set);
+    Set<Snapshot> set = new HashSet<>();
+    set.add(Snapshot.parse("java.lang.String.toString[hello world]=[{" + "\"a\": \"b\"" + "}]"));
+    Mockito.when(snapshotFile.getSnapshots()).thenReturn(set);
 
-    Snapshot snapshot =
-        new Snapshot(
+    SnapshotContext snapshotContext =
+        new SnapshotContext(
             mockConfig,
             snapshotFile,
             String.class,
             String.class.getDeclaredMethod("toString"),
             "anyObject");
-    snapshot.setScenario("hello world");
-    snapshot.toMatchSnapshot();
+    snapshotContext.setScenario("hello world");
+    snapshotContext.toMatchSnapshot();
     Mockito.verify(snapshotFile)
-        .push("java.lang.String.toString[hello world]=[\nanyObject\n]");
+        .push(Snapshot.parse("java.lang.String.toString[hello world]=[\nanyObject\n]"));
   }
 
   @SneakyThrows
@@ -142,32 +142,32 @@ class SnapshotTest {
       }
     };
 
-    Snapshot ciSnapshot = new Snapshot(
+    SnapshotContext ciSnapshotContext = new SnapshotContext(
         ciSnapshotConfig,
-        new SnapshotFile(ciSnapshotConfig.getOutputDir(), "blah", SnapshotTest.class, (a, b) -> b),
+        new SnapshotFile(ciSnapshotConfig.getOutputDir(), "blah", SnapshotContextTest.class, (a, b) -> b),
         String.class,
         String.class.getDeclaredMethod("toString"),
         "anyObject");
 
-    Assertions.assertThatThrownBy(ciSnapshot::toMatchSnapshot)
-        .hasMessage("Snapshot [java.lang.String.toString=] not found. Has this snapshot been committed ?");
+    Assertions.assertThatThrownBy(ciSnapshotContext::toMatchSnapshot)
+        .hasMessage("Snapshot [java.lang.String.toString] not found. Has this snapshot been committed ?");
   }
 
   @SneakyThrows
   @Test
   void shouldAggregateMultipleFailures() {
     SnapshotFile snapshotFile = Mockito.mock(SnapshotFile.class);
-    Set<String> set = new HashSet<>();
-    set.add("java.lang.String.toString=[\n  \"hello\"\n]");
-    Mockito.when(snapshotFile.getRawSnapshots()).thenReturn(set);
+    Set<Snapshot> set = new HashSet<>();
+    set.add(Snapshot.parse("java.lang.String.toString=[\n  \"hello\"\n]"));
+    Mockito.when(snapshotFile.getSnapshots()).thenReturn(set);
 
-    Stream<BiConsumer<String, String>> reportingFunctions = Stream.of(
+    Stream<BiConsumer<Snapshot, Snapshot>> reportingFunctions = Stream.of(
         (rawSnapshot, currentObject) -> assertThat(currentObject).isEqualTo(rawSnapshot), // assertj
         org.junit.jupiter.api.Assertions::assertEquals, // junit jupiter
-        (rawSnapshot, currentObject) -> {
+        (previous, current) -> {
           String message = String.join(System.lineSeparator(),
-              "Expected : ", rawSnapshot, "Actual : ", currentObject);
-          throw new AssertionFailedError(message, rawSnapshot, currentObject); // opentest4j
+              "Expected : ", previous.raw(), "Actual : ", current.raw());
+          throw new AssertionFailedError(message, previous, current); // opentest4j
         }
     );
 
@@ -178,23 +178,23 @@ class SnapshotTest {
       }
 
       @Override
-      public void report(String snapshotName, String rawSnapshot, String currentObject) {
-        consumer.accept(rawSnapshot, currentObject);
+      public void report(Snapshot previous, Snapshot current) {
+        consumer.accept(previous, current);
       }
     });
 
-    Snapshot failingSnapshot = new Snapshot(
+    SnapshotContext failingSnapshotContext = new SnapshotContext(
         DEFAULT_CONFIG,
         snapshotFile,
         String.class,
         String.class.getDeclaredMethod("toString"),
         "hola"
     );
-    failingSnapshot.setSnapshotSerializer(new ToStringSnapshotSerializer());
-    failingSnapshot.setSnapshotReporters(reporters.collect(Collectors.toList()));
+    failingSnapshotContext.setSnapshotSerializer(new ToStringSnapshotSerializer());
+    failingSnapshotContext.setSnapshotReporters(reporters.collect(Collectors.toList()));
 
     try {
-      failingSnapshot.toMatchSnapshot();
+      failingSnapshotContext.toMatchSnapshot();
     } catch (Throwable m) {
       String cleanMessage = m.getMessage()
           .replace("<\"", "")

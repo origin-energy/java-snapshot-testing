@@ -1,6 +1,7 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
+import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;

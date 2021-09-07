@@ -1,4 +1,4 @@
-package au.com.origin.snapshots;
+package au.com.origin.snapshots.config;
 
 import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
@@ -99,4 +99,5 @@ public interface SnapshotConfig {
    * @return boolean indicating if we're running on a CI environment or not
    */
   boolean isCI();
+
 }

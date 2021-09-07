@@ -1,8 +1,10 @@
 package au.com.origin.snapshots.reporters;
 
+import au.com.origin.snapshots.Snapshot;
+
 public interface SnapshotReporter {
 
   boolean supportsFormat(String outputFormat);
 
-  void report(String snapshotName, String rawSnapshot, String currentObject);
+  void report(Snapshot previous, Snapshot current);
 }

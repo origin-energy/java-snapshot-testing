@@ -1,6 +1,9 @@
 package au.com.origin.snapshots.junit4;
 
 import au.com.origin.snapshots.*;
+import au.com.origin.snapshots.config.PropertyResolvingSnapshotConfig;
+import au.com.origin.snapshots.config.SnapshotConfig;
+import au.com.origin.snapshots.config.SnapshotConfigInjector;
 import org.junit.runner.Description;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
