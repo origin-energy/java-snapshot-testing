@@ -1,10 +1,9 @@
 package au.com.origin.snapshots.docs
 
+import au.com.origin.snapshots.Expect
 import au.com.origin.snapshots.annotations.SnapshotName
 import au.com.origin.snapshots.spock.EnableSnapshots
 import spock.lang.Specification
-
-import au.com.origin.snapshots.Expect;
 
 // Ensure you enable snapshot testing support
 @EnableSnapshots

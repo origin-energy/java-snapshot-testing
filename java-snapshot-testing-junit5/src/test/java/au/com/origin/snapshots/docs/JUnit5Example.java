@@ -1,9 +1,9 @@
 package au.com.origin.snapshots.docs;
 
+import au.com.origin.snapshots.Expect;
 import au.com.origin.snapshots.junit5.SnapshotExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import au.com.origin.snapshots.Expect;
 
 // Ensure you extend your test class with the SnapshotExtension
 @ExtendWith({SnapshotExtension.class})

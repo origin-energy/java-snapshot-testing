@@ -1,9 +1,9 @@
 package au.com.origin.snapshots.docs;
 
 import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
 import java.util.List;

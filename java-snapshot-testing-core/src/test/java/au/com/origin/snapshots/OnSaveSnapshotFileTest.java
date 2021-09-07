@@ -1,6 +1,7 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
+import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -15,9 +16,9 @@ import java.nio.file.Paths;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class onSaveSnapshotFileTest {
+public class OnSaveSnapshotFileTest {
 
-  private static final String SNAPSHOT_FILE_PATH = "src/test/java/au/com/origin/snapshots/__snapshots__/onSaveSnapshotFileTest.snap";
+  private static final String SNAPSHOT_FILE_PATH = "src/test/java/au/com/origin/snapshots/__snapshots__/OnSaveSnapshotFileTest.snap";
   private final SnapshotConfig CUSTOM_SNAPSHOT_CONFIG = new BaseSnapshotConfig() {
     @Override
     public String onSaveSnapshotFile(Class<?> testClass, String snapshotContent) {
@@ -44,7 +45,7 @@ public class onSaveSnapshotFileTest {
     assertThat(String.join("\n", Files.readAllLines(f.toPath())))
         .isEqualTo(
             "HEADER\n"
-                + "au.com.origin.snapshots.onSaveSnapshotFileTest.shouldAllowFileModificationsBeforeFinishingTest=[\n"
+                + "au.com.origin.snapshots.OnSaveSnapshotFileTest.shouldAllowFileModificationsBeforeFinishingTest=[\n"
                 + "Hello Wörld\n"
                 + "]\n"
                 + "FOOTER");

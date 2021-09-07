@@ -26,7 +26,7 @@ public class SnapshotFile {
   private final Class<?> testClass;
   private final BiFunction<Class<?>, String, String> onSaveSnapshotFile;
   @Getter
-  private Set<String> rawSnapshots;
+  private Set<Snapshot> snapshots = Collections.synchronizedSortedSet(new TreeSet<>());
 
   SnapshotFile(String srcDirPath, String fileName, Class<?> testClass, BiFunction<Class<?>, String, String> onSaveSnapshotFile) throws IOException {
     this.testClass = testClass;
@@ -46,16 +46,15 @@ public class SnapshotFile {
 
       String fileText = fileContent.toString();
       if (!"".equals(fileText.trim())) {
-        rawSnapshots =
+        snapshots =
             Collections.synchronizedSortedSet(
                 Stream.of(fileContent.toString().split(SPLIT_STRING))
                     .map(String::trim)
+                    .map(Snapshot::parse)
                     .collect(Collectors.toCollection(TreeSet::new)));
-      } else {
-        rawSnapshots = Collections.synchronizedSortedSet(new TreeSet<>());
       }
     } catch (IOException e) {
-      rawSnapshots = Collections.synchronizedSortedSet(new TreeSet<>());
+      // ...
     }
   }
 
@@ -63,7 +62,7 @@ public class SnapshotFile {
     return this.fileName + ".debug";
   }
 
-  public File createDebugFile(String snapshot) {
+  public File createDebugFile(Snapshot snapshot) {
     File file = null;
     try {
       file = new File(getDebugFilename());
@@ -71,7 +70,7 @@ public class SnapshotFile {
       file.createNewFile();
 
       try (FileOutputStream fileStream = new FileOutputStream(file, false)) {
-        fileStream.write(snapshot.getBytes(StandardCharsets.UTF_8));
+        fileStream.write(snapshot.raw().getBytes(StandardCharsets.UTF_8));
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -102,10 +101,15 @@ public class SnapshotFile {
     return path.toFile();
   }
 
-  public void push(String snapshot) {
-    rawSnapshots.add(snapshot);
+  public void push(Snapshot snapshot) {
+    snapshots.add(snapshot);
 
     File file = createFileIfNotExists();
+
+    TreeSet<String> rawSnapshots = snapshots
+            .stream()
+            .map(Snapshot::raw)
+            .collect(Collectors.toCollection(TreeSet::new));
 
     try (FileOutputStream fileStream = new FileOutputStream(file, false)) {
       byte[] myBytes = String.join(SPLIT_STRING, rawSnapshots).getBytes(StandardCharsets.UTF_8);
