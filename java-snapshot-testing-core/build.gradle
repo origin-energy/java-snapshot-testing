@@ -8,7 +8,7 @@ dependencies {
     compileOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
 
     implementation 'org.assertj:assertj-core:3.11.1'
-    implementation 'org.opentest4j:opentest4j:1.1.1'
+    implementation 'org.opentest4j:opentest4j:1.2.0'
 
     testImplementation 'org.slf4j:slf4j-simple:2.0.0-alpha0'
     testImplementation 'org.mockito:mockito-junit-jupiter:2.23.0'

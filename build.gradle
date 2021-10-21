@@ -23,6 +23,7 @@ subprojects { subproject ->
     shadowJar {
         classifier = ''
         relocate 'org.assertj', 'shadow.org.assertj'
+        relocate 'org.opentest4j', 'shadow.org.opentest4j'
     }
 
     dependencies {
