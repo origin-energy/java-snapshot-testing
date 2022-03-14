@@ -24,7 +24,7 @@ public class SnapshotRuleUsedTest {
 
   @Test
   public void shouldUseExtensionAgainViaInstanceVariable() {
-    this.expect.toMatchSnapshot("Hello World", "Hello World Again");
+    this.expect.toMatchSnapshot("Hello World");
   }
 
   @SnapshotName("hello_world")

@@ -58,7 +58,7 @@ class SnapshotUtilsTest {
 
     SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
-    expect.toMatchSnapshot(fakeMethodWithComplexObjectWithIgnore, fakeMethodWithComplexObjectWithoutIgnore);
+    expect.toMatchSnapshotLegacy(fakeMethodWithComplexObjectWithIgnore, fakeMethodWithComplexObjectWithoutIgnore);
     snapshotVerifier.validateSnapshots();
   }
 
@@ -88,7 +88,7 @@ class SnapshotUtilsTest {
     SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     expect
-        .toMatchSnapshot(fakeMethodWithComplexObjectWithIgnore, fakeMethodWithComplexObjectWithoutIgnore);
+        .toMatchSnapshotLegacy(fakeMethodWithComplexObjectWithIgnore, fakeMethodWithComplexObjectWithoutIgnore);
     snapshotVerifier.validateSnapshots();
   }
 }

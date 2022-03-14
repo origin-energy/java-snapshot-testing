@@ -17,7 +17,7 @@ public class SnapshotRunnerUsedTest {
 
   @Test
   public void shouldUseExtensionAgain(Expect expect) {
-    expect.toMatchSnapshot("Hello World", "Hello World Again");
+    expect.toMatchSnapshot("Hello World");
   }
 
   @Test
@@ -27,7 +27,7 @@ public class SnapshotRunnerUsedTest {
 
   @Test
   public void shouldUseExtensionAgainViaInstanceVariable() {
-    this.expect.toMatchSnapshot("Hello World", "Hello World Again");
+    this.expect.toMatchSnapshot("Hello World");
   }
 
   @SnapshotName("hello_world")
@@ -39,6 +39,6 @@ public class SnapshotRunnerUsedTest {
   @SnapshotName("hello_world_again")
   @Test
   public void shouldUseExtensionAgainWithSnapshotName(Expect expect) {
-    expect.toMatchSnapshot("Hello World", "Hello World Again");
+    expect.toMatchSnapshot("Hello World");
   }
 }
