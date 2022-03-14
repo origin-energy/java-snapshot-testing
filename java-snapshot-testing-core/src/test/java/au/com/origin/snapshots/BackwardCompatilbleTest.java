@@ -72,7 +72,7 @@ public class BackwardCompatilbleTest {
             new SnapshotCaptor(Object.class, FakeObject.class));
 
     Expect.of(snapshotVerifier, testInfo.getTestMethod().get())
-        .toMatchSnapshot(fakeMethodWithComplexObjectWithIgnore, fakeMethodWithComplexObjectWithoutIgnore);
+        .toMatchSnapshotLegacy(fakeMethodWithComplexObjectWithIgnore, fakeMethodWithComplexObjectWithoutIgnore);
 
     snapshotVerifier.validateSnapshots();
   }

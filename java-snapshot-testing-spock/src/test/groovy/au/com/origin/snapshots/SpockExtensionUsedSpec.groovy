@@ -22,7 +22,7 @@ class SpockExtensionUsedSpec extends Specification {
     @SnapshotName("Should use extension again")
     def "Should use extension again"(Expect expect) {
         when:
-        expect.toMatchSnapshot("Hello World", "Hello World Again")
+        expect.toMatchSnapshot("Hello World")
 
         then:
         true

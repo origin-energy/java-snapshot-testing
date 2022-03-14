@@ -27,10 +27,27 @@ public class Expect {
   /**
    * Make an assertion on the given input parameters against what already exists
    *
+   * If you were previously using varargs and see an error - you can fix the error using
+   * "toMatchSnapshotLegacy", however, a better approach is to use the ".scenario()"
+   * feature as future versions of this library will most likely remove the legacy implementation completely.
+   *
+   * @param object snapshot object
+   */
+  public void toMatchSnapshot(Object object) {
+    toMatchSnapshotLegacy(object);
+  }
+
+  /**
+   * Make an assertion on the given input parameters against what already exists
+   *
+   * Previously called `toMatchSnapshot`, this varargs implementation will be removed
+   * in future versions of this library.
+   *
    * @param firstObject first snapshot object
    * @param objects     other snapshot objects
    */
-  public void toMatchSnapshot(Object firstObject, Object... objects) {
+  @Deprecated
+  public void toMatchSnapshotLegacy(Object firstObject, Object... objects) {
     Snapshot snapshot = snapshotVerifier.expectCondition(testMethod, firstObject, objects);
     if (snapshotSerializer != null) {
       snapshot.setSnapshotSerializer(snapshotSerializer);

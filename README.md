@@ -173,20 +173,19 @@ A text representation of your java object (toString() or JSON).
 **String snapshot example**
 
 ```java
-expect("hello world","Hello world again!").toMatchSnapshot();
+expect.toMatchSnapshot("Hello World");
 ```
 
 ```text
 au.com.example.company.HelloWorldTest.helloWorld=[
 Hello world
-Hello world again!
 ]
 ```
 
 **JSON Snapshot Example**
 
 ```java
-expect(userDto).serializer("json").toMatchSnapshot();
+expect.serializer("json").toMatchSnapshot(userDto);
 ```
 
 ```text
@@ -529,8 +528,8 @@ Currently, we support the following serializers.
 
 Serializers are resolved in the following order.
 
-- (method level) explicitly `expect(...).serializer(ToStringSerializer.class).toMatchSnapshot();` or via property
-  file `expect(...).serializer("json").toMatchSnapshot();`
+- (method level) explicitly `expect.serializer(ToStringSerializer.class).toMatchSnapshot(...);` or via property
+  file `expect.serializer("json").toMatchSnapshot(...);`
 - (class level) explicitly `@UseSnapshotConfig` which gets read from the `getSerializer()` method
 - (properties) implicitly via `snapshot.properties`
 

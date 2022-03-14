@@ -59,7 +59,7 @@ class SnapshotMatcherScenarioTest {
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     expect
         .scenario("Scenario B")
-        .toMatchSnapshot("any second type of object", "any third type of object");
+        .toMatchSnapshotLegacy("any second type of object", "any third type of object");
     File f = new File(FILE_PATH);
     if (!f.exists() || f.isDirectory()) {
       throw new RuntimeException("File should exist here");
