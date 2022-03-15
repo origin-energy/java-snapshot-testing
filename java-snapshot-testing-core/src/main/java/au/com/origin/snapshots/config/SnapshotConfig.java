@@ -52,18 +52,6 @@ public interface SnapshotConfig {
 
   /**
    * Optional
-   * Allows you to perform any custom modifications to the file before it is saved
-   *
-   * @param testClass       target test class
-   * @param snapshotContent snapshot file as a string
-   * @return snapshot file contents to be persisted
-   */
-  default String onSaveSnapshotFile(Class<?> testClass, String snapshotContent) {
-    return snapshotContent;
-  }
-
-  /**
-   * Optional
    * Override to supply your own custom comparator function
    *
    * @return custom comparator function

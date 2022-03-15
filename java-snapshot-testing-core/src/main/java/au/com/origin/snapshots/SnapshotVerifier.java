@@ -61,8 +61,7 @@ public class SnapshotVerifier {
       SnapshotFile snapshotFile = new SnapshotFile(
           testSrcDirNoTrailing,
           snapshotDir.getPath() + File.separator + fileUnderTest.getName(),
-          testClass,
-          snapshotConfig::onSaveSnapshotFile
+          testClass
       );
 
       this.testClass = testClass;

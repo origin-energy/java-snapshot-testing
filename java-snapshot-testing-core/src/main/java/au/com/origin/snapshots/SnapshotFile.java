@@ -24,13 +24,11 @@ public class SnapshotFile {
 
   private final String fileName;
   private final Class<?> testClass;
-  private final BiFunction<Class<?>, String, String> onSaveSnapshotFile;
   @Getter
   private Set<Snapshot> snapshots = Collections.synchronizedSortedSet(new TreeSet<>());
 
-  SnapshotFile(String srcDirPath, String fileName, Class<?> testClass, BiFunction<Class<?>, String, String> onSaveSnapshotFile) throws IOException {
+  SnapshotFile(String srcDirPath, String fileName, Class<?> testClass) throws IOException {
     this.testClass = testClass;
-    this.onSaveSnapshotFile = onSaveSnapshotFile;
     this.fileName = srcDirPath + File.separator + fileName;
     log.info("Snapshot File: " + this.fileName);
 
@@ -128,8 +126,7 @@ public class SnapshotFile {
         delete();
       } else {
         String content = new String(Files.readAllBytes(Paths.get(this.fileName)), StandardCharsets.UTF_8);
-        String modified = onSaveSnapshotFile.apply(testClass, content);
-        Files.write(path, modified.getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
+        Files.write(path, content.getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
       }
     }
   }

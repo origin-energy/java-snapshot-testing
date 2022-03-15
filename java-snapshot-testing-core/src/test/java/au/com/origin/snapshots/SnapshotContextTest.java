@@ -42,7 +42,7 @@ class SnapshotContextTest {
 
   @BeforeEach
   void setUp() throws NoSuchMethodException, IOException {
-    snapshotFile = new SnapshotFile(DEFAULT_CONFIG.getOutputDir(), "anyFilePath", SnapshotContextTest.class, (a, b) -> b);
+    snapshotFile = new SnapshotFile(DEFAULT_CONFIG.getOutputDir(), "anyFilePath", SnapshotContextTest.class);
     snapshotContext =
         new SnapshotContext(
             DEFAULT_CONFIG,
@@ -141,7 +141,7 @@ class SnapshotContextTest {
 
     SnapshotContext ciSnapshotContext = new SnapshotContext(
         ciSnapshotConfig,
-        new SnapshotFile(ciSnapshotConfig.getOutputDir(), "blah", SnapshotContextTest.class, (a, b) -> b),
+        new SnapshotFile(ciSnapshotConfig.getOutputDir(), "blah", SnapshotContextTest.class),
         String.class,
         String.class.getDeclaredMethod("toString"),
         "anyObject");
