@@ -62,6 +62,7 @@ ci-env-var=CI
 ```java
 package au.com.origin.snapshots.docs;
 
+import au.com.origin.snapshots.Expect;
 import au.com.origin.snapshots.annotations.SnapshotName;
 import au.com.origin.snapshots.junit5.SnapshotExtension;
 import org.junit.jupiter.api.Test;
@@ -69,29 +70,28 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.HashMap;
 import java.util.Map;
-import au.com.origin.snapshots.Expect;
 
 @ExtendWith({SnapshotExtension.class})
 public class MyFirstSnapshotTest {
 
-  private Expect expect;
+    private Expect expect;
 
-  @SnapshotName("i_can_give_custom_names_to_my_snapshots")
-  @Test
-  public void toStringSerializationTest() {
-    expect.toMatchSnapshot("Hello World");
-  }
+    @SnapshotName("i_can_give_custom_names_to_my_snapshots")
+    @Test
+    public void toStringSerializationTest() {
+        expect.toMatchSnapshot("Hello World");
+    }
 
-  @Test
-  public void jsonSerializationTest() {
-    Map<String, Object> map = new HashMap<>();
-    map.put("name", "John Doe");
-    map.put("age", 40);
+    @Test
+    public void jsonSerializationTest() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", "John Doe");
+        map.put("age", 40);
 
-    expect
-        .serializer("json")
-        .toMatchSnapshot(map);
-  }
+        expect
+                .serializer("json")
+                .toMatchSnapshot(map);
+    }
 
 }
 ```
@@ -376,8 +376,8 @@ Here is a JUnit5 example that does not use the JUnit5 extension
 package au.com.origin.snapshots.docs;
 
 import au.com.origin.snapshots.Expect;
-import au.com.origin.snapshots.config.PropertyResolvingSnapshotConfig;
 import au.com.origin.snapshots.SnapshotVerifier;
+import au.com.origin.snapshots.config.PropertyResolvingSnapshotConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -386,23 +386,23 @@ import org.junit.jupiter.api.TestInfo;
 // Notice we aren't using any framework extensions
 public class CustomFrameworkExample {
 
-  private static SnapshotVerifier snapshotVerifier;
+    private static SnapshotVerifier snapshotVerifier;
 
-  @BeforeAll
-  static void beforeAll() {
-    snapshotVerifier = new SnapshotVerifier(new PropertyResolvingSnapshotConfig(), CustomFrameworkExample.class);
-  }
+    @BeforeAll
+    static void beforeAll() {
+        snapshotVerifier = new SnapshotVerifier(new PropertyResolvingSnapshotConfig(), CustomFrameworkExample.class);
+    }
 
-  @AfterAll
-  static void afterAll() {
-    snapshotVerifier.validateSnapshots();
-  }
+    @AfterAll
+    static void afterAll() {
+        snapshotVerifier.validateSnapshots();
+    }
 
-  @Test
-  void shouldMatchSnapshotOne(TestInfo testInfo) {
-    Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
-    expect.toMatchSnapshot("Hello World");
-  }
+    @Test
+    void shouldMatchSnapshotOne(TestInfo testInfo) {
+        Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
+        expect.toMatchSnapshot("Hello World");
+    }
 
 }
 ```
@@ -552,25 +552,27 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @UseSnapshotConfig(LowercaseToStringSnapshotConfig.class)
 public class JUnit5ResolutionHierarchyExample {
 
-  @Test
-  public void aliasMethodTest(Expect expect) {
-    expect
-        .serializer("json") // <------ Using snapshot.properties
-        .toMatchSnapshot(new TestObject());
-  }
+    private Expect expect;
 
-  @Test
-  public void customSerializerTest(Expect expect) {
-    expect
-        .serializer(UppercaseToStringSerializer.class)  // <------ Using custom serializer
-        .toMatchSnapshot(new TestObject());
-  }
+    @Test
+    public void aliasMethodTest() {
+        expect
+                .serializer("json") // <------ Using snapshot.properties
+                .toMatchSnapshot(new TestObject());
+    }
 
-  // Read from LowercaseToStringSnapshotConfig defined on the class
-  @Test
-  public void lowercaseTest(Expect expect) {
-    expect.toMatchSnapshot(new TestObject());
-  }
+    @Test
+    public void customSerializerTest() {
+        expect
+                .serializer(UppercaseToStringSerializer.class)  // <------ Using custom serializer
+                .toMatchSnapshot(new TestObject());
+    }
+
+    // Read from LowercaseToStringSnapshotConfig defined on the class
+    @Test
+    public void lowercaseTest() {
+        expect.toMatchSnapshot(new TestObject());
+    }
 }
 ```
 
@@ -588,9 +590,9 @@ For example, the following will exclude the rendering of Lists without changing 
 package au.com.origin.snapshots.docs;
 
 import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
 import java.util.List;
@@ -598,32 +600,32 @@ import java.util.Set;
 
 public class HibernateSnapshotSerializer extends DeterministicJacksonSnapshotSerializer {
 
-  @Override
-  public void configure(ObjectMapper objectMapper) {
-    super.configure(objectMapper);
+    @Override
+    public void configure(ObjectMapper objectMapper) {
+        super.configure(objectMapper);
 
-    // Ignore Hibernate Lists to prevent infinite recursion
-    objectMapper.addMixIn(List.class, IgnoreTypeMixin.class);
-    objectMapper.addMixIn(Set.class, IgnoreTypeMixin.class);
+        // Ignore Hibernate Lists to prevent infinite recursion
+        objectMapper.addMixIn(List.class, IgnoreTypeMixin.class);
+        objectMapper.addMixIn(Set.class, IgnoreTypeMixin.class);
 
-    // Ignore Fields that Hibernate generates for us automatically
-    objectMapper.addMixIn(BaseEntity.class, IgnoreHibernateEntityFields.class);
-  }
+        // Ignore Fields that Hibernate generates for us automatically
+        objectMapper.addMixIn(BaseEntity.class, IgnoreHibernateEntityFields.class);
+    }
 
-  @JsonIgnoreType
-  class IgnoreTypeMixin {
-  }
+    @JsonIgnoreType
+    class IgnoreTypeMixin {
+    }
 
-  abstract class IgnoreHibernateEntityFields {
-    @JsonIgnore
-    abstract Long getId();
+    abstract class IgnoreHibernateEntityFields {
+        @JsonIgnore
+        abstract Long getId();
 
-    @JsonIgnore
-    abstract Instant getCreatedDate();
+        @JsonIgnore
+        abstract Instant getCreatedDate();
 
-    @JsonIgnore
-    abstract Instant getLastModifiedDate();
-  }
+        @JsonIgnore
+        abstract Instant getLastModifiedDate();
+    }
 }
 ```
 
@@ -661,7 +663,7 @@ import lombok.SneakyThrows;
 public class JsonObjectComparator implements SnapshotComparator {
     @Override
     public boolean matches(Snapshot previous, Snapshot current) {
-        return asObject(previous.getName(), previous.getSnapshot()).equals(asObject(current.getName(), current.getSnapshot()));
+        return asObject(previous.getName(), previous.getBody()).equals(asObject(current.getName(), current.getBody()));
     }
 
     @SneakyThrows
@@ -706,7 +708,7 @@ public class JsonAssertReporter implements SnapshotReporter {
     @Override
     @SneakyThrows
     public void report(Snapshot previous, Snapshot current) {
-        JSONAssert.assertEquals(previous.getSnapshot(), current.getSnapshot(), JSONCompareMode.STRICT);
+        JSONAssert.assertEquals(previous.getBody(), current.getBody(), JSONCompareMode.STRICT);
     }
 }
 ```
@@ -727,14 +729,30 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(SnapshotExtension.class)
-// apply your custom snapshot configuration to this test class
 @UseSnapshotConfig(LowercaseToStringSnapshotConfig.class)
-public class CustomSnapshotConfigExample {
+public class JUnit5ResolutionHierarchyExample {
 
-  @Test
-  public void myTest(Expect expect) {
-    expect.toMatchSnapshot("hello world");
-  }
+    private Expect expect;
+
+    @Test
+    public void aliasMethodTest() {
+        expect
+                .serializer("json") // <------ Using snapshot.properties
+                .toMatchSnapshot(new TestObject());
+    }
+
+    @Test
+    public void customSerializerTest() {
+        expect
+                .serializer(UppercaseToStringSerializer.class)  // <------ Using custom serializer
+                .toMatchSnapshot(new TestObject());
+    }
+
+    // Read from LowercaseToStringSnapshotConfig defined on the class
+    @Test
+    public void lowercaseTest() {
+        expect.toMatchSnapshot(new TestObject());
+    }
 }
 ```
 

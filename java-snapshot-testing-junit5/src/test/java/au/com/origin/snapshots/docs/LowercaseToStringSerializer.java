@@ -5,9 +5,6 @@ import au.com.origin.snapshots.SnapshotSerializerContext;
 import au.com.origin.snapshots.serializers.SerializerType;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 public class LowercaseToStringSerializer implements SnapshotSerializer {
   @Override
   public Snapshot apply(Object object, SnapshotSerializerContext gen) {
