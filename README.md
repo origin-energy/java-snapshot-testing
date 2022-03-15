@@ -1,12 +1,16 @@
 [![Build Status](https://github.com/origin-energy/java-snapshot-testing/workflows/build/badge.svg)](https://github.com/origin-energy/java-snapshot-testing/actions)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.origin-energy/java-snapshot-testing-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.origin-energy/java-snapshot-testing-core)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.origin-energy/java-snapshot-testing-core/badge.svg?version=3.2.7)](https://search.maven.org/artifact/io.github.origin-energy/java-snapshot-testing-core/3.2.7/jar)
 
 # Java Snapshot Testing
 - Inspired by [facebook's Jest framework](https://facebook.github.io/jest/docs/en/snapshot-testing.html)
 
-🎉 3.X is live - parallel test support, easily override configuration via `snapshot.properties` yet *.snap format remains unchanged! This release will require some mechanical refactoring for those upgrading as `expect` is no longer a static method.
+🎉 4.0.0.Beta1 is live - We need testers
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.origin-energy/java-snapshot-testing-core/badge.svg?subject=4.0.0-Beta1)](https://maven-badges.herokuapp.com/maven-central/io.github.origin-energy/java-snapshot-testing-core)
+- Report bugs to "Issues" clearly marking them as 4.0.0-Beta
 
-Upgrade guide from 2.X to 3.X [here](https://github.com/origin-energy/java-snapshot-testing/discussions/73)
+## Upgrading
+- Upgrade guild from 3.X to $.X [here](https://github.com/origin-energy/java-snapshot-testing/discussions/94)
+- Upgrade guide from 2.X to 3.X [here](https://github.com/origin-energy/java-snapshot-testing/discussions/73)
 
 ## The testing framework loved by ~~lazy~~ __productive__ devs
 
