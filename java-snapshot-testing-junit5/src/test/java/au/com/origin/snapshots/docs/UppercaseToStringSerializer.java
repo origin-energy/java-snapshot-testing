@@ -10,9 +10,8 @@ import java.util.stream.Collectors;
 
 public class UppercaseToStringSerializer implements SnapshotSerializer {
   @Override
-  public Snapshot apply(Object[] objects, SnapshotSerializerContext gen) {
-    String body = Arrays.stream(objects).map(Object::toString).collect(Collectors.joining()).toUpperCase();
-    return gen.toSnapshot(body);
+  public Snapshot apply(Object object, SnapshotSerializerContext gen) {
+    return gen.toSnapshot(object.toString().toUpperCase());
   }
 
   @Override

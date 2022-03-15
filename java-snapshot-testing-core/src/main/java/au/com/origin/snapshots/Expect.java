@@ -38,21 +38,7 @@ public class Expect {
    * @param object snapshot object
    */
   public void toMatchSnapshot(Object object) {
-    toMatchSnapshotLegacy(object);
-  }
-
-  /**
-   * Make an assertion on the given input parameters against what already exists
-   *
-   * Previously called `toMatchSnapshot`, this varargs implementation will be removed
-   * in future versions of this library.
-   *
-   * @param firstObject first snapshot object
-   * @param objects     other snapshot objects
-   */
-  @Deprecated
-  public void toMatchSnapshotLegacy(Object firstObject, Object... objects) {
-    SnapshotContext snapshotContext = snapshotVerifier.expectCondition(testMethod, firstObject, objects);
+    SnapshotContext snapshotContext = snapshotVerifier.expectCondition(testMethod, object);
     if (snapshotSerializer != null) {
       snapshotContext.setSnapshotSerializer(snapshotSerializer);
     }
@@ -69,7 +55,6 @@ public class Expect {
 
     snapshotContext.toMatchSnapshot();
   }
-
 
   /**
    * Normally a snapshot can be applied only once to a test method.

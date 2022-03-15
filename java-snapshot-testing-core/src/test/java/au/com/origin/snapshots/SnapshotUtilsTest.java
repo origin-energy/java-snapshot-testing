@@ -48,17 +48,9 @@ class SnapshotUtilsTest {
             "fakeMethodWithComplexFakeObject",
             new SnapshotCaptor(FakeObject.class, "name"));
 
-    Mockito.reset(fakeObject);
-
-    // Without Ignore
-    fakeObject.fakeMethodWithComplexFakeObject(fake);
-    Object fakeMethodWithComplexObjectWithoutIgnore =
-        extractArgs(
-            fakeObject, "fakeMethodWithComplexFakeObject", new SnapshotCaptor(FakeObject.class));
-
     SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
-    expect.toMatchSnapshotLegacy(fakeMethodWithComplexObjectWithIgnore, fakeMethodWithComplexObjectWithoutIgnore);
+    expect.toMatchSnapshot(fakeMethodWithComplexObjectWithIgnore);
     snapshotVerifier.validateSnapshots();
   }
 
@@ -75,20 +67,10 @@ class SnapshotUtilsTest {
             "fakeMethodWithComplexObject",
             new SnapshotCaptor(Object.class, FakeObject.class, "name"));
 
-    Mockito.reset(fakeObject);
-
-    // Without Ignore
-    fakeObject.fakeMethodWithComplexObject(fake);
-    Object fakeMethodWithComplexObjectWithoutIgnore =
-        extractArgs(
-            fakeObject,
-            "fakeMethodWithComplexObject",
-            new SnapshotCaptor(Object.class, FakeObject.class));
-
     SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     expect
-        .toMatchSnapshotLegacy(fakeMethodWithComplexObjectWithIgnore, fakeMethodWithComplexObjectWithoutIgnore);
+        .toMatchSnapshot(fakeMethodWithComplexObjectWithIgnore);
     snapshotVerifier.validateSnapshots();
   }
 }

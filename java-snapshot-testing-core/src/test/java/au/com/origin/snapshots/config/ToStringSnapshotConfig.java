@@ -19,9 +19,8 @@ public class ToStringSnapshotConfig extends BaseSnapshotConfig {
       }
 
       @Override
-      public Snapshot apply(Object[] objects, SnapshotSerializerContext gen) {
-        String body = Arrays.stream(objects).map(Object::toString).collect(Collectors.joining());
-        return gen.toSnapshot(body);
+      public Snapshot apply(Object object, SnapshotSerializerContext gen) {
+        return gen.toSnapshot(object.toString());
       }
     };
   }

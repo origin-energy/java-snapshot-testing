@@ -50,10 +50,10 @@ public class SnapshotHeaders {
         }
 
         @Override
-        public Snapshot apply(Object[] objects, SnapshotSerializerContext snapshotSerializerContext) {
+        public Snapshot apply(Object object, SnapshotSerializerContext snapshotSerializerContext) {
             snapshotSerializerContext.getHeader().put("custom", "anything");
             snapshotSerializerContext.getHeader().put("custom2", "anything2");
-            return super.apply(objects, snapshotSerializerContext);
+            return super.apply(object, snapshotSerializerContext);
         }
     };
 

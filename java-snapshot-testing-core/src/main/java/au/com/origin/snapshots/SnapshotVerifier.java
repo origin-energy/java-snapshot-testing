@@ -93,10 +93,9 @@ public class SnapshotVerifier {
   }
 
   @SneakyThrows
-  public SnapshotContext expectCondition(Method testMethod, Object firstObject, Object... others) {
-    Object[] objects = mergeObjects(firstObject, others);
+  public SnapshotContext expectCondition(Method testMethod, Object object) {
     SnapshotContext snapshotContext =
-        new SnapshotContext(config, snapshotFile, testClass, testMethod, objects);
+        new SnapshotContext(config, snapshotFile, testClass, testMethod, object);
     calledSnapshots.add(snapshotContext);
     return snapshotContext;
   }
@@ -135,13 +134,4 @@ public class SnapshotVerifier {
     snapshotFile.cleanup();
   }
 
-  private Object[] mergeObjects(Object firstObject, Object[] others) {
-    Object[] objects = new Object[1];
-    objects[0] = firstObject;
-    if (!isNullOrEmpty(others)) {
-      objects = Stream.concat(Arrays.stream(objects), Arrays.stream(others))
-          .toArray(Object[]::new);
-    }
-    return objects;
-  }
 }

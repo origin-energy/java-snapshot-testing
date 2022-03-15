@@ -29,7 +29,7 @@ public class SnapshotContext {
   @Getter
   final Method testMethod;
 
-  final Object[] current;
+  final Object current;
   private final boolean isCI;
 
   @Setter
@@ -51,7 +51,7 @@ public class SnapshotContext {
       SnapshotFile snapshotFile,
       Class<?> testClass,
       Method testMethod,
-      Object... current) {
+      Object current) {
     this.snapshotConfig = snapshotConfig;
     this.snapshotFile = snapshotFile;
     this.testClass = testClass;

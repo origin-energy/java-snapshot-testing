@@ -14,6 +14,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class JacksonSnapshotSerializer implements SnapshotSerializer {
 
   private final PrettyPrinter pp = new DefaultPrettyPrinter("") {
@@ -67,8 +70,9 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
   }
 
   @Override
-  public Snapshot apply(Object[] objects, SnapshotSerializerContext gen) {
+  public Snapshot apply(Object object, SnapshotSerializerContext gen) {
     try {
+      List<?> objects = Arrays.asList(object);
       String body = objectMapper.writer(pp).writeValueAsString(objects);
       return  gen.toSnapshot(body);
     } catch (Exception e) {

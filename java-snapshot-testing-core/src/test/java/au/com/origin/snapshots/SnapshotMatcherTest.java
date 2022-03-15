@@ -39,7 +39,6 @@ class SnapshotMatcherTest {
                 + "]\n\n\n"
                 + "au.com.origin.snapshots.SnapshotMatcherTest.should2SecondSnapshotExecutionSuccessfully=[\n"
                 + "any second type of object\n"
-                + "any third type of object\n"
                 + "]");
     Files.delete(Paths.get(FILE_PATH));
   }
@@ -57,7 +56,7 @@ class SnapshotMatcherTest {
   @Test
   void should2SecondSnapshotExecutionSuccessfully(TestInfo testInfo) {
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
-    expect.toMatchSnapshotLegacy("any second type of object", "any third type of object");
+    expect.toMatchSnapshot("any second type of object");
     File f = new File(FILE_PATH);
     if (!f.exists() || f.isDirectory()) {
       throw new RuntimeException("File should exist here");

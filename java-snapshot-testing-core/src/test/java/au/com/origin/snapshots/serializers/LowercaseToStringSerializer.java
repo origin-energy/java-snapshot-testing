@@ -8,9 +8,8 @@ import java.util.stream.Collectors;
 
 public class LowercaseToStringSerializer implements SnapshotSerializer {
   @Override
-  public Snapshot apply(Object[] objects, SnapshotSerializerContext gen) {
-    String body = Arrays.stream(objects).map(Object::toString).collect(Collectors.joining()).toLowerCase();
-    return gen.toSnapshot(body);
+  public Snapshot apply(Object object, SnapshotSerializerContext gen) {
+    return gen.toSnapshot(object.toString().toLowerCase());
   }
 
   @Override

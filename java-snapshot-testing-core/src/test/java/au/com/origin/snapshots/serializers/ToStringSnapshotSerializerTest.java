@@ -22,26 +22,26 @@ public class ToStringSnapshotSerializerTest {
 
   @Test
   void shouldSnapshotAnyString() {
-    Snapshot result = serializer.apply(new Object[] {"John Doe"}, mockSnapshotGenerator);
+    Snapshot result = serializer.apply("John Doe", mockSnapshotGenerator);
     assertThat(result.getBody()).isEqualTo("[\nJohn Doe\n]");
   }
 
   @Test
   void shouldSnapshotUnicode() {
-    Snapshot result = serializer.apply(new Object[] {"🤔"}, mockSnapshotGenerator);
+    Snapshot result = serializer.apply("🤔", mockSnapshotGenerator);
     assertThat(result.getBody()).isEqualTo("[\n🤔\n]");
   }
 
   @Test
   void shouldSnapshotAnyObject() {
-    Snapshot result = serializer.apply(new Object[] {new Dummy(1, "John Doe")}, mockSnapshotGenerator);
+    Snapshot result = serializer.apply(new Dummy(1, "John Doe"), mockSnapshotGenerator);
     assertThat(result.getBody()).isEqualTo("[\nToStringSerializerTest.Dummy(id=1, name=John Doe)\n]");
   }
 
   @Test
   void shouldSnapshotMultipleObjects() {
-    Snapshot result = serializer.apply(new Object[] {new Dummy(1, "John Doe"), new Dummy(2, "Sarah Doe")}, mockSnapshotGenerator);
-    assertThat(result.getBody()).isEqualTo("[\nToStringSerializerTest.Dummy(id=1, name=John Doe)\nToStringSerializerTest.Dummy(id=2, name=Sarah Doe)\n]");
+    Snapshot result = serializer.apply(new Dummy(1, "John Doe"), mockSnapshotGenerator);
+    assertThat(result.getBody()).isEqualTo("[\nToStringSerializerTest.Dummy(id=1, name=John Doe)\n]");
   }
 
   @Test
@@ -51,7 +51,7 @@ public class ToStringSnapshotSerializerTest {
 
   @Test
   void shouldReplaceThreeConsecutiveNewLines() {
-    Snapshot result = serializer.apply(new Object[] {"John\n\n\nDoe"}, mockSnapshotGenerator);
+    Snapshot result = serializer.apply("John\n\n\nDoe", mockSnapshotGenerator);
     assertThat(result.getBody()).isEqualTo("[\nJohn\n.\n.\nDoe\n]");
   }
 

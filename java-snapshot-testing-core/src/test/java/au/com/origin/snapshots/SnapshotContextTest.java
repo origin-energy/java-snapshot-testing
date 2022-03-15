@@ -86,7 +86,6 @@ class SnapshotContextTest {
             snapshotFile,
             String.class,
             String.class.getDeclaredMethod("toString"),
-            new ToStringSnapshotSerializer(),
             "anyObject");
     snapshotContextWithScenario.setScenario("hello world");
     assertThat(snapshotContextWithScenario.resolveSnapshotIdentifier())
@@ -102,8 +101,6 @@ class SnapshotContextTest {
             snapshotFile,
             String.class,
             String.class.getDeclaredMethod("toString"),
-            null,
-            new ToStringSnapshotSerializer(),
             "anyObject");
     assertThat(snapshotContextWithoutScenario.resolveSnapshotIdentifier()).isEqualTo("java.lang.String.toString");
   }

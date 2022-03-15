@@ -37,7 +37,7 @@ public class JacksonSnapshotSerializerTest {
     map.put("age", 40);
 
     SnapshotSerializer serializer = new JacksonSnapshotSerializer();
-    Snapshot result = serializer.apply(new Object[] {map}, gen);
+    Snapshot result = serializer.apply(map, gen);
     Assertions.assertThat(result.getBody()).isEqualTo("[\n" +
         "  {\n" +
         "    \"age\": 40,\n" +
