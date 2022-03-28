@@ -48,7 +48,7 @@ class SnapshotTest {
             DEFAULT_CONFIG,
             snapshotFile,
             String.class,
-            String.class.getDeclaredMethod("toString"),
+            "java.lang.String.toString",
             "anyObject");
   }
 
@@ -59,7 +59,7 @@ class SnapshotTest {
 
   @Test
   void shouldGetSnapshotNameSuccessfully() {
-    String snapshotName = snapshot.getSnapshotName();
+    String snapshotName = snapshot.getSnapshotPath();
     assertThat(snapshotName).isEqualTo(SNAPSHOT_NAME);
   }
 
@@ -85,11 +85,11 @@ class SnapshotTest {
             DEFAULT_CONFIG,
             snapshotFile,
             String.class,
-            String.class.getDeclaredMethod("toString"),
+            "java.lang.String.toString",
             new ToStringSnapshotSerializer(),
             "anyObject");
     snapshotWithScenario.setScenario("hello world");
-    assertThat(snapshotWithScenario.getSnapshotName())
+    assertThat(snapshotWithScenario.getSnapshotPath())
         .isEqualTo("java.lang.String.toString[hello world]=");
   }
 
@@ -101,11 +101,11 @@ class SnapshotTest {
             DEFAULT_CONFIG,
             snapshotFile,
             String.class,
-            String.class.getDeclaredMethod("toString"),
+            "java.lang.String.toString",
             null,
             new ToStringSnapshotSerializer(),
-            "anyObject");
-    assertThat(snapshotWithoutScenario.getSnapshotName()).isEqualTo("java.lang.String.toString=");
+           "anyObject");
+    assertThat(snapshotWithoutScenario.getSnapshotPath()).isEqualTo("java.lang.String.toString=");
   }
 
   @SneakyThrows
@@ -124,8 +124,8 @@ class SnapshotTest {
             mockConfig,
             snapshotFile,
             String.class,
-            String.class.getDeclaredMethod("toString"),
-            "anyObject");
+                "java.lang.String.toString",
+                "anyObject");
     snapshot.setScenario("hello world");
     snapshot.toMatchSnapshot();
     Mockito.verify(snapshotFile)
@@ -146,8 +146,8 @@ class SnapshotTest {
         ciSnapshotConfig,
         new SnapshotFile(ciSnapshotConfig.getOutputDir(), "blah", SnapshotTest.class, (a, b) -> b),
         String.class,
-        String.class.getDeclaredMethod("toString"),
-        "anyObject");
+        "java.lang.String.toString",
+            "anyObject");
 
     Assertions.assertThatThrownBy(ciSnapshot::toMatchSnapshot)
         .hasMessage("Snapshot [java.lang.String.toString=] not found. Has this snapshot been committed ?");
@@ -187,7 +187,7 @@ class SnapshotTest {
         DEFAULT_CONFIG,
         snapshotFile,
         String.class,
-        String.class.getDeclaredMethod("toString"),
+        "toString",
         "hola"
     );
     failingSnapshot.setSnapshotSerializer(new ToStringSnapshotSerializer());

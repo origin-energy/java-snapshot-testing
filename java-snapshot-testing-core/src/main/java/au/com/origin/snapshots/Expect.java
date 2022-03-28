@@ -1,5 +1,6 @@
 package au.com.origin.snapshots;
 
+import au.com.origin.snapshots.annotations.SnapshotName;
 import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
@@ -13,16 +14,30 @@ import java.util.List;
 @RequiredArgsConstructor
 public class Expect {
   private final SnapshotVerifier snapshotVerifier;
-  private final Method testMethod;
+  private final String snapshotName;
 
   private SnapshotSerializer snapshotSerializer;
   private SnapshotComparator snapshotComparator;
   private List<SnapshotReporter> snapshotReporters;
   private String scenario;
 
-  public static Expect of(SnapshotVerifier snapshotVerifier, Method method) {
-    return new Expect(snapshotVerifier, method);
+  public static Expect of(SnapshotVerifier snapshotVerifier,Method method) {
+    return new Expect(snapshotVerifier, extractSnapshotName(method));
   }
+
+  static String extractSnapshotName(Method testMethod) {
+    SnapshotName snapshotName = testMethod.getAnnotation(SnapshotName.class);
+    return  snapshotName == null ?
+            testMethod.getDeclaringClass().getName() + "." + testMethod.getName() :
+            snapshotName.value();
+  }
+
+
+  public static Expect of(SnapshotVerifier snapshotVerifier, String snapshotId) {
+    return new Expect(snapshotVerifier, snapshotId);
+  }
+
+
 
   /**
    * Make an assertion on the given input parameters against what already exists
@@ -48,7 +63,7 @@ public class Expect {
    */
   @Deprecated
   public void toMatchSnapshotLegacy(Object firstObject, Object... objects) {
-    Snapshot snapshot = snapshotVerifier.expectCondition(testMethod, firstObject, objects);
+    Snapshot snapshot = snapshotVerifier.expectCondition(snapshotName, firstObject, objects);
     if (snapshotSerializer != null) {
       snapshot.setSnapshotSerializer(snapshotSerializer);
     }

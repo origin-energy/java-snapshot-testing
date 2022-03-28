@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -91,10 +90,10 @@ public class SnapshotVerifier {
   }
 
   @SneakyThrows
-  public Snapshot expectCondition(Method testMethod, Object firstObject, Object... others) {
+  public Snapshot expectCondition(String snapshotName, Object firstObject, Object... others) {
     Object[] objects = mergeObjects(firstObject, others);
     Snapshot snapshot =
-        new Snapshot(config, snapshotFile, testClass, testMethod, objects);
+        new Snapshot(config, snapshotFile, testClass, snapshotName, objects);
     calledSnapshots.add(snapshot);
     return snapshot;
   }
@@ -102,7 +101,7 @@ public class SnapshotVerifier {
   public void validateSnapshots() {
     Set<String> rawSnapshots = snapshotFile.getRawSnapshots();
     Set<String> snapshotNames =
-        calledSnapshots.stream().map(Snapshot::getSnapshotName).collect(Collectors.toSet());
+        calledSnapshots.stream().map(Snapshot::getSnapshotPath).collect(Collectors.toSet());
     List<String> unusedRawSnapshots = new ArrayList<>();
 
     for (String rawSnapshot : rawSnapshots) {

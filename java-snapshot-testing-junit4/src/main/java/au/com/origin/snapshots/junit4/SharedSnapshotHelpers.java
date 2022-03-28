@@ -32,7 +32,7 @@ class SharedSnapshotHelpers implements SnapshotConfigInjector {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                method.invokeExplosively(test, new Expect(snapshotVerifier, method.getMethod()));
+                method.invokeExplosively(test,  Expect.of(snapshotVerifier, method.getMethod()));
             }
         };
     }

@@ -72,7 +72,7 @@ public class SnapshotExtension implements AfterAllCallback, BeforeAllCallback, S
 
   @Override
   public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    return new Expect(snapshotVerifier, extensionContext.getTestMethod().orElseThrow(() -> new RuntimeException("getTestMethod() is missing")));
+    return Expect.of(snapshotVerifier, extensionContext.getTestMethod().orElseThrow(() -> new RuntimeException("getTestMethod() is missing")));
   }
 
   @Override
