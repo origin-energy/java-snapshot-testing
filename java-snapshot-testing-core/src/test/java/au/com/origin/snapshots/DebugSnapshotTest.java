@@ -52,41 +52,41 @@ public class DebugSnapshotTest {
     assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
   }
 
-  @DisplayName("Debug file should not be created when snapshots match for a new snapshot")
+  @DisplayName("Debug file should be created when snapshots match for a new snapshot")
   @Test
-  void noDebugFileCreatedNewSnapshot(TestInfo testInfo) {
+  void debugFileCreatedNewSnapshot(TestInfo testInfo) {
     assertTrue(Files.exists(Paths.get(SNAPSHOT_FILE_PATH)));
 
     SnapshotVerifier snapshotVerifier = new SnapshotVerifier(DEFAULT_CONFIG, testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)));
     expect.toMatchSnapshot(new TestObjectGood());
-    assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)));
+    assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
   }
 
-  @DisplayName("Debug file should not be created when snapshots match for an existing snapshot")
+  @DisplayName("Debug file should be created when snapshots match for an existing snapshot")
   @Test
-  void noDebugFileCreatedExistingSnapshot(TestInfo testInfo) {
+  void debugFileCreatedExistingSnapshot(TestInfo testInfo) {
     assertTrue(Files.exists(Paths.get(SNAPSHOT_FILE_PATH)));
 
     SnapshotVerifier snapshotVerifier = new SnapshotVerifier(DEFAULT_CONFIG, testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)));
     expect.toMatchSnapshot(new TestObjectGood());
-    assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)));
+    assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
   }
 
   @SneakyThrows
-  @DisplayName("existing debug file should be deleted once snapshots match")
+  @DisplayName("Existing debug file should not be deleted once snapshots match")
   @Test
-  void deleteDebugFile(TestInfo testInfo) {
+  void debugFileCreatedSnapshotMatch(TestInfo testInfo) {
     assertTrue(Files.exists(Paths.get(SNAPSHOT_FILE_PATH)));
     Files.createFile(Paths.get(DEBUG_FILE_PATH));
     assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
     SnapshotVerifier snapshotVerifier = new SnapshotVerifier(DEFAULT_CONFIG, testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     expect.toMatchSnapshot(new TestObjectGood());
-    assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)));
+    assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
   }
 
   private class TestObjectBad {
