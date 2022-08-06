@@ -27,7 +27,7 @@ public class EmptySnapshotFileTest {
     SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new ToStringSnapshotConfig(), testInfo.getTestClass().get());
     snapshotVerifier.validateSnapshots();
 
-    assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)));
+    assertTrue(Files.notExists(Paths.get(SNAPSHOT_FILE_PATH)));
     assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)));
   }
 

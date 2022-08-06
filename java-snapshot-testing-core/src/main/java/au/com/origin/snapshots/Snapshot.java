@@ -53,13 +53,10 @@ public class Snapshot {
     this.scenario = null;
   }
 
-
   public void toMatchSnapshot() {
-
     Set<String> rawSnapshots = snapshotFile.getRawSnapshots();
 
     String rawSnapshot = getRawSnapshot(rawSnapshots);
-
     String currentObject = takeSnapshot();
 
     if (rawSnapshot != null && shouldUpdateSnapshot()) {
@@ -68,10 +65,10 @@ public class Snapshot {
     }
 
     if (rawSnapshot != null) {
+      snapshotFile.pushDebugSnapshot(currentObject.trim());
+
       // Match existing Snapshot
       if (!snapshotComparator.matches(getSnapshotName(), rawSnapshot, currentObject)) {
-        snapshotFile.createDebugFile(currentObject.trim());
-
         List<SnapshotReporter> reporters = snapshotReporters
             .stream()
             .filter(reporter -> reporter.supportsFormat(snapshotSerializer.getOutputFormat()))
@@ -103,10 +100,10 @@ public class Snapshot {
       } else {
         log.warn("We detected you are running on a developer machine - if this is incorrect please override the isCI() method in SnapshotConfig");
         // Create New Snapshot
-        snapshotFile.push(currentObject);
+        snapshotFile.pushSnapshot(currentObject);
+        snapshotFile.pushDebugSnapshot(currentObject.trim());
       }
     }
-    snapshotFile.deleteDebugFile();
   }
 
   private boolean shouldUpdateSnapshot() {
