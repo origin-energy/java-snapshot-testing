@@ -16,10 +16,10 @@ class SnapshotExtension extends AbstractAnnotationDrivenExtension<EnableSnapshot
     }
 
     void visitSpec(SpecInfo spec) {
-        def snapshotMethodInterceptor = new SnapshotMethodInterceptor(snapshotVerifier)
-        spec.allFeatures.featureMethod*.addInterceptor(snapshotMethodInterceptor)
-        spec.addCleanupSpecInterceptor(snapshotMethodInterceptor)
+        spec.allFeatures.featureMethod*.addInterceptor(new SnapshotMethodInterceptor(snapshotVerifier))
     }
+
+
 
     @Override
     SnapshotConfig getSnapshotConfig() {

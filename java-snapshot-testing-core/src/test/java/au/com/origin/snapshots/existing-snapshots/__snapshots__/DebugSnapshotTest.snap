@@ -3,11 +3,11 @@ Good Snapshot
 ]
 
 
-au.com.origin.snapshots.DebugSnapshotTest.debugFileCreatedSnapshotMatch=[
+au.com.origin.snapshots.DebugSnapshotTest.deleteDebugFile=[
 Good Snapshot
 ]
 
 
-au.com.origin.snapshots.DebugSnapshotTest.debugFileCreatedExistingSnapshot=[
+au.com.origin.snapshots.DebugSnapshotTest.noDebugFileCreatedExistingSnapshot=[
 Good Snapshot
 ]

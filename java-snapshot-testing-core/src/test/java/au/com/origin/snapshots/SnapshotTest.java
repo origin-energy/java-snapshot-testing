@@ -72,7 +72,7 @@ class SnapshotTest {
 
   @Test
   void shouldMatchSnapshotWithException() {
-    snapshotFile.pushSnapshot(SNAPSHOT_NAME + "anyWrongSnapshot");
+    snapshotFile.push(SNAPSHOT_NAME + "anyWrongSnapshot");
 
     assertThrows(SnapshotMatchException.class, snapshot::toMatchSnapshot);
   }
@@ -129,7 +129,7 @@ class SnapshotTest {
     snapshot.setScenario("hello world");
     snapshot.toMatchSnapshot();
     Mockito.verify(snapshotFile)
-        .pushSnapshot("java.lang.String.toString[hello world]=[\nanyObject\n]");
+        .push("java.lang.String.toString[hello world]=[\nanyObject\n]");
   }
 
   @SneakyThrows
