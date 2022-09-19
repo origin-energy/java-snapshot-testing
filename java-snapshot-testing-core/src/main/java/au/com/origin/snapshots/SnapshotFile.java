@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -134,8 +135,8 @@ public class SnapshotFile {
   private boolean snapshotsAreTheSame() {
     Path path = Paths.get(this.getDebugFilename());
     if (Files.exists(path)) {
-      String snapshotFileContent = new String(Files.readAllBytes(Paths.get(this.fileName)), StandardCharsets.UTF_8);
-      String debugSnapshotFileContent = new String(Files.readAllBytes(Paths.get(this.getDebugFilename())), StandardCharsets.UTF_8);
+      List<String> snapshotFileContent = Files.readAllLines(Paths.get(this.fileName), StandardCharsets.UTF_8);
+      List<String> debugSnapshotFileContent = Files.readAllLines(Paths.get(this.getDebugFilename()), StandardCharsets.UTF_8);
       return Objects.equals(snapshotFileContent, debugSnapshotFileContent);
     }
 
