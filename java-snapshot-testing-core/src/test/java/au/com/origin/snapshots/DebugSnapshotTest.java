@@ -89,14 +89,14 @@ public class DebugSnapshotTest {
     assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
   }
 
-  private class TestObjectBad {
+  private static class TestObjectBad {
     @Override
     public String toString() {
       return "Bad Snapshot";
     }
   }
 
-  private class TestObjectGood {
+  private static class TestObjectGood {
     @Override
     public String toString() {
       return "Good Snapshot";
