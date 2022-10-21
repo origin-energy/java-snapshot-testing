@@ -4,8 +4,6 @@ dependencies {
 
     compileOnly 'com.fasterxml.jackson.core:jackson-core:2.11.3'
     compileOnly 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
-    compileOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
-    compileOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
 
     implementation 'org.assertj:assertj-core:3.11.1'
     implementation 'org.opentest4j:opentest4j:1.2.0'

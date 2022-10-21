@@ -29,11 +29,15 @@ testImplementation 'io.github.origin-energy:java-snapshot-testing-junit5:3.2.+'
 testImplementation 'io.github.origin-energy:java-snapshot-testing-plugin-jackson:3.2.+'
 testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
 testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
-testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
-testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
 
 // slf4j logging implementation if you don't already have one
 testImplementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
+```
+
+Note that if you'll want Jackson to serialize Java 8 date/time types or Optionals you should also add the following dependencies
+```groovy
+testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
+testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
 ```
 
 2. Create `snapshot.properties` and configure your global settings. Be sure to set `output-dir` appropriately for your
@@ -147,11 +151,12 @@ Plugins
 - [Jackson for JSON serialization](https://search.maven.org/search?q=a:java-snapshot-testing-plugin-jackson)
     - You need jackson on your classpath (Gradle example)
       ```groovy
-          // Required java-snapshot-testing peer dependencies
+         // Required java-snapshot-testing peer dependencies
          testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
          testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
-         testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
-         testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
+         // Optional java-snapshot-testing peer dependencies
+         testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
+         testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
       ```
 
 ## How does it work?

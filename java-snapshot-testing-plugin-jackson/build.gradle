@@ -6,8 +6,6 @@ dependencies {
     // Client needs to supply their own versions
     compileOnly 'com.fasterxml.jackson.core:jackson-core:2.11.3'
     compileOnly 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
-    compileOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
-    compileOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
 
     // User supplied Junit5 version
     compileOnly 'org.junit.jupiter:junit-jupiter-api:5.3.2'
@@ -24,8 +22,8 @@ dependencies {
 
     testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
     testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
-    testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
-    testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
+    testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
+    testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
 }
 
 test { useJUnitPlatform() }
