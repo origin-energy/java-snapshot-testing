@@ -22,8 +22,6 @@ dependencies {
     testImplementation project(':java-snapshot-testing-plugin-jackson')
     testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
     testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
-    testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
-    testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
 }
 
 test { useJUnitPlatform() }

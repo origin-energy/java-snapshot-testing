@@ -9,8 +9,6 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.core.util.Separators;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class JacksonSnapshotSerializer implements SnapshotSerializer {
 
@@ -42,8 +40,7 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
     this.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     this.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-    this.registerModule(new JavaTimeModule());
-    this.registerModule(new Jdk8Module());
+    this.findAndRegisterModules();
 
     this.setVisibility(
         this
