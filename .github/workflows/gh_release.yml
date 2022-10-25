@@ -1,6 +1,6 @@
 name: gh_release
 on:
-  push:
+  create:
     tags:
       - '*'
 
