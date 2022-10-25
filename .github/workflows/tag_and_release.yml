@@ -47,3 +47,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body: ${{steps.github_release.outputs.changelog}}
+          tag_name: ${{ steps.tag_version.outputs.tag }}
