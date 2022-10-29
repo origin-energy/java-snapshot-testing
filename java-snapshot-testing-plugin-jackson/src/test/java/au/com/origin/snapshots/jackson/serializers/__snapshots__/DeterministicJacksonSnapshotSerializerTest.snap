@@ -1,4 +1,4 @@
-au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializerTest.shouldSerializeDifferentTypes=[
+au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializerTest.shouldSerializeDifferentTypes=[
   {
     "aBoolean": true,
     "aByte": 65,

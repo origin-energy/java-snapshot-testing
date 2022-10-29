@@ -1,4 +1,4 @@
-package au.com.origin.snapshots.docs;
+package au.com.origin.snapshots.jackson.docs;
 
 import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.SerializerType;

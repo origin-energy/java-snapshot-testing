@@ -1,4 +1,4 @@
-package au.com.origin.snapshots.serializers;
+package au.com.origin.snapshots.jackson.serializers;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

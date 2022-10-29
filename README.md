@@ -48,8 +48,8 @@ testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
  ```text
 serializer=au.com.origin.snapshots.serializers.ToStringSnapshotSerializer
 serializer.base64=au.com.origin.snapshots.serializers.Base64SnapshotSerializer
-serializer.json=au.com.origin.snapshots.serializers.JacksonSnapshotSerializer
-serializer.orderedJson=au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer
+serializer.json=au.com.origin.snapshots.jackson.serializers.JacksonSnapshotSerializer
+serializer.orderedJson=au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializer
 comparator=au.com.origin.snapshots.comparators.PlainTextEqualsComparator
 reporters=au.com.origin.snapshots.reporters.PlainTextSnapshotReporter
 snapshot-dir=__snapshots__
@@ -461,8 +461,8 @@ For example:
  ```text
 serializer=au.com.origin.snapshots.serializers.ToStringSnapshotSerializer
 serializer.base64=au.com.origin.snapshots.serializers.Base64SnapshotSerializer
-serializer.json=au.com.origin.snapshots.serializers.JacksonSnapshotSerializer
-serializer.orderedJson=au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer
+serializer.json=au.com.origin.snapshots.jackson.serializers.JacksonSnapshotSerializer
+serializer.orderedJson=au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializer
 comparator=au.com.origin.snapshots.comparators.PlainTextEqualsComparator
 reporters=au.com.origin.snapshots.reporters.PlainTextSnapshotReporter
 snapshot-dir=__snapshots__
@@ -586,7 +586,7 @@ For example, the following will exclude the rendering of Lists without changing 
 ```java
 package au.com.origin.snapshots.docs;
 
-import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer;
+import au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;

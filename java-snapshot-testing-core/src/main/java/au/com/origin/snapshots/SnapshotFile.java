@@ -103,7 +103,7 @@ public class SnapshotFile {
     updateFile(getDebugFilename(), rawDebugSnapshots);
   }
 
-  private void updateFile(String fileName, Set<String> rawSnapshots) {
+  private synchronized void updateFile(String fileName, Set<String> rawSnapshots) {
     File file = createFileIfNotExists(fileName);
     try (FileOutputStream fileStream = new FileOutputStream(file, false)) {
       byte[] myBytes = String.join(SPLIT_STRING, rawSnapshots).getBytes(StandardCharsets.UTF_8);

@@ -1,4 +1,4 @@
-package au.com.origin.snapshots.docs;
+package au.com.origin.snapshots.jackson.docs;
 
 import au.com.origin.snapshots.comparators.SnapshotComparator;
 import com.fasterxml.jackson.databind.ObjectMapper;

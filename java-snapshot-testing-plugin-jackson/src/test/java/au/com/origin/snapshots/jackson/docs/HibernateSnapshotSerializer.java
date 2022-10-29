@@ -1,6 +1,6 @@
-package au.com.origin.snapshots.docs;
+package au.com.origin.snapshots.jackson.docs;
 
-import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer;
+import au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
