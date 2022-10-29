@@ -1,5 +1,0 @@
-au.com.origin.snapshots.jackson.docs.CustomSerializerTest.test1=[
-  {
-    "somethingElse": "This should render"
-  }
-]
