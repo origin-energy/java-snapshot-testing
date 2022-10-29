@@ -1,4 +1,4 @@
-package au.com.origin.snapshots.jackson.serializers.docs;
+package au.com.origin.snapshots.jackson.docs;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

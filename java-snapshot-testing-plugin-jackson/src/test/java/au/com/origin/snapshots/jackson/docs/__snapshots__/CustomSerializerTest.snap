@@ -5,6 +5,13 @@ au.com.origin.snapshots.docs.CustomSerializerTest.test1=[
 ]
 
 
+au.com.origin.snapshots.jackson.docs.CustomSerializerTest.test1=[
+  {
+    "somethingElse": "This should render"
+  }
+]
+
+
 au.com.origin.snapshots.jackson.serializers.docs.CustomSerializerTest.test1=[
   {
     "somethingElse": "This should render"
