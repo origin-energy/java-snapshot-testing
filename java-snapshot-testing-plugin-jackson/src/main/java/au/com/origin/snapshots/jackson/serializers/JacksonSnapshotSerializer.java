@@ -1,6 +1,8 @@
-package au.com.origin.snapshots.serializers;
+package au.com.origin.snapshots.jackson.serializers;
 
 import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
+import au.com.origin.snapshots.serializers.SerializerType;
+import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.PrettyPrinter;

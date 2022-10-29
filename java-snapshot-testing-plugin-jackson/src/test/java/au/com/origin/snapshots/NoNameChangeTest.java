@@ -1,7 +1,7 @@
 package au.com.origin.snapshots;
 
-import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer;
-import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
+import au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializer;
+import au.com.origin.snapshots.jackson.serializers.JacksonSnapshotSerializer;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,7 +15,7 @@ public class NoNameChangeTest {
 
   @Test
   public void serializersApiShouldNotChange() {
-    assertThat(JacksonSnapshotSerializer.class.getName()).isEqualTo("au.com.origin.snapshots.serializers.JacksonSnapshotSerializer");
-    assertThat(DeterministicJacksonSnapshotSerializer.class.getName()).isEqualTo("au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer");
+    assertThat(JacksonSnapshotSerializer.class.getName()).isEqualTo("au.com.origin.snapshots.jackson.serializers.JacksonSnapshotSerializer");
+    assertThat(DeterministicJacksonSnapshotSerializer.class.getName()).isEqualTo("au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializer");
   }
 }
