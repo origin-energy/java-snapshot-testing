@@ -1,4 +1,4 @@
-package au.com.origin.snapshots.docs;
+package au.com.origin.snapshots.jackson.serializers.docs;
 
 import au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;

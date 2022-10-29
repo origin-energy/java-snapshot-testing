@@ -1,10 +1,10 @@
-package au.com.origin.snapshots.serializers;
+package au.com.origin.snapshots.jackson.serializers;
 
 import au.com.origin.snapshots.Expect;
 import au.com.origin.snapshots.PropertyResolvingSnapshotConfig;
-import au.com.origin.snapshots.SnapshotConfig;
 import au.com.origin.snapshots.SnapshotVerifier;
-import au.com.origin.snapshots.jackson.serializers.JacksonSnapshotSerializer;
+import au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializer;
+import au.com.origin.snapshots.serializers.SerializerType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -15,45 +15,25 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.*;
 
-public class JacksonSnapshotSerializerTest {
-
-  private static final SnapshotConfig DEFAULT_CONFIG = new PropertyResolvingSnapshotConfig() {
-    @Override
-    public SnapshotSerializer getSerializer() {
-      return new JacksonSnapshotSerializer();
-    }
-  };
-
-  @Test
-  public void shouldSerializeMap() {
-    Map<String, Object> map = new HashMap<>();
-    map.put("name", "John Doe");
-    map.put("age", 40);
-
-    SnapshotSerializer serializer = new JacksonSnapshotSerializer();
-    String result = serializer.apply(new Object[] {map});
-    Assertions.assertThat(result).isEqualTo("[\n" +
-        "  {\n" +
-        "    \"age\": 40,\n" +
-        "    \"name\": \"John Doe\"\n" +
-        "  }\n" +
-        "]");
-  }
+public class DeterministicJacksonSnapshotSerializerTest {
 
   @Test
   public void shouldSerializeDifferentTypes(TestInfo testInfo) {
-    SnapshotVerifier snapshotVerifier = new SnapshotVerifier(DEFAULT_CONFIG, testInfo.getTestClass().get());
+    SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new PropertyResolvingSnapshotConfig(), testInfo.getTestClass().get(), false);
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
-    expect.toMatchSnapshot(new TypeDummy());
-    snapshotVerifier.validateSnapshots();
+    expect
+        .serializer("orderedJson")
+        .toMatchSnapshot(new TypeDummy());
+    snapshotVerifier
+        .validateSnapshots();
   }
 
   @Test
   void shouldSupportJsonFormat() {
-    Assertions.assertThat(new JacksonSnapshotSerializer().getOutputFormat()).isEqualTo(SerializerType.JSON.name());
+    Assertions.assertThat(new DeterministicJacksonSnapshotSerializer().getOutputFormat()).isEqualTo(SerializerType.JSON.name());
   }
 
-  private Map<String, Integer> deterministicMap(Map<String, Integer> target) {
+  private Map<String, Integer> nonDeterministicMap(Map<String, Integer> target) {
     final List<String> items = new ArrayList<String>() {{
       add("f");
       add("a");
@@ -63,11 +43,16 @@ public class JacksonSnapshotSerializerTest {
       add("b");
       add("c");
     }};
-    items.forEach(it -> target.put(it, (int) it.charAt(0)));
+
+    int size = items.size();
+    for (int i = 0; i < size; i++) {
+      String random = pluckRandom(items);
+      target.put(random, (int) random.charAt(0));
+    }
     return target;
   }
 
-  private Collection<String> deterministicCollection(Collection<String> target) {
+  private Collection<String> nonDeterministicCollection(Collection<String> target) {
     final List<String> items = new ArrayList<String>() {{
       add("f");
       add("a");
@@ -77,10 +62,19 @@ public class JacksonSnapshotSerializerTest {
       add("b");
       add("c");
     }};
-    target.addAll(items);
+
+    int size = items.size();
+    for (int i = 0; i < size; i++) {
+      target.add(pluckRandom(items));
+    }
+
     return target;
   }
 
+  private String pluckRandom(List<String> array) {
+    int rnd = new Random().nextInt(array.size());
+    return array.remove(rnd);
+  }
 
   private enum AnEnum {
     F, A, D, E, G, B, C;
@@ -117,24 +111,24 @@ public class JacksonSnapshotSerializerTest {
     private final Object[] anEnumArray = Arrays.stream(AnEnum.values()).toArray();
 
     // Maps
-    private final Map<String, Integer> hashMap = deterministicMap(new HashMap<>());
-    private final Map<String, Integer> treeMap = deterministicMap(new TreeMap<>());
-    private final Map<String, Integer> linkedHashMap = deterministicMap(new LinkedHashMap<>());
+    private final Map<String, Integer> hashMap = nonDeterministicMap(new HashMap<>());
+    private final Map<String, Integer> treeMap = nonDeterministicMap(new TreeMap<>());
+    private final Map<String, Integer> linkedHashMap = nonDeterministicMap(new LinkedHashMap<>());
 
     // Sets
-    private final Collection<String> linkedHashSet = deterministicCollection(new LinkedHashSet<>());
-    private final Collection<String> hashSet = deterministicCollection(new HashSet<>());
-    private final Collection<String> treeSet = deterministicCollection(new TreeSet<>());
+    private final Collection<String> linkedHashSet = nonDeterministicCollection(new LinkedHashSet<>());
+    private final Collection<String> hashSet = nonDeterministicCollection(new HashSet<>());
+    private final Collection<String> treeSet = nonDeterministicCollection(new TreeSet<>());
 
     // Lists
-    private final Collection<String> arrayList = deterministicCollection(new ArrayList<>());
-    private final Collection<String> linkedList = deterministicCollection(new LinkedList<>());
+    private final Collection<String> arrayList = nonDeterministicCollection(new ArrayList<>());
+    private final Collection<String> linkedList = nonDeterministicCollection(new LinkedList<>());
 
     // Mixed Maps, Sets, Lists
     private final Collection<Object> listOfCollections = new ArrayList<Object>() {{
-      add(deterministicMap(new LinkedHashMap<>()));
-      add(deterministicCollection(new LinkedHashSet<>()));
-      add(deterministicCollection(new LinkedList<>()));
+      add(nonDeterministicMap(new LinkedHashMap<>()));
+      add(nonDeterministicCollection(new LinkedHashSet<>()));
+      add(nonDeterministicCollection(new LinkedList<>()));
     }};
   }
 }
