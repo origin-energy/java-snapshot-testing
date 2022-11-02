@@ -1,4 +1,4 @@
-au.com.origin.snapshots.serializers.JacksonSnapshotSerializerTest.shouldSerializeDifferentTypes=[
+au.com.origin.snapshots.jackson.serializers.JacksonSnapshotSerializerTest.shouldSerializeDifferentTypes=[
   {
     "anObject": { },
     "aByte": 65,

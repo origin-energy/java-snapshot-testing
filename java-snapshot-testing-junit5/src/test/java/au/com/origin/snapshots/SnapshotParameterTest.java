@@ -1,7 +1,7 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.junit5.SnapshotExtension;
-import au.com.origin.snapshots.serializers.JacksonSnapshotSerializer;
+import au.com.origin.snapshots.jackson.serializers.JacksonSnapshotSerializer;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

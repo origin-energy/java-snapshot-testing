@@ -78,6 +78,8 @@ public class SnapshotContext {
     }
 
     if (previousSnapshot != null) {
+      snapshotFile.pushDebugSnapshot(currentSnapshot);
+
       // Match existing Snapshot
       if (!snapshotComparator.matches(previousSnapshot, currentSnapshot)) {
         snapshotFile.createDebugFile(currentSnapshot);
@@ -113,10 +115,10 @@ public class SnapshotContext {
       } else {
         log.warn("We detected you are running on a developer machine - if this is incorrect please override the isCI() method in SnapshotConfig");
         // Create New Snapshot
-        snapshotFile.push(currentSnapshot);
+        snapshotFile.pushSnapshot(currentSnapshot);
+        snapshotFile.pushDebugSnapshot(currentSnapshot);
       }
     }
-    snapshotFile.deleteDebugFile();
   }
 
   private boolean shouldUpdateSnapshot() {

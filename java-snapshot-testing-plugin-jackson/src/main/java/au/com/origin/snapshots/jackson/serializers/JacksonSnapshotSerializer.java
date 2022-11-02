@@ -1,8 +1,10 @@
-package au.com.origin.snapshots.serializers;
+package au.com.origin.snapshots.jackson.serializers;
 
 import au.com.origin.snapshots.Snapshot;
 import au.com.origin.snapshots.SnapshotSerializerContext;
 import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
+import au.com.origin.snapshots.serializers.SerializerType;
+import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.PrettyPrinter;
@@ -11,8 +13,6 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.core.util.Separators;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,8 +47,7 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
     this.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     this.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-    this.registerModule(new JavaTimeModule());
-    this.registerModule(new Jdk8Module());
+    this.findAndRegisterModules();
 
     this.setVisibility(
         this

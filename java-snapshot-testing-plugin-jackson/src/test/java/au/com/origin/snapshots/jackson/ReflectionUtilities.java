@@ -1,4 +1,4 @@
-package au.com.origin.snapshots;
+package au.com.origin.snapshots.jackson;
 
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 

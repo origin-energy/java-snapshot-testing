@@ -9,7 +9,7 @@
 - Report bugs to "Issues" clearly marking them as 4.0.0-Beta
 
 ## Upgrading
-- Upgrade guild from 3.X to $.X [here](https://github.com/origin-energy/java-snapshot-testing/discussions/94)
+- Upgrade guild from 3.X to 4.X [here](https://github.com/origin-energy/java-snapshot-testing/discussions/94)
 - Upgrade guide from 2.X to 3.X [here](https://github.com/origin-energy/java-snapshot-testing/discussions/73)
 
 ## The testing framework loved by ~~lazy~~ __productive__ devs
@@ -33,11 +33,15 @@ testImplementation 'io.github.origin-energy:java-snapshot-testing-junit5:3.2.+'
 testImplementation 'io.github.origin-energy:java-snapshot-testing-plugin-jackson:3.2.+'
 testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
 testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
-testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
-testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
 
 // slf4j logging implementation if you don't already have one
 testImplementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
+```
+
+Note that if you'll want Jackson to serialize Java 8 date/time types or Optionals you should also add the following dependencies
+```groovy
+testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
+testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
 ```
 
 2. Create `snapshot.properties` and configure your global settings. Be sure to set `output-dir` appropriately for your
@@ -48,8 +52,8 @@ testImplementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
  ```text
 serializer=au.com.origin.snapshots.serializers.ToStringSnapshotSerializer
 serializer.base64=au.com.origin.snapshots.serializers.Base64SnapshotSerializer
-serializer.json=au.com.origin.snapshots.serializers.JacksonSnapshotSerializer
-serializer.orderedJson=au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer
+serializer.json=au.com.origin.snapshots.jackson.serializers.JacksonSnapshotSerializer
+serializer.orderedJson=au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializer
 comparator=au.com.origin.snapshots.comparators.PlainTextEqualsComparator
 reporters=au.com.origin.snapshots.reporters.PlainTextSnapshotReporter
 snapshot-dir=__snapshots__
@@ -151,11 +155,12 @@ Plugins
 - [Jackson for JSON serialization](https://search.maven.org/search?q=a:java-snapshot-testing-plugin-jackson)
     - You need jackson on your classpath (Gradle example)
       ```groovy
-          // Required java-snapshot-testing peer dependencies
+         // Required java-snapshot-testing peer dependencies
          testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
          testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
-         testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
-         testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
+         // Optional java-snapshot-testing peer dependencies
+         testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
+         testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
       ```
 
 ## How does it work?
@@ -462,8 +467,8 @@ For example:
  ```text
 serializer=au.com.origin.snapshots.serializers.ToStringSnapshotSerializer
 serializer.base64=au.com.origin.snapshots.serializers.Base64SnapshotSerializer
-serializer.json=au.com.origin.snapshots.serializers.JacksonSnapshotSerializer
-serializer.orderedJson=au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer
+serializer.json=au.com.origin.snapshots.jackson.serializers.JacksonSnapshotSerializer
+serializer.orderedJson=au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializer
 comparator=au.com.origin.snapshots.comparators.PlainTextEqualsComparator
 reporters=au.com.origin.snapshots.reporters.PlainTextSnapshotReporter
 snapshot-dir=__snapshots__
@@ -589,7 +594,8 @@ For example, the following will exclude the rendering of Lists without changing 
 ```java
 package au.com.origin.snapshots.docs;
 
-import au.com.origin.snapshots.serializers.DeterministicJacksonSnapshotSerializer;
+import au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -16,7 +16,7 @@ We welcome contributions to this project by both internal and external parties
 1. Once merged into `master` a `SNAPSHOT` build will be available for consumption
    immediately [here](https://oss.sonatype.org/content/repositories/snapshots/io/github/origin-energy/). Note that
    snapshots change regularly and cannot be relied upon.
-1. Hard Releases will br made once enough features have been added.
+1. Hard Releases will be made once enough features have been added.
 
 ## Building
 
