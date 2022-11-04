@@ -25,17 +25,15 @@ Then java-snapshot-testing might just be what you are looking for!
 // In this case we are using the JUnit5 testing framework
 testImplementation 'io.github.origin-energy:java-snapshot-testing-junit5:3.+'
 
-// Many will want to serialize into JSON.  In this case you should also add the Jackson plugin
+// slf4j logging implementation if you don't already have one
+testImplementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
+
+// Optional: Many will want to serialize into JSON.  In this case you should also add the Jackson plugin
 testImplementation 'io.github.origin-energy:java-snapshot-testing-plugin-jackson:3.+'
 testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
 testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
 
-// slf4j logging implementation if you don't already have one
-testImplementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
-```
-
-Note that if you'll want Jackson to serialize Java 8 date/time types or Optionals you should also add the following dependencies
-```groovy
+// Optional: If you want Jackson to serialize Java 8 date/time types or Optionals you should also add the following dependencies
 testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
 testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
 ```
