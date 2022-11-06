@@ -1,9 +1,11 @@
 package au.com.origin.snapshots.comparators;
 
+import au.com.origin.snapshots.Snapshot;
+
 public class PlainTextEqualsComparator implements SnapshotComparator {
 
   @Override
-  public boolean matches(String snapshotName, String rawSnapshot, String currentObject) {
-    return rawSnapshot.trim().equals(currentObject.trim());
+  public boolean matches(Snapshot previous, Snapshot current) {
+    return previous.getBody().equals(current.getBody());
   }
 }

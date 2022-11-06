@@ -1,8 +1,10 @@
 package au.com.origin.snapshots.serializers;
 
-import java.util.function.Function;
+import au.com.origin.snapshots.Snapshot;
+import au.com.origin.snapshots.SnapshotSerializerContext;
 
-public interface SnapshotSerializer extends Function<Object[], String> {
+import java.util.function.BiFunction;
 
+public interface SnapshotSerializer extends BiFunction<Object, SnapshotSerializerContext, Snapshot> {
   String getOutputFormat();
 }

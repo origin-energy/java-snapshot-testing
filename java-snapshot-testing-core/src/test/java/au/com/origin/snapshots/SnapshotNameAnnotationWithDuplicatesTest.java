@@ -3,8 +3,6 @@ package au.com.origin.snapshots;
 import au.com.origin.snapshots.annotations.SnapshotName;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
-import au.com.origin.snapshots.exceptions.SnapshotMatchException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 

@@ -3,6 +3,7 @@ package au.com.origin.snapshots;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
+import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
 import java.io.File;
 import java.io.FileOutputStream;

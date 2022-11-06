@@ -1,6 +1,10 @@
 package au.com.origin.snapshots.junit5;
 
-import au.com.origin.snapshots.*;
+import au.com.origin.snapshots.Expect;
+import au.com.origin.snapshots.SnapshotVerifier;
+import au.com.origin.snapshots.config.PropertyResolvingSnapshotConfig;
+import au.com.origin.snapshots.config.SnapshotConfig;
+import au.com.origin.snapshots.config.SnapshotConfigInjector;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.*;
@@ -55,7 +59,7 @@ public class SnapshotExtension implements AfterAllCallback, BeforeAllCallback, S
       }
     } catch (Exception e) {
       log.error(
-          "FAILED: (Java Snapshot Testing) Unable to get JUnit5 ClassTestDescriptor!\n" +
+          "FAILED: (Java Snapshot Testing) Unable to get JUnit5 ClassTestDescriptor or ClassBasedTestDescriptor!\n" +
               "Ensure you are using Junit5 >= 5.3.2\n" +
               "This may be due to JUnit5 changing their private api as we use reflection to access it\n" +
               "Log a support ticket https://github.com/origin-energy/java-snapshot-testing/issues and supply your JUnit5 version\n" +

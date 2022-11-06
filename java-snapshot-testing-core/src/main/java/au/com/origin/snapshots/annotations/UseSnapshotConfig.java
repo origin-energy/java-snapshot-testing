@@ -1,6 +1,6 @@
 package au.com.origin.snapshots.annotations;
 
-import au.com.origin.snapshots.SnapshotConfig;
+import au.com.origin.snapshots.config.SnapshotConfig;
 
 import java.lang.annotation.*;
 

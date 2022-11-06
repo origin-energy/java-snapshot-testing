@@ -1,9 +1,8 @@
 package au.com.origin.snapshots.jackson.serializers;
 
 import au.com.origin.snapshots.Expect;
-import au.com.origin.snapshots.PropertyResolvingSnapshotConfig;
 import au.com.origin.snapshots.SnapshotVerifier;
-import au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializer;
+import au.com.origin.snapshots.config.PropertyResolvingSnapshotConfig;
 import au.com.origin.snapshots.serializers.SerializerType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

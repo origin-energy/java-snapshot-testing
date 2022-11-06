@@ -31,14 +31,12 @@ public class SnapshotFile {
 
   private final String fileName;
   private final Class<?> testClass;
-  private final BiFunction<Class<?>, String, String> onSaveSnapshotFile;
   @Getter
-  private Set<String> rawSnapshots;
-  private Set<String> rawDebugSnapshots = Collections.synchronizedSortedSet(new TreeSet<>());
+  private Set<Snapshot> snapshots = Collections.synchronizedSortedSet(new TreeSet<>());
+  private Set<Snapshot> debugSnapshots = Collections.synchronizedSortedSet(new TreeSet<>());
 
-  SnapshotFile(String srcDirPath, String fileName, Class<?> testClass, BiFunction<Class<?>, String, String> onSaveSnapshotFile) throws IOException {
+  SnapshotFile(String srcDirPath, String fileName, Class<?> testClass) throws IOException {
     this.testClass = testClass;
-    this.onSaveSnapshotFile = onSaveSnapshotFile;
     this.fileName = srcDirPath + File.separator + fileName;
     log.info("Snapshot File: " + this.fileName);
 
@@ -54,16 +52,15 @@ public class SnapshotFile {
 
       String fileText = fileContent.toString();
       if (!"".equals(fileText.trim())) {
-        rawSnapshots =
+        snapshots =
             Collections.synchronizedSortedSet(
                 Stream.of(fileContent.toString().split(SPLIT_STRING))
                     .map(String::trim)
+                    .map(Snapshot::parse)
                     .collect(Collectors.toCollection(TreeSet::new)));
-      } else {
-        rawSnapshots = Collections.synchronizedSortedSet(new TreeSet<>());
       }
     } catch (IOException e) {
-      rawSnapshots = Collections.synchronizedSortedSet(new TreeSet<>());
+      // ...
     }
 
     deleteDebugFile();
@@ -71,6 +68,25 @@ public class SnapshotFile {
 
   private String getDebugFilename() {
     return this.fileName + ".debug";
+  }
+
+  public File createDebugFile(Snapshot snapshot) {
+    File file = null;
+    try {
+      file = new File(getDebugFilename());
+      file.getParentFile().mkdirs();
+      file.createNewFile();
+
+      try (FileOutputStream fileStream = new FileOutputStream(file, false)) {
+        fileStream.write(snapshot.raw().getBytes(StandardCharsets.UTF_8));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return file;
   }
 
   @SneakyThrows
@@ -93,17 +109,25 @@ public class SnapshotFile {
     return path.toFile();
   }
 
-  public void pushSnapshot(String snapshot) {
-    rawSnapshots.add(snapshot);
+  public synchronized void pushSnapshot(Snapshot snapshot) {
+    snapshots.add(snapshot);
+    TreeSet<String> rawSnapshots = snapshots
+            .stream()
+            .map(Snapshot::raw)
+            .collect(Collectors.toCollection(TreeSet::new));
     updateFile(this.fileName, rawSnapshots);
   }
 
-  public void pushDebugSnapshot(String snapshot) {
-    rawDebugSnapshots.add(snapshot);
+  public synchronized void pushDebugSnapshot(Snapshot snapshot) {
+    debugSnapshots.add(snapshot);
+    TreeSet<String> rawDebugSnapshots = debugSnapshots
+            .stream()
+            .map(Snapshot::raw)
+            .collect(Collectors.toCollection(TreeSet::new));
     updateFile(getDebugFilename(), rawDebugSnapshots);
   }
 
-  private synchronized void updateFile(String fileName, Set<String> rawSnapshots) {
+  private void updateFile(String fileName, Set<String> rawSnapshots) {
     File file = createFileIfNotExists(fileName);
     try (FileOutputStream fileStream = new FileOutputStream(file, false)) {
       byte[] myBytes = String.join(SPLIT_STRING, rawSnapshots).getBytes(StandardCharsets.UTF_8);
@@ -125,8 +149,7 @@ public class SnapshotFile {
         delete();
       } else {
         String content = new String(Files.readAllBytes(Paths.get(this.fileName)), StandardCharsets.UTF_8);
-        String modified = onSaveSnapshotFile.apply(testClass, content);
-        Files.write(path, modified.getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
+        Files.write(path, content.getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
       }
     }
   }

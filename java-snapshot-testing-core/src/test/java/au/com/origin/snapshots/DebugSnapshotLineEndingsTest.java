@@ -1,6 +1,7 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
+import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.serializers.SerializerType;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import lombok.SneakyThrows;
@@ -55,7 +56,7 @@ class DebugSnapshotLineEndingsTest {
 
     SnapshotVerifier snapshotVerifier = new SnapshotVerifier(CONFIG, testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
-    expect.toMatchSnapshot(Arrays.asList("a", "b"));
+    expect.toMatchSnapshot(Arrays.asList("a","b"));
     snapshotVerifier.validateSnapshots();
 
     assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)), "Debug file should not be created");
@@ -68,17 +69,22 @@ class DebugSnapshotLineEndingsTest {
     }
 
     @Override
-    public String apply(Object[] objects) {
-      return "[\n" + Arrays.stream(objects)
-          .flatMap(object -> {
-            if (object instanceof Collection) {
-              return ((Collection<?>) object).stream();
-            }
-            return Stream.of(object);
-          })
-          .map(Object::toString)
-          .collect(Collectors.joining("\n")) +
-          "\n]";
+    public Snapshot apply(Object object, SnapshotSerializerContext snapshotSerializerContext) {
+       Object body = "[\n" + Arrays.asList(object).stream()
+              .flatMap(o -> {
+                if (o instanceof Collection) {
+                  return ((Collection<?>) o).stream();
+                }
+                return Stream.of(o);
+              })
+              .map(Object::toString)
+              .collect(Collectors.joining("\n"))
+               + "\n]";
+
+      return Snapshot.builder()
+              .name("au.com.origin.snapshots.DebugSnapshotLineEndingsTest.existingSnapshotDifferentLineEndings")
+              .body(body.toString())
+              .build();
     }
   }
 }

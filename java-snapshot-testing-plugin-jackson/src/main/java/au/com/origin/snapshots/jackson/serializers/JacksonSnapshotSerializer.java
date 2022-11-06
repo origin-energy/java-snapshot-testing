@@ -1,5 +1,7 @@
 package au.com.origin.snapshots.jackson.serializers;
 
+import au.com.origin.snapshots.Snapshot;
+import au.com.origin.snapshots.SnapshotSerializerContext;
 import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import au.com.origin.snapshots.serializers.SerializerType;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
@@ -11,6 +13,9 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.core.util.Separators;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class JacksonSnapshotSerializer implements SnapshotSerializer {
 
@@ -64,9 +69,11 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
   }
 
   @Override
-  public String apply(Object[] objects) {
+  public Snapshot apply(Object object, SnapshotSerializerContext gen) {
     try {
-      return objectMapper.writer(pp).writeValueAsString(objects);
+      List<?> objects = Arrays.asList(object);
+      String body = objectMapper.writer(pp).writeValueAsString(objects);
+      return  gen.toSnapshot(body);
     } catch (Exception e) {
       throw new SnapshotExtensionException("Jackson Serialization failed", e);
     }

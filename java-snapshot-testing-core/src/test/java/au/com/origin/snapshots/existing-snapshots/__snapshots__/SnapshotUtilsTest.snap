@@ -5,11 +5,9 @@ au.com.origin.snapshots.SnapshotUtilsTest.shouldExtractArgsFromFakeMethod=[
 
 au.com.origin.snapshots.SnapshotUtilsTest.shouldExtractArgsFromFakeMethodWithComplexFakeObject=[
 {FakeObject.fakeMethodWithComplexObject=[{arg0=FakeObject(id=idMock, value=null, name=null, fakeObject=null)}]}
-{FakeObject.fakeMethodWithComplexObject=[{arg0=FakeObject(id=idMock, value=null, name=nameMock, fakeObject=null)}]}
 ]
 
 
 au.com.origin.snapshots.SnapshotUtilsTest.shouldExtractArgsFromFakeMethodWithComplexObject=[
 {FakeObject.fakeMethodWithComplexFakeObject=[{arg0=FakeObject(id=idMock, value=null, name=null, fakeObject=null)}]}
-{FakeObject.fakeMethodWithComplexFakeObject=[{arg0=FakeObject(id=idMock, value=null, name=nameMock, fakeObject=null)}]}
 ]

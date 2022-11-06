@@ -8,7 +8,9 @@ import lombok.SneakyThrows;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class Expect {
@@ -19,6 +21,8 @@ public class Expect {
   private SnapshotComparator snapshotComparator;
   private List<SnapshotReporter> snapshotReporters;
   private String scenario;
+
+  private final Map<String, String> headers = new HashMap<>();
 
   public static Expect of(SnapshotVerifier snapshotVerifier, Method method) {
     return new Expect(snapshotVerifier, method);
@@ -34,36 +38,23 @@ public class Expect {
    * @param object snapshot object
    */
   public void toMatchSnapshot(Object object) {
-    toMatchSnapshotLegacy(object);
-  }
-
-  /**
-   * Make an assertion on the given input parameters against what already exists
-   *
-   * Previously called `toMatchSnapshot`, this varargs implementation will be removed
-   * in future versions of this library.
-   *
-   * @param firstObject first snapshot object
-   * @param objects     other snapshot objects
-   */
-  @Deprecated
-  public void toMatchSnapshotLegacy(Object firstObject, Object... objects) {
-    Snapshot snapshot = snapshotVerifier.expectCondition(testMethod, firstObject, objects);
+    SnapshotContext snapshotContext = snapshotVerifier.expectCondition(testMethod, object);
     if (snapshotSerializer != null) {
-      snapshot.setSnapshotSerializer(snapshotSerializer);
+      snapshotContext.setSnapshotSerializer(snapshotSerializer);
     }
     if (snapshotComparator != null) {
-      snapshot.setSnapshotComparator(snapshotComparator);
+      snapshotContext.setSnapshotComparator(snapshotComparator);
     }
     if (snapshotReporters != null) {
-      snapshot.setSnapshotReporters(snapshotReporters);
+      snapshotContext.setSnapshotReporters(snapshotReporters);
     }
     if (scenario != null) {
-      snapshot.setScenario(scenario);
+      snapshotContext.setScenario(scenario);
     }
-    snapshot.toMatchSnapshot();
-  }
+    snapshotContext.header.putAll(headers);
 
+    snapshotContext.toMatchSnapshot();
+  }
 
   /**
    * Normally a snapshot can be applied only once to a test method.
@@ -113,6 +104,17 @@ public class Expect {
   }
 
   /**
+   * Apply a custom comparator for this snapshot
+   *
+   * @param name the {name} attribute comparator.{name} from snapshot.properties
+   * @return Snapshot
+   */
+  public Expect comparator(String name) {
+    this.snapshotComparator = SnapshotProperties.getInstance("comparator." + name);
+    return this;
+  }
+
+  /**
    * Apply a list of custom reporters for this snapshot
    * This will replace the default reporters defined in the config
    *
@@ -121,6 +123,18 @@ public class Expect {
    */
   public Expect reporters(SnapshotReporter... reporters) {
     this.snapshotReporters = Arrays.asList(reporters);
+    return this;
+  }
+
+  /**
+   * Apply a list of custom reporters for this snapshot
+   * This will replace the default reporters defined in the config
+   *
+   * @param name the {name} attribute reporters.{name} from snapshot.properties
+   * @return Snapshot
+   */
+  public Expect reporters(String name) {
+    this.snapshotReporters = SnapshotProperties.getInstances("reporters." + name);
     return this;
   }
 
@@ -138,6 +152,21 @@ public class Expect {
   @SneakyThrows
   public Expect serializer(Class<? extends SnapshotSerializer> serializer) {
     this.snapshotSerializer = serializer.getConstructor().newInstance();
+    return this;
+  }
+
+  /**
+   * Add anything you like to the snapshot header.
+   *
+   * These custom headers can be used in serializers, comparators or reporters to change
+   * how they behave.
+   *
+   * @param key key
+   * @param value value
+   * @return Expect
+   */
+  public Expect header(String key, String value) {
+    headers.put(key, value);
     return this;
   }
 

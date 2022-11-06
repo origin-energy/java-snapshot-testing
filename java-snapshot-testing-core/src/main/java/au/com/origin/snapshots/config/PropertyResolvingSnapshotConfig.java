@@ -1,5 +1,6 @@
-package au.com.origin.snapshots;
+package au.com.origin.snapshots.config;
 
+import au.com.origin.snapshots.SnapshotProperties;
 import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;

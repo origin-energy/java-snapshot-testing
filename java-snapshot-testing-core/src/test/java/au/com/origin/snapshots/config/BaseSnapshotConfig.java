@@ -1,6 +1,5 @@
 package au.com.origin.snapshots.config;
 
-import au.com.origin.snapshots.SnapshotConfig;
 import au.com.origin.snapshots.comparators.PlainTextEqualsComparator;
 import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.reporters.PlainTextSnapshotReporter;
@@ -42,4 +41,5 @@ public class BaseSnapshotConfig implements SnapshotConfig {
   public boolean isCI() {
     return false;
   }
+
 }

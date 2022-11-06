@@ -1,5 +1,7 @@
 package au.com.origin.snapshots.config;
 
+import au.com.origin.snapshots.Snapshot;
+import au.com.origin.snapshots.SnapshotSerializerContext;
 import au.com.origin.snapshots.serializers.SerializerType;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 
@@ -17,8 +19,8 @@ public class ToStringSnapshotConfig extends BaseSnapshotConfig {
       }
 
       @Override
-      public String apply(Object[] objects) {
-        return Arrays.stream(objects).map(Object::toString).collect(Collectors.joining());
+      public Snapshot apply(Object object, SnapshotSerializerContext gen) {
+        return gen.toSnapshot(object.toString());
       }
     };
   }

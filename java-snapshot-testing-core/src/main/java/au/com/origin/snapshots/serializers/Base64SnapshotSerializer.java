@@ -1,5 +1,8 @@
 package au.com.origin.snapshots.serializers;
 
+import au.com.origin.snapshots.Snapshot;
+import au.com.origin.snapshots.SnapshotSerializerContext;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
@@ -16,15 +19,13 @@ public class Base64SnapshotSerializer implements SnapshotSerializer {
       new ToStringSnapshotSerializer();
 
   @Override
-  public String apply(Object[] objects) {
-    List<?> encoded = Arrays.stream(objects)
-        .filter(Objects::nonNull)
-        .map(it -> {
-          byte[] bytes = it instanceof byte[] ? (byte[]) it : it.toString().getBytes(StandardCharsets.UTF_8);
-          return Base64.getEncoder().encodeToString(bytes);
-        })
-        .collect(Collectors.toList());
-    return toStringSnapshotSerializer.apply(encoded.toArray());
+  public Snapshot apply(Object object, SnapshotSerializerContext gen) {
+    if (object == null) {
+        toStringSnapshotSerializer.apply("", gen);
+    }
+    byte[] bytes = object instanceof byte[] ? (byte[]) object : object.toString().getBytes(StandardCharsets.UTF_8);
+    String encoded = Base64.getEncoder().encodeToString(bytes);
+    return toStringSnapshotSerializer.apply(encoded, gen);
   }
 
   @Override

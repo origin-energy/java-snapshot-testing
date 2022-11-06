@@ -1,0 +1,32 @@
+au.com.origin.snapshots.SnapshotExtensionUsedTest.shouldUseExtension=[
+Hello World
+]
+
+
+au.com.origin.snapshots.SnapshotExtensionUsedTest.shouldUseExtensionAgain=[
+Hello World
+Hello World Again
+]
+
+
+au.com.origin.snapshots.SnapshotExtensionUsedTest.shouldUseExtensionAgainViaInstanceVariable=[
+Hello World
+Hello World Again
+]
+
+
+au.com.origin.snapshots.SnapshotExtensionUsedTest.shouldUseExtensionViaInstanceVariable=[
+Hello World
+]
+
+
+hello_world=[
+Hello World
+Hello World
+]
+
+
+hello_world_2=[
+Hello World
+Hello World Again
+]

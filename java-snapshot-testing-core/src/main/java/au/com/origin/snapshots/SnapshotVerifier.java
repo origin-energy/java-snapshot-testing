@@ -2,6 +2,7 @@ package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.annotations.SnapshotName;
 import au.com.origin.snapshots.annotations.UseSnapshotConfig;
+import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,8 @@ public class SnapshotVerifier {
   private final SnapshotConfig config;
   private final boolean failOnOrphans;
 
-  private final Collection<Snapshot> calledSnapshots = Collections.synchronizedCollection(new ArrayList<>());
+  private final Collection<SnapshotContext> calledSnapshots =
+          Collections.synchronizedCollection(new ArrayList<>());
 
   public SnapshotVerifier(SnapshotConfig frameworkSnapshotConfig, Class<?> testClass) {
     this(frameworkSnapshotConfig, testClass, false);
@@ -59,8 +61,7 @@ public class SnapshotVerifier {
       SnapshotFile snapshotFile = new SnapshotFile(
           testSrcDirNoTrailing,
           snapshotDir.getPath() + File.separator + fileUnderTest.getName(),
-          testClass,
-          snapshotConfig::onSaveSnapshotFile
+          testClass
       );
 
       this.testClass = testClass;
@@ -91,33 +92,34 @@ public class SnapshotVerifier {
   }
 
   @SneakyThrows
-  public Snapshot expectCondition(Method testMethod, Object firstObject, Object... others) {
-    Object[] objects = mergeObjects(firstObject, others);
-    Snapshot snapshot =
-        new Snapshot(config, snapshotFile, testClass, testMethod, objects);
-    calledSnapshots.add(snapshot);
-    return snapshot;
+  public SnapshotContext expectCondition(Method testMethod, Object object) {
+    SnapshotContext snapshotContext =
+        new SnapshotContext(config, snapshotFile, testClass, testMethod, object);
+    calledSnapshots.add(snapshotContext);
+    return snapshotContext;
   }
 
   public void validateSnapshots() {
-    Set<String> rawSnapshots = snapshotFile.getRawSnapshots();
+    Set<Snapshot> rawSnapshots = snapshotFile.getSnapshots();
     Set<String> snapshotNames =
-        calledSnapshots.stream().map(Snapshot::getSnapshotName).collect(Collectors.toSet());
-    List<String> unusedRawSnapshots = new ArrayList<>();
+        calledSnapshots.stream().map(SnapshotContext::resolveSnapshotIdentifier).collect(Collectors.toSet());
+    List<Snapshot> unusedSnapshots = new ArrayList<>();
 
-    for (String rawSnapshot : rawSnapshots) {
+    for (Snapshot rawSnapshot : rawSnapshots) {
       boolean foundSnapshot = false;
       for (String snapshotName : snapshotNames) {
-        if (rawSnapshot.contains(snapshotName)) {
+        if (rawSnapshot.getIdentifier().equals(snapshotName)) {
           foundSnapshot = true;
           break;
         }
       }
       if (!foundSnapshot) {
-        unusedRawSnapshots.add(rawSnapshot);
+        unusedSnapshots.add(rawSnapshot);
       }
     }
-    if (unusedRawSnapshots.size() > 0) {
+    if (unusedSnapshots.size() > 0) {
+      List<String> unusedRawSnapshots =
+              unusedSnapshots.stream().map(Snapshot::raw).collect(Collectors.toList());
       String errorMessage = "All unused Snapshots:\n"
           + String.join("\n", unusedRawSnapshots)
           + "\n\nHave you deleted tests? Have you renamed a test method?";
@@ -131,13 +133,4 @@ public class SnapshotVerifier {
     snapshotFile.cleanup();
   }
 
-  private Object[] mergeObjects(Object firstObject, Object[] others) {
-    Object[] objects = new Object[1];
-    objects[0] = firstObject;
-    if (!isNullOrEmpty(others)) {
-      objects = Stream.concat(Arrays.stream(objects), Arrays.stream(others))
-          .toArray(Object[]::new);
-    }
-    return objects;
-  }
 }

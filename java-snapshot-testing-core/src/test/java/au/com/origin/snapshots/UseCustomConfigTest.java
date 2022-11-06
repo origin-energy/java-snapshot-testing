@@ -2,6 +2,7 @@ package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.annotations.UseSnapshotConfig;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
+import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.config.ToStringSnapshotConfig;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -1,8 +1,8 @@
 package au.com.origin.snapshots.docs;
 
 import au.com.origin.snapshots.Expect;
-import au.com.origin.snapshots.PropertyResolvingSnapshotConfig;
 import au.com.origin.snapshots.SnapshotVerifier;
+import au.com.origin.snapshots.config.PropertyResolvingSnapshotConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

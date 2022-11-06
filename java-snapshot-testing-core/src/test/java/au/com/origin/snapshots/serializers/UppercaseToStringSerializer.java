@@ -1,12 +1,15 @@
 package au.com.origin.snapshots.serializers;
 
+import au.com.origin.snapshots.Snapshot;
+import au.com.origin.snapshots.SnapshotSerializerContext;
+
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class UppercaseToStringSerializer implements SnapshotSerializer {
   @Override
-  public String apply(Object[] objects) {
-    return Arrays.stream(objects).map(Object::toString).collect(Collectors.joining()).toUpperCase();
+  public Snapshot apply(Object object, SnapshotSerializerContext gen) {
+    return gen.toSnapshot(object.toString().toUpperCase());
   }
 
   @Override

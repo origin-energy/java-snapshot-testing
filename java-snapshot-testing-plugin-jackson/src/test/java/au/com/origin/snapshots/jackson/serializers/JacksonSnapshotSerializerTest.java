@@ -1,10 +1,8 @@
 package au.com.origin.snapshots.jackson.serializers;
 
-import au.com.origin.snapshots.Expect;
-import au.com.origin.snapshots.PropertyResolvingSnapshotConfig;
-import au.com.origin.snapshots.SnapshotConfig;
-import au.com.origin.snapshots.SnapshotVerifier;
-import au.com.origin.snapshots.jackson.serializers.JacksonSnapshotSerializer;
+import au.com.origin.snapshots.*;
+import au.com.origin.snapshots.config.PropertyResolvingSnapshotConfig;
+import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.serializers.SerializerType;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import org.assertj.core.api.Assertions;
@@ -26,6 +24,14 @@ public class JacksonSnapshotSerializerTest {
     }
   };
 
+  private SnapshotSerializerContext gen = new SnapshotSerializerContext(
+    "test",
+    null,
+    new SnapshotHeader(),
+    JacksonSnapshotSerializerTest.class,
+    null
+  );
+
   @Test
   public void shouldSerializeMap() {
     Map<String, Object> map = new HashMap<>();
@@ -33,8 +39,8 @@ public class JacksonSnapshotSerializerTest {
     map.put("age", 40);
 
     SnapshotSerializer serializer = new JacksonSnapshotSerializer();
-    String result = serializer.apply(new Object[] {map});
-    Assertions.assertThat(result).isEqualTo("[\n" +
+    Snapshot result = serializer.apply(map, gen);
+    Assertions.assertThat(result.getBody()).isEqualTo("[\n" +
         "  {\n" +
         "    \"age\": 40,\n" +
         "    \"name\": \"John Doe\"\n" +
