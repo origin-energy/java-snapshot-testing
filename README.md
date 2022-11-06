@@ -9,8 +9,9 @@
 - Report bugs to "Issues" clearly marking them as 4.0.0-Beta
 
 ## Upgrading
-- Upgrade guild from 3.X to 4.X [here](https://github.com/origin-energy/java-snapshot-testing/discussions/94)
+- Upgrade guide from 3.X to 4.X [here](https://github.com/origin-energy/java-snapshot-testing/discussions/94)
 - Upgrade guide from 2.X to 3.X [here](https://github.com/origin-energy/java-snapshot-testing/discussions/73)
+- Upgrade guide from 2.X-BETA to 2.X [here](https://github.com/origin-energy/java-snapshot-testing/discussions/58)
 
 ## The testing framework loved by ~~lazy~~ __productive__ devs
 
@@ -27,13 +28,13 @@ Then java-snapshot-testing might just be what you are looking for!
 
 ```groovy
 // In this case we are using the JUnit5 testing framework
-testImplementation 'io.github.origin-energy:java-snapshot-testing-junit5:3.+'
+testImplementation 'io.github.origin-energy:java-snapshot-testing-junit5:4.+'
 
 // slf4j logging implementation if you don't already have one
 testImplementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
 
 // Optional: Many will want to serialize into JSON.  In this case you should also add the Jackson plugin
-testImplementation 'io.github.origin-energy:java-snapshot-testing-plugin-jackson:3.+'
+testImplementation 'io.github.origin-energy:java-snapshot-testing-plugin-jackson:4.+'
 testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
 testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
 
