@@ -718,6 +718,31 @@ public class JsonAssertReporter implements SnapshotReporter {
 }
 ```
 
+## Snapshot Headers
+You can add metadata to your snapshots via headers. Headers can be used by Serializers, Comparators & Reporters
+to help interrogate the snapshot.
+
+Custom Serializers can also inject default headers as needed.
+
+Example of injecting a header manually
+```java
+String obj = "hello"
+expect
+    .header("className", obj.getClass().getName())
+    .header("foo", "bar")
+    .toMatchSnapshot(obj);
+```
+
+Snapshot output
+```text
+au.com.origin.snapshots.SnapshotHeaders.canAddHeaders={
+  "className": "java.lang.String",
+  "foo": "bar"
+}[
+hello
+]
+```
+
 ## Supplying a custom SnapshotConfig
 
 You can override the snapshot configuration easily using the `@UseSnapshotConfig` annotation
