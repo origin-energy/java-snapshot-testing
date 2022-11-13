@@ -4,9 +4,7 @@
 # Java Snapshot Testing
 - Inspired by [facebook's Jest framework](https://facebook.github.io/jest/docs/en/snapshot-testing.html)
 
-🎉 4.0.0.Beta1 is live - We need testers
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.origin-energy/java-snapshot-testing-core/badge.svg?subject=4.0.0-Beta1)](https://maven-badges.herokuapp.com/maven-central/io.github.origin-energy/java-snapshot-testing-core)
-- Report bugs to "Issues" clearly marking them as 4.0.0-Beta
+🎉 4.0.0 is out
 
 ## Upgrading
 - Upgrade guide from 3.X to 4.X [here](https://github.com/origin-energy/java-snapshot-testing/discussions/94)
