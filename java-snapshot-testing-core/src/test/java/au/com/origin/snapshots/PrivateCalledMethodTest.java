@@ -8,13 +8,15 @@ class PrivateCalledMethodTest {
 
   @Test
   void testName(TestInfo testInfo) {
-    SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
+    SnapshotVerifier snapshotVerifier =
+        new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
     testBasedOnArgs("testContent", testInfo);
     snapshotVerifier.validateSnapshots();
   }
 
   private void testBasedOnArgs(String arg, TestInfo testInfo) {
-    SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
+    SnapshotVerifier snapshotVerifier =
+        new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     expect.toMatchSnapshot(arg);
     snapshotVerifier.validateSnapshots();

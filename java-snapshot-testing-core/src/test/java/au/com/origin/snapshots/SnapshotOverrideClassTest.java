@@ -8,7 +8,8 @@ public class SnapshotOverrideClassTest extends SnapshotSuperClassTest {
 
   @BeforeEach
   void beforeEach() {
-    snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), SnapshotOverrideClassTest.class);
+    snapshotVerifier =
+        new SnapshotVerifier(new BaseSnapshotConfig(), SnapshotOverrideClassTest.class);
   }
 
   @AfterEach

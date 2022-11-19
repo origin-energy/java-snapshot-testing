@@ -1,12 +1,12 @@
 package au.com.origin.snapshots;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import au.com.origin.snapshots.annotations.SnapshotName;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SnapshotNameAnnotationWithDuplicatesTest {
 
@@ -20,6 +20,5 @@ public class SnapshotNameAnnotationWithDuplicatesTest {
   }
 
   @SnapshotName("hello_world")
-  private void anotherMethodWithSameSnapshotName() { }
-
+  private void anotherMethodWithSameSnapshotName() {}
 }

@@ -8,24 +8,22 @@ import org.junit.runners.model.Statement;
 
 public class SnapshotClassRule implements TestRule {
 
-    @Getter
-    private SnapshotVerifier snapshotVerifier;
+  @Getter private SnapshotVerifier snapshotVerifier;
 
-    @Getter
-    private SharedSnapshotHelpers helpers = new SharedSnapshotHelpers();
+  @Getter private SharedSnapshotHelpers helpers = new SharedSnapshotHelpers();
 
-    @Override
-    public Statement apply(Statement base, Description description) {
-        return new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                snapshotVerifier = helpers.getSnapshotVerifier(description);
-                try {
-                    base.evaluate();
-                } finally {
-                    snapshotVerifier.validateSnapshots();
-                }
-            }
-        };
-    }
+  @Override
+  public Statement apply(Statement base, Description description) {
+    return new Statement() {
+      @Override
+      public void evaluate() throws Throwable {
+        snapshotVerifier = helpers.getSnapshotVerifier(description);
+        try {
+          base.evaluate();
+        } finally {
+          snapshotVerifier.validateSnapshots();
+        }
+      }
+    };
+  }
 }

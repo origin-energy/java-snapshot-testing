@@ -1,8 +1,7 @@
 package au.com.origin.snapshots;
 
-import lombok.*;
-
 import java.util.List;
+import lombok.*;
 
 @ToString
 @Builder
@@ -16,15 +15,11 @@ public class FakeObject {
 
   private String name;
 
-  @Setter
-  private FakeObject fakeObject;
+  @Setter private FakeObject fakeObject;
 
-  public void fakeMethod(String fakeName, Long fakeNumber, List<String> fakeList) {
-  }
+  public void fakeMethod(String fakeName, Long fakeNumber, List<String> fakeList) {}
 
-  public void fakeMethodWithComplexObject(Object fakeObj) {
-  }
+  public void fakeMethodWithComplexObject(Object fakeObj) {}
 
-  public void fakeMethodWithComplexFakeObject(FakeObject fakeObj) {
-  }
+  public void fakeMethodWithComplexFakeObject(FakeObject fakeObj) {}
 }

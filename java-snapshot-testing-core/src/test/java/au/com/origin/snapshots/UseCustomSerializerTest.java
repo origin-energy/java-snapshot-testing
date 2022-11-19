@@ -23,22 +23,20 @@ public class UseCustomSerializerTest {
   @DisplayName("@SnapshotSerializer on a method via new instance")
   @Test
   public void canUseSnapshotSerializerAnnotationAtMethodLevelUsingNewInstance(TestInfo testInfo) {
-    SnapshotVerifier snapshotVerifier = new SnapshotVerifier(DEFAULT_CONFIG, testInfo.getTestClass().get());
+    SnapshotVerifier snapshotVerifier =
+        new SnapshotVerifier(DEFAULT_CONFIG, testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
-    expect
-        .serializer(new UppercaseToStringSerializer())
-        .toMatchSnapshot(new TestObject());
+    expect.serializer(new UppercaseToStringSerializer()).toMatchSnapshot(new TestObject());
     snapshotVerifier.validateSnapshots();
   }
 
   @DisplayName("@SnapshotSerializer on a method via class name")
   @Test
   public void canUseSnapshotSerializerAnnotationAtMethodLevelUsingClassName(TestInfo testInfo) {
-    SnapshotVerifier snapshotVerifier = new SnapshotVerifier(DEFAULT_CONFIG, testInfo.getTestClass().get());
+    SnapshotVerifier snapshotVerifier =
+        new SnapshotVerifier(DEFAULT_CONFIG, testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
-    expect
-        .serializer(new UppercaseToStringSerializer())
-        .toMatchSnapshot(new TestObject());
+    expect.serializer(new UppercaseToStringSerializer()).toMatchSnapshot(new TestObject());
     snapshotVerifier.validateSnapshots();
   }
 

@@ -3,14 +3,13 @@ package au.com.origin.snapshots;
 import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 @RequiredArgsConstructor
 public class Expect {
@@ -31,9 +30,9 @@ public class Expect {
   /**
    * Make an assertion on the given input parameters against what already exists
    *
-   * If you were previously using varargs and see an error - you can fix the error using
-   * "toMatchSnapshotLegacy", however, a better approach is to use the ".scenario()"
-   * feature as future versions of this library will most likely remove the legacy implementation completely.
+   * <p>If you were previously using varargs and see an error - you can fix the error using
+   * "toMatchSnapshotLegacy", however, a better approach is to use the ".scenario()" feature as
+   * future versions of this library will most likely remove the legacy implementation completely.
    *
    * @param object snapshot object
    */
@@ -58,9 +57,9 @@ public class Expect {
 
   /**
    * Normally a snapshot can be applied only once to a test method.
-   * <p>
-   * For Parameterized tests where the same method is executed multiple times you can supply
-   * the scenario() to overcome this restriction.  Ensure each scenario is unique.
+   *
+   * <p>For Parameterized tests where the same method is executed multiple times you can supply the
+   * scenario() to overcome this restriction. Ensure each scenario is unique.
    *
    * @param scenario - unique scenario description
    * @return Snapshot
@@ -115,8 +114,8 @@ public class Expect {
   }
 
   /**
-   * Apply a list of custom reporters for this snapshot
-   * This will replace the default reporters defined in the config
+   * Apply a list of custom reporters for this snapshot This will replace the default reporters
+   * defined in the config
    *
    * @param reporters your custom reporters
    * @return Snapshot
@@ -127,8 +126,8 @@ public class Expect {
   }
 
   /**
-   * Apply a list of custom reporters for this snapshot
-   * This will replace the default reporters defined in the config
+   * Apply a list of custom reporters for this snapshot This will replace the default reporters
+   * defined in the config
    *
    * @param name the {name} attribute reporters.{name} from snapshot.properties
    * @return Snapshot
@@ -144,8 +143,7 @@ public class Expect {
    * @param serializer your custom serializer
    * @return this
    * @see au.com.origin.snapshots.serializers.SnapshotSerializer
-   * <p>
-   * Example implementations
+   *     <p>Example implementations
    * @see au.com.origin.snapshots.serializers.ToStringSnapshotSerializer
    * @see au.com.origin.snapshots.serializers.Base64SnapshotSerializer
    */
@@ -158,8 +156,8 @@ public class Expect {
   /**
    * Add anything you like to the snapshot header.
    *
-   * These custom headers can be used in serializers, comparators or reporters to change
-   * how they behave.
+   * <p>These custom headers can be used in serializers, comparators or reporters to change how they
+   * behave.
    *
    * @param key key
    * @param value value
@@ -169,5 +167,4 @@ public class Expect {
     headers.put(key, value);
     return this;
   }
-
 }

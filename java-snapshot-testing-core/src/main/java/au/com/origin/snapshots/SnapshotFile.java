@@ -1,9 +1,5 @@
 package au.com.origin.snapshots;
 
-import lombok.Getter;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,9 +16,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.Getter;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SnapshotFile {
@@ -31,8 +29,7 @@ public class SnapshotFile {
 
   private final String fileName;
   private final Class<?> testClass;
-  @Getter
-  private Set<Snapshot> snapshots = Collections.synchronizedSortedSet(new TreeSet<>());
+  @Getter private Set<Snapshot> snapshots = Collections.synchronizedSortedSet(new TreeSet<>());
   private Set<Snapshot> debugSnapshots = Collections.synchronizedSortedSet(new TreeSet<>());
 
   SnapshotFile(String srcDirPath, String fileName, Class<?> testClass) throws IOException {
@@ -42,7 +39,9 @@ public class SnapshotFile {
 
     StringBuilder fileContent = new StringBuilder();
 
-    try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(this.fileName), StandardCharsets.UTF_8))) {
+    try (BufferedReader br =
+        new BufferedReader(
+            new InputStreamReader(new FileInputStream(this.fileName), StandardCharsets.UTF_8))) {
 
       String sCurrentLine;
 
@@ -111,19 +110,15 @@ public class SnapshotFile {
 
   public synchronized void pushSnapshot(Snapshot snapshot) {
     snapshots.add(snapshot);
-    TreeSet<String> rawSnapshots = snapshots
-            .stream()
-            .map(Snapshot::raw)
-            .collect(Collectors.toCollection(TreeSet::new));
+    TreeSet<String> rawSnapshots =
+        snapshots.stream().map(Snapshot::raw).collect(Collectors.toCollection(TreeSet::new));
     updateFile(this.fileName, rawSnapshots);
   }
 
   public synchronized void pushDebugSnapshot(Snapshot snapshot) {
     debugSnapshots.add(snapshot);
-    TreeSet<String> rawDebugSnapshots = debugSnapshots
-            .stream()
-            .map(Snapshot::raw)
-            .collect(Collectors.toCollection(TreeSet::new));
+    TreeSet<String> rawDebugSnapshots =
+        debugSnapshots.stream().map(Snapshot::raw).collect(Collectors.toCollection(TreeSet::new));
     updateFile(getDebugFilename(), rawDebugSnapshots);
   }
 
@@ -148,8 +143,10 @@ public class SnapshotFile {
       if (Files.size(path) == 0) {
         delete();
       } else {
-        String content = new String(Files.readAllBytes(Paths.get(this.fileName)), StandardCharsets.UTF_8);
-        Files.write(path, content.getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
+        String content =
+            new String(Files.readAllBytes(Paths.get(this.fileName)), StandardCharsets.UTF_8);
+        Files.write(
+            path, content.getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
       }
     }
   }
@@ -158,8 +155,10 @@ public class SnapshotFile {
   private boolean snapshotsAreTheSame() {
     Path path = Paths.get(this.getDebugFilename());
     if (Files.exists(path)) {
-      List<String> snapshotFileContent = Files.readAllLines(Paths.get(this.fileName), StandardCharsets.UTF_8);
-      List<String> debugSnapshotFileContent = Files.readAllLines(Paths.get(this.getDebugFilename()), StandardCharsets.UTF_8);
+      List<String> snapshotFileContent =
+          Files.readAllLines(Paths.get(this.fileName), StandardCharsets.UTF_8);
+      List<String> debugSnapshotFileContent =
+          Files.readAllLines(Paths.get(this.getDebugFilename()), StandardCharsets.UTF_8);
       return Objects.equals(snapshotFileContent, debugSnapshotFileContent);
     }
 

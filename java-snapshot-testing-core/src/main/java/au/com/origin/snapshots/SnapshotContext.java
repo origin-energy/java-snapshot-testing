@@ -6,16 +6,15 @@ import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SnapshotContext {
@@ -23,28 +22,20 @@ public class SnapshotContext {
   private final SnapshotConfig snapshotConfig;
   private final SnapshotFile snapshotFile;
 
-  @Getter
-  final Class<?> testClass;
+  @Getter final Class<?> testClass;
 
-  @Getter
-  final Method testMethod;
+  @Getter final Method testMethod;
 
   final Object current;
   private final boolean isCI;
 
-  @Setter
-  private SnapshotSerializer snapshotSerializer;
-  @Setter
-  private SnapshotComparator snapshotComparator;
-  @Setter
-  private List<SnapshotReporter> snapshotReporters;
+  @Setter private SnapshotSerializer snapshotSerializer;
+  @Setter private SnapshotComparator snapshotComparator;
+  @Setter private List<SnapshotReporter> snapshotReporters;
 
-  @Setter
-  @Getter
-  String scenario;
+  @Setter @Getter String scenario;
 
-  @Getter
-  SnapshotHeader header = new SnapshotHeader();
+  @Getter SnapshotHeader header = new SnapshotHeader();
 
   SnapshotContext(
       SnapshotConfig snapshotConfig,
@@ -65,7 +56,6 @@ public class SnapshotContext {
     this.scenario = null;
   }
 
-
   public void toMatchSnapshot() {
 
     Set<Snapshot> rawSnapshots = snapshotFile.getSnapshots();
@@ -84,14 +74,15 @@ public class SnapshotContext {
       if (!snapshotComparator.matches(previousSnapshot, currentSnapshot)) {
         snapshotFile.createDebugFile(currentSnapshot);
 
-        List<SnapshotReporter> reporters = snapshotReporters
-            .stream()
-            .filter(reporter -> reporter.supportsFormat(snapshotSerializer.getOutputFormat()))
-            .collect(Collectors.toList());
+        List<SnapshotReporter> reporters =
+            snapshotReporters.stream()
+                .filter(reporter -> reporter.supportsFormat(snapshotSerializer.getOutputFormat()))
+                .collect(Collectors.toList());
 
         if (reporters.isEmpty()) {
           String comparator = snapshotComparator.getClass().getSimpleName();
-          throw new IllegalStateException("No compatible reporters found for comparator " + comparator);
+          throw new IllegalStateException(
+              "No compatible reporters found for comparator " + comparator);
         }
 
         List<Throwable> errors = new ArrayList<>();
@@ -110,10 +101,15 @@ public class SnapshotContext {
       }
     } else {
       if (this.isCI) {
-        log.error("We detected you are running on a CI Server - if this is incorrect please override the isCI() method in SnapshotConfig");
-        throw new SnapshotMatchException("Snapshot [" + resolveSnapshotIdentifier() + "] not found. Has this snapshot been committed ?");
+        log.error(
+            "We detected you are running on a CI Server - if this is incorrect please override the isCI() method in SnapshotConfig");
+        throw new SnapshotMatchException(
+            "Snapshot ["
+                + resolveSnapshotIdentifier()
+                + "] not found. Has this snapshot been committed ?");
       } else {
-        log.warn("We detected you are running on a developer machine - if this is incorrect please override the isCI() method in SnapshotConfig");
+        log.warn(
+            "We detected you are running on a developer machine - if this is incorrect please override the isCI() method in SnapshotConfig");
         // Create New Snapshot
         snapshotFile.pushSnapshot(currentSnapshot);
         snapshotFile.pushDebugSnapshot(currentSnapshot);
@@ -146,9 +142,10 @@ public class SnapshotContext {
   String resolveSnapshotIdentifier() {
     String scenarioFormat = scenario == null ? "" : "[" + scenario + "]";
     SnapshotName snapshotName = testMethod.getAnnotation(SnapshotName.class);
-    String pathFormat = snapshotName == null ?
-        testClass.getName() + "." + testMethod.getName() :
-        snapshotName.value();
+    String pathFormat =
+        snapshotName == null
+            ? testClass.getName() + "." + testMethod.getName()
+            : snapshotName.value();
     return pathFormat + scenarioFormat;
   }
 }

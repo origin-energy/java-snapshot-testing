@@ -1,6 +1,7 @@
 package au.com.origin.snapshots.junit4;
 
 import au.com.origin.snapshots.SnapshotVerifier;
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -8,32 +9,25 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
-import java.util.List;
-
 /**
  * Runner to enable java-snapshot-testing
  *
- * If you are already using @RunWith for something else such as @RunWith(Parameterized.class)
- * use these Rules instead.
+ * <p>If you are already using @RunWith for something else such as @RunWith(Parameterized.class) use
+ * these Rules instead.
  *
  * @see SnapshotClassRule
  * @see SnapshotRule
+ *     <pre>{@code
+ * {@literal @}ClassRule
+ * public static SnapshotClassRule snapshotClassRule = new SnapshotClassRule();
  *
- * <pre>
- * {@code
- *   {@literal @}ClassRule
- *   public static SnapshotClassRule snapshotClassRule = new SnapshotClassRule();
+ * {@literal @}Rule
+ * public SnapshotRule snapshotRule = new SnapshotRule(snapshotClassRule);
  *
- *   {@literal @}Rule
- *   public SnapshotRule snapshotRule = new SnapshotRule(snapshotClassRule);
- *
- *   private Expect expect;
- * }
- * </pre>
- *
- * Loosely based on:
- * https://stackoverflow.com/questions/27745691/how-to-combine-runwith-with-runwithparameterized-class
- *
+ * private Expect expect;
+ * }</pre>
+ *     Loosely based on:
+ *     https://stackoverflow.com/questions/27745691/how-to-combine-runwith-with-runwithparameterized-class
  */
 public class SnapshotRunner extends BlockJUnit4ClassRunner {
 
@@ -70,6 +64,4 @@ public class SnapshotRunner extends BlockJUnit4ClassRunner {
   protected void validateTestMethods(List<Throwable> errors) {
     // Disable as it checks for zero arguments
   }
-
 }
-

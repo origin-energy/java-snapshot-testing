@@ -2,10 +2,10 @@ plugins {
     id 'net.researchgate.release' version '2.6.0' apply false
     id 'com.github.johnrengelman.shadow' version '5.2.0' apply false
     id 'io.codearte.nexus-staging' version '0.22.0'
+    id "com.diffplug.spotless" version "6.11.0" apply false
 }
 
 subprojects { subproject ->
-
     // FIXME this plugin is currently not working for multi-module projects even when defined at the top level only
     // Will need to release and TAG manually for now
     subproject.apply plugin: 'net.researchgate.release'
@@ -38,7 +38,7 @@ subprojects { subproject ->
         compileOnly 'org.slf4j:slf4j-api:2.0.0-alpha0'
     }
 
-    // Adds verbose logging for TravisCI
+    // Add verbose logging for Github Actions
     test {
         testLogging {
             events "passed", "skipped", "failed"

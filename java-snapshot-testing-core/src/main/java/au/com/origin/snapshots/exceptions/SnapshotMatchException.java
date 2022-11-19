@@ -1,9 +1,8 @@
 package au.com.origin.snapshots.exceptions;
 
-import org.opentest4j.MultipleFailuresError;
-
 import java.util.Collections;
 import java.util.List;
+import org.opentest4j.MultipleFailuresError;
 
 public class SnapshotMatchException extends MultipleFailuresError {
 

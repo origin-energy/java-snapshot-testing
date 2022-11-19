@@ -10,11 +10,9 @@ import org.junit.Test;
 
 public class JUnit4RulesExample {
 
-  @ClassRule
-  public static SnapshotClassRule snapshotClassRule = new SnapshotClassRule();
+  @ClassRule public static SnapshotClassRule snapshotClassRule = new SnapshotClassRule();
 
-  @Rule
-  public SnapshotRule snapshotRule = new SnapshotRule(snapshotClassRule);
+  @Rule public SnapshotRule snapshotRule = new SnapshotRule(snapshotClassRule);
 
   private Expect expect;
 
