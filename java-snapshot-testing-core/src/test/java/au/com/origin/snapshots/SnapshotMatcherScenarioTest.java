@@ -1,19 +1,18 @@
 package au.com.origin.snapshots;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class SnapshotMatcherScenarioTest {
@@ -25,7 +24,8 @@ class SnapshotMatcherScenarioTest {
 
   @BeforeAll
   static void beforeAll() {
-    snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), SnapshotMatcherScenarioTest.class);
+    snapshotVerifier =
+        new SnapshotVerifier(new BaseSnapshotConfig(), SnapshotMatcherScenarioTest.class);
   }
 
   @AfterAll
@@ -56,9 +56,7 @@ class SnapshotMatcherScenarioTest {
   @Test
   void should2SecondSnapshotExecutionSuccessfully(TestInfo testInfo) {
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
-    expect
-        .scenario("Scenario B")
-        .toMatchSnapshot("any second type of object");
+    expect.scenario("Scenario B").toMatchSnapshot("any second type of object");
     File f = new File(FILE_PATH);
     if (!f.exists() || f.isDirectory()) {
       throw new RuntimeException("File should exist here");

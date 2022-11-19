@@ -4,7 +4,6 @@ import au.com.origin.snapshots.SnapshotProperties;
 import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
-
 import java.util.List;
 
 public class PropertyResolvingSnapshotConfig implements SnapshotConfig {

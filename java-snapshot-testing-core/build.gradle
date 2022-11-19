@@ -1,4 +1,5 @@
 apply from: "../gradle/publishing.gradle"
+apply from: "../gradle/spotless.gradle"
 
 dependencies {
 

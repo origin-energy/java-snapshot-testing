@@ -3,6 +3,7 @@ plugins {
 }
 
 apply from: "../gradle/publishing.gradle"
+apply from: "../gradle/spotless-groovy.gradle"
 
 dependencies {
     implementation project(':java-snapshot-testing-core')

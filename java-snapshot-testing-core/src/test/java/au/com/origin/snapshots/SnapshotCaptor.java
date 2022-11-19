@@ -1,7 +1,6 @@
 package au.com.origin.snapshots;
 
 import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
@@ -75,7 +74,7 @@ class SnapshotCaptor {
 
   private Object constructCopy(Class<?> argumentClass)
       throws InstantiationException, IllegalAccessException,
-      java.lang.reflect.InvocationTargetException, NoSuchMethodException {
+          java.lang.reflect.InvocationTargetException, NoSuchMethodException {
 
     try {
       return argumentClass.getDeclaredConstructor().newInstance();

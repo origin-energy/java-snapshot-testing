@@ -23,12 +23,12 @@ public class UseCustomConfigTest {
 
   @Test
   void canUseSnapshotConfigAnnotationAtClassLevel(TestInfo testInfo) {
-    SnapshotVerifier snapshotVerifier = new SnapshotVerifier(DEFAULT_CONFIG, testInfo.getTestClass().get());
+    SnapshotVerifier snapshotVerifier =
+        new SnapshotVerifier(DEFAULT_CONFIG, testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     expect.toMatchSnapshot(new TestObject());
     snapshotVerifier.validateSnapshots();
   }
-
 
   private class TestObject {
     @Override

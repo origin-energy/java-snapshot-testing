@@ -41,5 +41,4 @@ public class SnapshotExtensionUsedTest {
   public void snapshotWithNameAgain() {
     expect.toMatchSnapshot("Hello World");
   }
-
 }

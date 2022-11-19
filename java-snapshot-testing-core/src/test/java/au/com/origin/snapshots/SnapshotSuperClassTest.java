@@ -7,15 +7,12 @@ import org.junit.jupiter.api.TestInfo;
 
 public abstract class SnapshotSuperClassTest {
 
-  @Getter
-  @Setter
-  static SnapshotVerifier snapshotVerifier;
+  @Getter @Setter static SnapshotVerifier snapshotVerifier;
 
   public abstract String getName();
 
   @Test
   void shouldMatchSnapshotOne(TestInfo testInfo) {
-    Expect.of(snapshotVerifier, testInfo.getTestMethod().get())
-        .toMatchSnapshot(getName());
+    Expect.of(snapshotVerifier, testInfo.getTestMethod().get()).toMatchSnapshot(getName());
   }
 }

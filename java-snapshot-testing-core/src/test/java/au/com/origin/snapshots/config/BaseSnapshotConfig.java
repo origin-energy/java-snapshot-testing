@@ -6,7 +6,6 @@ import au.com.origin.snapshots.reporters.PlainTextSnapshotReporter;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -41,5 +40,4 @@ public class BaseSnapshotConfig implements SnapshotConfig {
   public boolean isCI() {
     return false;
   }
-
 }

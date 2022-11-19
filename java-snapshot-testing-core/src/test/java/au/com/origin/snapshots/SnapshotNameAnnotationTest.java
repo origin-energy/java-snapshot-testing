@@ -16,7 +16,8 @@ public class SnapshotNameAnnotationTest {
   @SnapshotName("can_use_snapshot_name")
   @Test
   void canUseSnapshotNameAnnotation(TestInfo testInfo) {
-    SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
+    SnapshotVerifier snapshotVerifier =
+        new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     expect.toMatchSnapshot("Hello World");
     snapshotVerifier.validateSnapshots();
@@ -25,10 +26,10 @@ public class SnapshotNameAnnotationTest {
   @SnapshotName("can use snapshot name with spaces")
   @Test
   void canUseSnapshotNameAnnotationWithSpaces(TestInfo testInfo) {
-    SnapshotVerifier snapshotVerifier = new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
+    SnapshotVerifier snapshotVerifier =
+        new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     expect.toMatchSnapshot("Hello World");
     snapshotVerifier.validateSnapshots();
   }
-
 }

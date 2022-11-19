@@ -1,9 +1,8 @@
 package au.com.origin.snapshots.jackson.docs;
 
+import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.time.Instant;
 
 // Example base class used by all hibernate entities
 @Data

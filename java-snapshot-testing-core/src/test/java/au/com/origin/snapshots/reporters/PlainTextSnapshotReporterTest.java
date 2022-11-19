@@ -1,12 +1,12 @@
 package au.com.origin.snapshots.reporters;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import au.com.origin.snapshots.Snapshot;
 import au.com.origin.snapshots.serializers.SerializerType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
-
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class PlainTextSnapshotReporterTest {
   private static final PlainTextSnapshotReporter REPORTER = new PlainTextSnapshotReporter();
@@ -22,16 +22,8 @@ class PlainTextSnapshotReporterTest {
 
   @Test
   void doReport() {
-    Snapshot snap1 = Snapshot.builder()
-            .name("snap1")
-            .scenario("A")
-            .body("[\nfoo\n]")
-            .build();
-    Snapshot snap2 = Snapshot.builder()
-            .name("snap1")
-            .scenario("A")
-            .body("[\nbar\n]")
-            .build();
+    Snapshot snap1 = Snapshot.builder().name("snap1").scenario("A").body("[\nfoo\n]").build();
+    Snapshot snap2 = Snapshot.builder().name("snap1").scenario("A").body("[\nbar\n]").build();
     assertThatExceptionOfType(AssertionFailedError.class)
         .isThrownBy(() -> REPORTER.report(snap1, snap2))
         .withMessageContaining("expecting:")

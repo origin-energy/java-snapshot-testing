@@ -1,0 +1,11 @@
+apply plugin: 'com.diffplug.spotless'
+
+// Code formatting
+spotless {
+    java {
+        importOrder()
+        removeUnusedImports()
+        googleJavaFormat()
+        formatAnnotations()
+    }
+}
