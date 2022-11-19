@@ -1,10 +1,9 @@
 package au.com.origin.snapshots.jackson.docs;
 
 import au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
@@ -24,8 +23,7 @@ public class HibernateSnapshotSerializer extends DeterministicJacksonSnapshotSer
   }
 
   @JsonIgnoreType
-  class IgnoreTypeMixin {
-  }
+  class IgnoreTypeMixin {}
 
   abstract class IgnoreHibernateEntityFields {
     @JsonIgnore

@@ -8,7 +8,8 @@ import lombok.SneakyThrows;
 public class JsonObjectComparator implements SnapshotComparator {
   @Override
   public boolean matches(Snapshot previous, Snapshot current) {
-    return asObject(previous.getName(), previous.getBody()).equals(asObject(current.getName(), current.getBody()));
+    return asObject(previous.getName(), previous.getBody())
+        .equals(asObject(current.getName(), current.getBody()));
   }
 
   @SneakyThrows

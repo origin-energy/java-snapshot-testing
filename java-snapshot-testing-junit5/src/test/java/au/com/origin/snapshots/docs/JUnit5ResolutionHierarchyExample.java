@@ -22,7 +22,7 @@ public class JUnit5ResolutionHierarchyExample {
   @Test
   public void customSerializerTest() {
     expect
-        .serializer(UppercaseToStringSerializer.class)  // <------ Using custom serializer
+        .serializer(UppercaseToStringSerializer.class) // <------ Using custom serializer
         .toMatchSnapshot(new TestObject());
   }
 

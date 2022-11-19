@@ -5,10 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Attempts to deterministically render a snapshot.
- * <p>
- * This can help in situations where collections are rendering in a different order on subsequent runs.
- * <p>
- * Note that collections will be ordered which mar or may not be desirable given your use case.
+ *
+ * <p>This can help in situations where collections are rendering in a different order on subsequent
+ * runs.
+ *
+ * <p>Note that collections will be ordered which mar or may not be desirable given your use case.
  */
 public class DeterministicJacksonSnapshotSerializer extends JacksonSnapshotSerializer {
 

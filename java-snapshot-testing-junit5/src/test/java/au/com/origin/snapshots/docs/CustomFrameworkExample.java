@@ -15,7 +15,8 @@ public class CustomFrameworkExample {
 
   @BeforeAll
   static void beforeAll() {
-    snapshotVerifier = new SnapshotVerifier(new PropertyResolvingSnapshotConfig(), CustomFrameworkExample.class);
+    snapshotVerifier =
+        new SnapshotVerifier(new PropertyResolvingSnapshotConfig(), CustomFrameworkExample.class);
   }
 
   @AfterAll
@@ -28,5 +29,4 @@ public class CustomFrameworkExample {
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     expect.toMatchSnapshot("Hello World");
   }
-
 }
