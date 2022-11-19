@@ -46,11 +46,19 @@ jobs:
         run: chmod +x gradlew
       - name: Jar
         run: ./gradlew shadowJar
+      - name: Generate tag version
+        uses: anothrNick/github-tag-action@v1
+        id: tag_version_dry_run
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+          DRY_RUN: true
       - name: publish
         env:
+          SNAPSHOT_VERSION: ${{ steps.tag_version_dry_run.outputs.tag }}-SNAPSHOT
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY_ASCII_ARMOR }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_KEY_PASSPHRASE }}
           MAVEN_CENTRAL_TOKEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_TOKEN_USERNAME }}
           MAVEN_CENTRAL_TOKEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN_PASSWORD }}
-        run: ./gradlew signArchives uploadArchives -PossrhUsername=${MAVEN_CENTRAL_TOKEN_USERNAME} -PossrhPassword=${MAVEN_CENTRAL_TOKEN_PASSWORD} -Psign=true
+        run: ./gradlew signArchives uploadArchives -Pversion=$SNAPSHOT_VERSION -PossrhUsername=${MAVEN_CENTRAL_TOKEN_USERNAME} -PossrhPassword=${MAVEN_CENTRAL_TOKEN_PASSWORD} -Psign=true
 
