@@ -20,19 +20,19 @@ public class ParameterizedTest {
 
   private Expect expect;
 
-  @Parameters(name = "letter={0}")
+  @Parameters(name = "letter is {0}")
   public static Iterable<Object[]> data() {
-    return Arrays.asList(new Object[][] {{'a'}, {'b'}, {'c'}});
+    return Arrays.asList(new Object[][] {{"a"}, {"b"}, {"c"}});
   }
 
-  private char input;
+  private String input;
 
-  public ParameterizedTest(char input) {
+  public ParameterizedTest(String input) {
     this.input = input;
   }
 
   @Test
   public void test() {
-    expect.scenario(testName.getMethodName()).toMatchSnapshot(input);
+    expect.scenario(input).toMatchSnapshot(input);
   }
 }

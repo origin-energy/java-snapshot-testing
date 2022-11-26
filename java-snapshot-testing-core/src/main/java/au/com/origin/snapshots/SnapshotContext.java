@@ -3,14 +3,12 @@ package au.com.origin.snapshots;
 import au.com.origin.snapshots.annotations.SnapshotName;
 import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.config.SnapshotConfig;
+import au.com.origin.snapshots.exceptions.ReservedWordException;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SnapshotContext {
+
+  private static final List<String> RESERVED_WORDS = Arrays.asList("=", "[", "]");
 
   private final SnapshotConfig snapshotConfig;
   private final SnapshotFile snapshotFile;
@@ -141,11 +141,24 @@ public class SnapshotContext {
 
   String resolveSnapshotIdentifier() {
     String scenarioFormat = scenario == null ? "" : "[" + scenario + "]";
+    return snapshotName() + scenarioFormat;
+  }
+
+  private String snapshotName() {
     SnapshotName snapshotName = testMethod.getAnnotation(SnapshotName.class);
-    String pathFormat =
-        snapshotName == null
-            ? testClass.getName() + "." + testMethod.getName()
-            : snapshotName.value();
-    return pathFormat + scenarioFormat;
+    return snapshotName == null
+        ? testClass.getName() + "." + testMethod.getName()
+        : snapshotName.value();
+  }
+
+  void checkValidContext() {
+    for (String rw : RESERVED_WORDS) {
+      if (snapshotName().contains(rw)) {
+        throw new ReservedWordException("snapshot name", rw, RESERVED_WORDS);
+      }
+      if (scenario != null && scenario.contains(rw)) {
+        throw new ReservedWordException("scenario name", rw, RESERVED_WORDS);
+      }
+    }
   }
 }
