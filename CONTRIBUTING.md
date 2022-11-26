@@ -21,7 +21,7 @@ We welcome contributions to this project by both internal and external parties
 ## Building
 
 ```java
-./gradlew shadowJar
+./gradlew spotlessApply shadowJar
 ```
 
 ## Deploying locally and deploying to `.m2/`

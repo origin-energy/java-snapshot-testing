@@ -52,6 +52,8 @@ public class Expect {
     }
     snapshotContext.header.putAll(headers);
 
+    snapshotContext.checkValidContext();
+
     snapshotContext.toMatchSnapshot();
   }
 
