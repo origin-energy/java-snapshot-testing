@@ -71,7 +71,7 @@ public class ToStringSnapshotSerializerTest {
   }
 
   @Test
-  void shouldReplaceTwoConsecutiveNewLinesEverywhere() {
+  void shouldReplaceIllegalNewlineSequencesEverywhere() {
     Snapshot result = serializer.apply("\n\nJohn\n\n\nDoe\n\n", mockSnapshotGenerator);
     assertThat(result.getBody()).isEqualTo("[\n.\n.\nJohn\n.\n.\nDoe\n.\n.\n]");
   }
