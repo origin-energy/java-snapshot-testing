@@ -58,6 +58,24 @@ public class ToStringSnapshotSerializerTest {
     assertThat(result.getBody()).isEqualTo("[\nJohn\n.\n.\nDoe\n]");
   }
 
+  @Test
+  void shouldReplaceTwoConsecutiveNewLinesAtEnd() {
+    Snapshot result = serializer.apply("John Doe\n\n", mockSnapshotGenerator);
+    assertThat(result.getBody()).isEqualTo("[\nJohn Doe\n.\n.\n]");
+  }
+
+  @Test
+  void shouldReplaceTwoConsecutiveNewLinesAtBeginning() {
+    Snapshot result = serializer.apply("\n\nJohn Doe", mockSnapshotGenerator);
+    assertThat(result.getBody()).isEqualTo("[\n.\n.\nJohn Doe\n]");
+  }
+
+  @Test
+  void shouldReplaceIllegalNewlineSequencesEverywhere() {
+    Snapshot result = serializer.apply("\n\nJohn\n\n\nDoe\n\n", mockSnapshotGenerator);
+    assertThat(result.getBody()).isEqualTo("[\n.\n.\nJohn\n.\n.\nDoe\n.\n.\n]");
+  }
+
   @AllArgsConstructor
   @Data
   private static class Dummy {
