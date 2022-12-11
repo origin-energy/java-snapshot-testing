@@ -784,9 +784,9 @@ public class JUnit5ResolutionHierarchyExample {
 }
 ```
 
-## Automatically updating a snapshot via `-PupdateSnapshot=filter`
+## Automatically overwriting snapshots via `-PupdateSnapshot=filter`
 
-Often - after analysing each snapshot and verifying it is correct, you will need to generate a new baseline for the
+Often - after analysing each snapshot and verifying it is correct, you will need to override the existing
 snapshots.
 
 Note that you may need to do some Gradle trickery to make this visible to your actual tests
