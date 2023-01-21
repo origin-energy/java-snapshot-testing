@@ -5,6 +5,7 @@ au.com.origin.snapshots.jackson.serializers.JacksonSnapshotSerializerTest.should
     "aShort": 32767,
     "anInt": 2147483647,
     "aLong": 9223372036854775807,
+    "aBigDecimal": 100,
     "aFloat": 0.1234567,
     "aDouble": 1.123456789123456,
     "aBoolean": true,

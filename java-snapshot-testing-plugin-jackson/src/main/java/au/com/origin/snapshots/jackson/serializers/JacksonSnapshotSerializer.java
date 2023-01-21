@@ -7,6 +7,7 @@ import au.com.origin.snapshots.serializers.SerializerType;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
@@ -45,6 +46,7 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
         {
           this.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
           this.enable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
+          this.enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN);
           this.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
           this.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
           this.setSerializationInclusion(JsonInclude.Include.NON_NULL);

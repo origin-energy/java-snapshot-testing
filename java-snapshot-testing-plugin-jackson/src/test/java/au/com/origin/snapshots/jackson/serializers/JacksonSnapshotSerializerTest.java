@@ -5,6 +5,8 @@ import au.com.origin.snapshots.config.PropertyResolvingSnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.serializers.SerializerType;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
+
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -112,6 +114,10 @@ public class JacksonSnapshotSerializerTest {
     private final short aShort = 32767;
     private final int anInt = 2147483647;
     private final long aLong = 9223372036854775807L;
+    /**
+     * Note: Stripping trailing zeroes is required to force {@link BigDecimal#toString()} to use scientific notation.
+     */
+    private final BigDecimal aBigDecimal = BigDecimal.valueOf(100).stripTrailingZeros();
     private final float aFloat = 0.1234567F;
     private final double aDouble = 1.123456789123456D;
     private final boolean aBoolean = true;
