@@ -340,7 +340,7 @@ class SpockExample extends Specification {
         true
     }
 
-    @SnapshotName("should_use_extension_as_mehod_argument")
+    @SnapshotName("should_use_extension_as_method_argument")
     // Option 2: inject Expect into the method signature
     def "Should use extension as method argument"(Expect expect) {
         when:
