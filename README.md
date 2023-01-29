@@ -56,6 +56,7 @@ reporters=au.com.origin.snapshots.reporters.PlainTextSnapshotReporter
 snapshot-dir=__snapshots__
 output-dir=src/test/java
 ci-env-var=CI
+update-snapshot=none
 ```
 
 3. Enable snapshot testing and write your first test
@@ -447,17 +448,18 @@ Often your IDE has an excellent file comparison tool.
 
 This file allows you to conveniently setup global defaults
 
-|     key          |  Description                                                                                                                           |
-|------------------|----------------------------------------------------------------------------------------------------------------------------------------|
-|serializer        | Class name of the [serializer](#supplying-a-custom-snapshotserializer), default serializer                                             |
-|serializer.{name} | Class name of the [serializer](#supplying-a-custom-snapshotserializer), accessible via `.serializer("{name}")`                         |
-|comparator        | Class name of the [comparator](#supplying-a-custom-snapshotcomparator)                                                                 |
-|comparator.{name} | Class name of the [comparator](#supplying-a-custom-snapshotcomparator), accessible via `.comparator("{name}")`                         |
-|reporters         | Comma separated list of class names to use as [reporters](#supplying-a-custom-snapshotreporter)                                        |
-|reporters.{name}  | Comma separated list of class names to use as [reporters](#supplying-a-custom-snapshotreporter), accessible via `.reporters("{name}")` |
-|snapshot-dir      | Name of sub-folder holding your snapshots                                                                                              |
-|output-dir        | Base directory of your test files (although it can be a different directory if you want)                                               |
-|ci-env-var        | Name of environment variable used to detect if we are running on a Build Server                                                        |
+|     key          |  Description                                                                                                                                                       |
+|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|serializer        | Class name of the [serializer](#supplying-a-custom-snapshotserializer), default serializer                                                                         |
+|serializer.{name} | Class name of the [serializer](#supplying-a-custom-snapshotserializer), accessible via `.serializer("{name}")`                                                     |
+|comparator        | Class name of the [comparator](#supplying-a-custom-snapshotcomparator)                                                                                             |
+|comparator.{name} | Class name of the [comparator](#supplying-a-custom-snapshotcomparator), accessible via `.comparator("{name}")`                                                     |
+|reporters         | Comma separated list of class names to use as [reporters](#supplying-a-custom-snapshotreporter)                                                                    |
+|reporters.{name}  | Comma separated list of class names to use as [reporters](#supplying-a-custom-snapshotreporter), accessible via `.reporters("{name}")`                             |
+|snapshot-dir      | Name of sub-folder holding your snapshots                                                                                                                          |
+|output-dir        | Base directory of your test files (although it can be a different directory if you want)                                                                           |
+|ci-env-var        | Name of environment variable used to detect if we are running on a Build Server                                                                                    |
+|update-snapshot   | Similar to `--updateSnapshot` in [Jest](https://jestjs.io/docs/en/snapshot-testing#updating-snapshots) <br/>[all]=update all snapsohts<br/>[none]=update no snapshots<br/>[MyTest1,MyTest2]=update snapshots in these classes only<br/><br/>*Note: must be set to [none] on CI |
 
 For example:
 
@@ -471,6 +473,7 @@ reporters=au.com.origin.snapshots.reporters.PlainTextSnapshotReporter
 snapshot-dir=__snapshots__
 output-dir=src/test/java
 ci-env-var=CI
+update-snapshot=none
 ```
 
 ## Parameterized tests
@@ -782,36 +785,6 @@ public class JUnit5ResolutionHierarchyExample {
         expect.toMatchSnapshot(new TestObject());
     }
 }
-```
-
-## Automatically overwriting snapshots via `-PupdateSnapshot=filter`
-
-Often - after analysing each snapshot and verifying it is correct, you will need to override the existing
-snapshots.
-
-Note that you may need to do some Gradle trickery to make this visible to your actual tests
-
-```groovy
-test {
-    systemProperty "updateSnapshot", project.getProperty("updateSnapshot")
-}
-```
-
-Instead of deleting or manually modifying each snapshot you can pass `-PupdateSnapshot` which is equivalent to
-the `--updateSnapshot` flag in [Jest](https://jestjs.io/docs/en/snapshot-testing#updating-snapshots)
-
-#### Update all snapshots automatically
-
-```
--PupdateSnapshot
-```
-
-#### Update selected snapshots only using `filter`
-
-pass the class names you want to update to `filter`
-
-```
--PupdateSnapshot=UserService,PermissionRepository
 ```
 
 # Troubleshooting

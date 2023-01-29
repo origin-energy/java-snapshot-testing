@@ -2,6 +2,9 @@ package au.com.origin.snapshots.spock
 
 import au.com.origin.snapshots.Expect
 import au.com.origin.snapshots.SnapshotVerifier
+import au.com.origin.snapshots.logging.LoggingHelper
+import lombok.extern.slf4j.Slf4j
+import org.slf4j.LoggerFactory
 import org.spockframework.runtime.extension.AbstractMethodInterceptor
 import org.spockframework.runtime.extension.IMethodInterceptor
 import org.spockframework.runtime.extension.IMethodInvocation
@@ -10,7 +13,7 @@ import java.lang.reflect.Method
 
 // Based on this issue: https://github.com/spockframework/spock/issues/652
 class SnapshotMethodInterceptor extends AbstractMethodInterceptor {
-
+    private log = LoggerFactory.getLogger( SnapshotMethodInterceptor.class )
     private final SnapshotVerifier snapshotVerifier;
 
     SnapshotMethodInterceptor(SnapshotVerifier snapshotVerifier) {
@@ -29,6 +32,7 @@ class SnapshotMethodInterceptor extends AbstractMethodInterceptor {
         }
         invocation.method.reflection.parameterTypes.eachWithIndex { type, i ->
             if (Expect.class == type) {
+                LoggingHelper.deprecatedV5(log, "Injecting 'Expect' via method a argument is no longer recommended. Consider using instance variable injection instead.")
                 invocation.arguments[i] = new Expect(snapshotVerifier, invocation.feature.featureMethod.reflection)
             }
         }

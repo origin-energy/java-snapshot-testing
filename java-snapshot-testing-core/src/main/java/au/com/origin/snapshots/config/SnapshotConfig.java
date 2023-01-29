@@ -13,7 +13,7 @@ import java.util.Optional;
  * library
  */
 public interface SnapshotConfig {
-  String JVM_UPDATE_SNAPSHOTS_PARAMETER = "updateSnapshot";
+  @Deprecated String JVM_UPDATE_SNAPSHOTS_PARAMETER = "updateSnapshot";
 
   /**
    * The base directory where files get written (excluding package directories) default:

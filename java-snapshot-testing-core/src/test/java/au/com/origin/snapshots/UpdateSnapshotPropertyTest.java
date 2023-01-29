@@ -16,6 +16,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@Deprecated
 @ExtendWith(MockitoExtension.class)
 public class UpdateSnapshotPropertyTest {
 
@@ -70,13 +71,6 @@ public class UpdateSnapshotPropertyTest {
                 + "au.com.origin.snapshots.UpdateSnapshotPropertyTest.shouldUpdateSnapshot=[\n"
                 + "FakeObject(id=anyId2, value=2, name=anyName2, fakeObject=null)\n"
                 + "]");
-  }
-
-  @Disabled
-  @Test
-  void shouldUpdateAllSnapshots() throws IOException {
-    System.setProperty(SnapshotConfig.JVM_UPDATE_SNAPSHOTS_PARAMETER, "");
-    // FIXME
   }
 
   @Test
