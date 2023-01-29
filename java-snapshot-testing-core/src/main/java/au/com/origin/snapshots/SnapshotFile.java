@@ -108,11 +108,13 @@ public class SnapshotFile {
     return path.toFile();
   }
 
-  public synchronized void pushSnapshot(Snapshot snapshot) {
-    snapshots.add(snapshot);
-    TreeSet<String> rawSnapshots =
-        snapshots.stream().map(Snapshot::raw).collect(Collectors.toCollection(TreeSet::new));
-    updateFile(this.fileName, rawSnapshots);
+  public void pushSnapshot(Snapshot snapshot) {
+    synchronized (snapshots) {
+      snapshots.add(snapshot);
+      TreeSet<String> rawSnapshots =
+          snapshots.stream().map(Snapshot::raw).collect(Collectors.toCollection(TreeSet::new));
+      updateFile(this.fileName, rawSnapshots);
+    }
   }
 
   public synchronized void pushDebugSnapshot(Snapshot snapshot) {

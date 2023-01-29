@@ -4,6 +4,7 @@ import au.com.origin.snapshots.annotations.SnapshotName;
 import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.exceptions.ReservedWordException;
+import au.com.origin.snapshots.exceptions.SnapshotExtensionException;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
@@ -118,6 +119,12 @@ public class SnapshotContext {
   }
 
   private boolean shouldUpdateSnapshot() {
+    if (snapshotConfig.updateSnapshot().isPresent() && snapshotConfig.isCI()) {
+      throw new SnapshotExtensionException(
+          "isCI=true & update-snapshot="
+              + snapshotConfig.updateSnapshot()
+              + ". Updating snapshots on CI is not allowed");
+    }
     if (snapshotConfig.updateSnapshot().isPresent()) {
       return resolveSnapshotIdentifier().contains(snapshotConfig.updateSnapshot().get());
     } else {
@@ -126,9 +133,11 @@ public class SnapshotContext {
   }
 
   private Snapshot getRawSnapshot(Collection<Snapshot> rawSnapshots) {
-    for (Snapshot rawSnapshot : rawSnapshots) {
-      if (rawSnapshot.getIdentifier().equals(resolveSnapshotIdentifier())) {
-        return rawSnapshot;
+    synchronized (rawSnapshots) {
+      for (Snapshot rawSnapshot : rawSnapshots) {
+        if (rawSnapshot.getIdentifier().equals(resolveSnapshotIdentifier())) {
+          return rawSnapshot;
+        }
       }
     }
     return null;

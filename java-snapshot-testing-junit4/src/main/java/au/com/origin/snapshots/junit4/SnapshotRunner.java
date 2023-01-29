@@ -1,7 +1,9 @@
 package au.com.origin.snapshots.junit4;
 
 import au.com.origin.snapshots.SnapshotVerifier;
+import au.com.origin.snapshots.logging.LoggingHelper;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -29,6 +31,7 @@ import org.junit.runners.model.Statement;
  *     Loosely based on:
  *     https://stackoverflow.com/questions/27745691/how-to-combine-runwith-with-runwithparameterized-class
  */
+@Slf4j
 public class SnapshotRunner extends BlockJUnit4ClassRunner {
 
   SnapshotVerifier snapshotVerifier;
@@ -46,6 +49,9 @@ public class SnapshotRunner extends BlockJUnit4ClassRunner {
       helpers.injectExpectInstanceVariable(snapshotVerifier, method.getMethod(), test);
       boolean shouldInjectMethodArgument = helpers.hasExpectArgument(method);
       if (shouldInjectMethodArgument) {
+        LoggingHelper.deprecatedV5(
+            log,
+            "Injecting 'Expect' via method a argument is no longer recommended. Consider using instance variable injection instead.");
         return helpers.injectExpectMethodArgument(snapshotVerifier, method, test);
       }
     }

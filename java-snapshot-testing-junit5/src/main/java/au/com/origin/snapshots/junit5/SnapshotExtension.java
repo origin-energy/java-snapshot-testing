@@ -6,6 +6,7 @@ import au.com.origin.snapshots.config.PropertyResolvingSnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfigInjector;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
+import au.com.origin.snapshots.logging.LoggingHelper;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
@@ -80,7 +81,13 @@ public class SnapshotExtension
   public boolean supportsParameter(
       ParameterContext parameterContext, ExtensionContext extensionContext)
       throws ParameterResolutionException {
-    return parameterContext.getParameter().getType() == Expect.class;
+    boolean supports = parameterContext.getParameter().getType() == Expect.class;
+    if (supports) {
+      LoggingHelper.deprecatedV5(
+          log,
+          "Injecting 'Expect' via method a argument is no longer recommended. Consider using instance variable injection instead.");
+    }
+    return supports;
   }
 
   @Override
