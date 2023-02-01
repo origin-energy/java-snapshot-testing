@@ -6,6 +6,8 @@ public class LoggingHelper {
 
   public static void deprecatedV5(Logger log, String message) {
     log.warn(
-        "Deprecation Warning:\n " + message + "\n\nThis feature will be removed in version 5.X");
+        "\n\n** Deprecation Warning **\nThis feature will be removed in version 5.X\n"
+            + message
+            + "\n\n");
   }
 }
