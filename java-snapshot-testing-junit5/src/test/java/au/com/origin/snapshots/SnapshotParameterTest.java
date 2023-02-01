@@ -1,6 +1,6 @@
 package au.com.origin.snapshots;
 
-import au.com.origin.snapshots.jackson.serializers.JacksonSnapshotSerializer;
+import au.com.origin.snapshots.jackson.serializers.v1.JacksonSnapshotSerializer;
 import au.com.origin.snapshots.junit5.SnapshotExtension;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,11 +1,17 @@
 package au.com.origin.snapshots.comparators;
 
-import au.com.origin.snapshots.Snapshot;
+import au.com.origin.snapshots.logging.LoggingHelper;
+import lombok.extern.slf4j.Slf4j;
 
-public class PlainTextEqualsComparator implements SnapshotComparator {
+@Deprecated
+@Slf4j
+public class PlainTextEqualsComparator
+    extends au.com.origin.snapshots.comparators.v1.PlainTextEqualsComparator {
 
-  @Override
-  public boolean matches(Snapshot previous, Snapshot current) {
-    return previous.getBody().equals(current.getBody());
+  public PlainTextEqualsComparator() {
+    super();
+    LoggingHelper.deprecatedV5(
+        log,
+        "Update to `au.com.origin.snapshots.comparators.v1.PlainTextEqualsComparator` in `snapshot.properties`");
   }
 }

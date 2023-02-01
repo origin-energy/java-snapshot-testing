@@ -47,12 +47,12 @@ testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
 - /src/test/resources/snapshot.properties
 
  ```text
-serializer=au.com.origin.snapshots.serializers.ToStringSnapshotSerializer
-serializer.base64=au.com.origin.snapshots.serializers.Base64SnapshotSerializer
-serializer.json=au.com.origin.snapshots.jackson.serializers.JacksonSnapshotSerializer
-serializer.orderedJson=au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializer
-comparator=au.com.origin.snapshots.comparators.PlainTextEqualsComparator
-reporters=au.com.origin.snapshots.reporters.PlainTextSnapshotReporter
+serializer=au.com.origin.snapshots.serializers.v1.ToStringSnapshotSerializer
+serializer.base64=au.com.origin.snapshots.serializers.v1.Base64SnapshotSerializer
+serializer.json=au.com.origin.snapshots.jackson.serializers.v1.JacksonSnapshotSerializer
+serializer.orderedJson=au.com.origin.snapshots.jackson.serializers.v1.DeterministicJacksonSnapshotSerializer
+comparator=au.com.origin.snapshots.comparators.v1.PlainTextEqualsComparator
+reporters=au.com.origin.snapshots.reporters.v1.PlainTextSnapshotReporter
 snapshot-dir=__snapshots__
 output-dir=src/test/java
 ci-env-var=CI
@@ -464,12 +464,12 @@ This file allows you to conveniently setup global defaults
 For example:
 
  ```text
-serializer=au.com.origin.snapshots.serializers.ToStringSnapshotSerializer
-serializer.base64=au.com.origin.snapshots.serializers.Base64SnapshotSerializer
-serializer.json=au.com.origin.snapshots.jackson.serializers.JacksonSnapshotSerializer
-serializer.orderedJson=au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializer
-comparator=au.com.origin.snapshots.comparators.PlainTextEqualsComparator
-reporters=au.com.origin.snapshots.reporters.PlainTextSnapshotReporter
+serializer=au.com.origin.snapshots.serializers.v1.ToStringSnapshotSerializer
+serializer.base64=au.com.origin.snapshots.serializers.v1.Base64SnapshotSerializer
+serializer.json=au.com.origin.snapshots.jackson.serializers.v1.JacksonSnapshotSerializer
+serializer.orderedJson=au.com.origin.snapshots.jackson.serializers.v1.DeterministicJacksonSnapshotSerializer
+comparator=au.com.origin.snapshots.comparators.v1.PlainTextEqualsComparator
+reporters=au.com.origin.snapshots.reporters.v1.PlainTextSnapshotReporter
 snapshot-dir=__snapshots__
 output-dir=src/test/java
 ci-env-var=CI
