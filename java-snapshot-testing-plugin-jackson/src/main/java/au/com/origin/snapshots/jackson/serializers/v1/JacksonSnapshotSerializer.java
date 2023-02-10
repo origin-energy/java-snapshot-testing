@@ -49,7 +49,9 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
           this.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
           this.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-          this.findAndRegisterModules();
+          if (shouldFindAndRegisterModules()) {
+            this.findAndRegisterModules();
+          }
 
           this.setVisibility(
               this.getSerializationConfig()
@@ -68,6 +70,14 @@ public class JacksonSnapshotSerializer implements SnapshotSerializer {
    * @param objectMapper existing ObjectMapper
    */
   public void configure(ObjectMapper objectMapper) {}
+
+  /**
+   * Override to control the registration of all available jackson modules within the classpath
+   * which are locatable via JDK ServiceLoader facility, along with module-provided SPI.
+   */
+  protected boolean shouldFindAndRegisterModules() {
+    return true;
+  }
 
   @Override
   public Snapshot apply(Object object, SnapshotSerializerContext gen) {
