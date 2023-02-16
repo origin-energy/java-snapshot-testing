@@ -32,6 +32,9 @@ public class PropertyResolvingSnapshotConfig implements SnapshotConfig {
       LoggingHelper.deprecatedV5(
           log,
           "Passing -PupdateSnapshot will be removed in a future release. Consider using snapshot.properties 'update-snapshot' toggle instead");
+      if ("false".equals(legacyFlag.get())) {
+        return Optional.empty();
+      }
       return legacyFlag;
     }
 
