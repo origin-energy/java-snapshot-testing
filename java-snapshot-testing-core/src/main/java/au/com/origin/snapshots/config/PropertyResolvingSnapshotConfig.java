@@ -32,6 +32,9 @@ public class PropertyResolvingSnapshotConfig implements SnapshotConfig {
       LoggingHelper.deprecatedV5(
           log,
           "Passing -PupdateSnapshot will be removed in a future release. Consider using snapshot.properties 'update-snapshot' toggle instead");
+      if ("false".equals(legacyFlag.get())) {
+        return Optional.empty();
+      }
       return legacyFlag;
     }
 
@@ -39,7 +42,7 @@ public class PropertyResolvingSnapshotConfig implements SnapshotConfig {
       String updateSnapshot = SnapshotProperties.getOrThrow("update-snapshot");
       if ("all".equals(updateSnapshot)) {
         return Optional.of("");
-      } else if ("none".equals(updateSnapshot) || "false".equals(updateSnapshot)) {
+      } else if ("none".equals(updateSnapshot)) {
         return Optional.empty();
       }
       return Optional.of(updateSnapshot);
