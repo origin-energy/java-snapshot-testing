@@ -39,7 +39,7 @@ public class PropertyResolvingSnapshotConfig implements SnapshotConfig {
       String updateSnapshot = SnapshotProperties.getOrThrow("update-snapshot");
       if ("all".equals(updateSnapshot)) {
         return Optional.of("");
-      } else if ("none".equals(updateSnapshot)) {
+      } else if ("none".equals(updateSnapshot) || "false".equals(updateSnapshot)) {
         return Optional.empty();
       }
       return Optional.of(updateSnapshot);
