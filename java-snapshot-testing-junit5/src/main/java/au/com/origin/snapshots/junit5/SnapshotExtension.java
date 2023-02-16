@@ -104,19 +104,29 @@ public class SnapshotExtension
   @Override
   public void beforeEach(ExtensionContext context) {
     if (context.getTestInstance().isPresent() && context.getTestMethod().isPresent()) {
-      Arrays.stream(context.getTestClass().get().getDeclaredFields())
-          .filter(it -> it.getType() == Expect.class)
-          .findFirst()
-          .ifPresent(
-              field -> {
-                Expect expect = Expect.of(snapshotVerifier, context.getTestMethod().get());
-                field.setAccessible(true);
-                try {
-                  field.set(context.getTestInstance().get(), expect);
-                } catch (IllegalAccessException e) {
-                  throw new RuntimeException(e);
-                }
-              });
+      injectExcept(context, context.getTestClass().get());
     }
+  }
+
+  void injectExcept(ExtensionContext context, Class<?> targetClass) {
+    Arrays.stream(targetClass.getDeclaredFields())
+        .filter(it -> it.getType() == Expect.class)
+        .findFirst()
+        .ifPresentOrElse(
+            field -> {
+              Expect expect = Expect.of(snapshotVerifier, context.getTestMethod().get());
+              field.setAccessible(true);
+              try {
+                field.set(context.getTestInstance().get(), expect);
+              } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+              }
+            },
+            () -> {
+              Class<?> superClass = targetClass.getSuperclass();
+              if (superClass != null && !superClass.equals(Object.class)) {
+                injectExcept(context, superClass);
+              }
+            });
   }
 }
