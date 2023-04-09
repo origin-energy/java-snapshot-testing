@@ -14,19 +14,17 @@ class SharedSnapshotHelpers implements SnapshotConfigInjector {
 
   public void injectExpectInstanceVariable(
       SnapshotVerifier snapshotVerifier, Method testMethod, Object testInstance) {
-    Arrays.stream(testInstance.getClass().getDeclaredFields())
-        .filter(it -> it.getType() == Expect.class)
-        .findFirst()
-        .ifPresent(
-            field -> {
+
+      ReflectionUtils.findFieldByPredicate(testInstance.getClass(), (field) -> field.getType() == Expect.class)
+          .ifPresent((field) -> {
               Expect expect = Expect.of(snapshotVerifier, testMethod);
-              field.setAccessible(true);
+              ReflectionUtils.makeAccessible(field);
               try {
-                field.set(testInstance, expect);
+                  field.set(testInstance, expect);
               } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+                  throw new RuntimeException(e);
               }
-            });
+          });
   }
 
   public Statement injectExpectMethodArgument(

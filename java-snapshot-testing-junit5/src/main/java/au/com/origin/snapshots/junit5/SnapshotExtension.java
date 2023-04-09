@@ -1,18 +1,25 @@
 package au.com.origin.snapshots.junit5;
 
 import au.com.origin.snapshots.Expect;
+import au.com.origin.snapshots.ReflectionUtils;
 import au.com.origin.snapshots.SnapshotVerifier;
 import au.com.origin.snapshots.config.PropertyResolvingSnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfigInjector;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.logging.LoggingHelper;
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.extension.*;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor;
 import org.junit.jupiter.engine.descriptor.ClassTestDescriptor;
+
+import java.lang.reflect.Field;
 
 @Slf4j
 public class SnapshotExtension
@@ -104,19 +111,16 @@ public class SnapshotExtension
   @Override
   public void beforeEach(ExtensionContext context) {
     if (context.getTestInstance().isPresent() && context.getTestMethod().isPresent()) {
-      Arrays.stream(context.getTestClass().get().getDeclaredFields())
-          .filter(it -> it.getType() == Expect.class)
-          .findFirst()
-          .ifPresent(
-              field -> {
-                Expect expect = Expect.of(snapshotVerifier, context.getTestMethod().get());
-                field.setAccessible(true);
-                try {
-                  field.set(context.getTestInstance().get(), expect);
-                } catch (IllegalAccessException e) {
-                  throw new RuntimeException(e);
-                }
-              });
+      ReflectionUtils.findFieldByPredicate(context.getTestClass().get(), (field) -> field.getType() == Expect.class)
+        .ifPresent((field) -> {
+            Expect expect = Expect.of(snapshotVerifier, context.getTestMethod().get());
+            ReflectionUtils.makeAccessible(field);
+            try {
+                field.set(context.getTestInstance().get(), expect);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
   }
 }
