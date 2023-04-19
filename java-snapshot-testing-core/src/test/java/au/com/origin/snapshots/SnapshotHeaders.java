@@ -55,5 +55,5 @@ public class SnapshotHeaders {
       snapshotSerializerContext.getHeader().put("custom2", "anything2");
       return super.apply(object, snapshotSerializerContext);
     }
-  };
+  }
 }

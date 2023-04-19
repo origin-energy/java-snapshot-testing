@@ -8,18 +8,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith({SnapshotExtension.class})
 public class BaseClassTest {
 
-    class TestBase {
-        Expect expect;
+  class TestBase {
+    Expect expect;
+  }
+
+  @Nested
+  @ExtendWith(SnapshotExtension.class)
+  class NestedClass extends TestBase {
+
+    @Test
+    public void helloWorldTest() {
+      expect.toMatchSnapshot("Hello World");
     }
-
-    @Nested
-    @ExtendWith(SnapshotExtension.class)
-    class NestedClass extends TestBase {
-
-        @Test
-        public void helloWorldTest() {
-            expect.toMatchSnapshot("Hello World");
-        }
-    }
-
+  }
 }

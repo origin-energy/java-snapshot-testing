@@ -8,17 +8,16 @@ import org.junit.runner.RunWith;
 @RunWith(Enclosed.class)
 public class BaseClassTest {
 
-    static class TestBase {
-        Expect expect;
+  static class TestBase {
+    Expect expect;
+  }
+
+  @RunWith(SnapshotRunner.class)
+  public static class NestedClass extends TestBase {
+
+    @Test
+    public void helloWorldTest() {
+      expect.toMatchSnapshot("Hello World");
     }
-
-    @RunWith(SnapshotRunner.class)
-    public static class NestedClass extends TestBase {
-
-        @Test
-        public void helloWorldTest() {
-            expect.toMatchSnapshot("Hello World");
-        }
-    }
-
+  }
 }

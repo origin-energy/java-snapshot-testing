@@ -8,6 +8,7 @@ import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfigInjector;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.logging.LoggingHelper;
+import java.lang.reflect.Field;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -18,8 +19,6 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor;
 import org.junit.jupiter.engine.descriptor.ClassTestDescriptor;
-
-import java.lang.reflect.Field;
 
 @Slf4j
 public class SnapshotExtension
@@ -111,16 +110,18 @@ public class SnapshotExtension
   @Override
   public void beforeEach(ExtensionContext context) {
     if (context.getTestInstance().isPresent() && context.getTestMethod().isPresent()) {
-      ReflectionUtils.findFieldByPredicate(context.getTestClass().get(), (field) -> field.getType() == Expect.class)
-        .ifPresent((field) -> {
-            Expect expect = Expect.of(snapshotVerifier, context.getTestMethod().get());
-            ReflectionUtils.makeAccessible(field);
-            try {
-                field.set(context.getTestInstance().get(), expect);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        });
+      ReflectionUtils.findFieldByPredicate(
+              context.getTestClass().get(), (field) -> field.getType() == Expect.class)
+          .ifPresent(
+              (field) -> {
+                Expect expect = Expect.of(snapshotVerifier, context.getTestMethod().get());
+                ReflectionUtils.makeAccessible(field);
+                try {
+                  field.set(context.getTestInstance().get(), expect);
+                } catch (IllegalAccessException e) {
+                  throw new RuntimeException(e);
+                }
+              });
     }
   }
 }
