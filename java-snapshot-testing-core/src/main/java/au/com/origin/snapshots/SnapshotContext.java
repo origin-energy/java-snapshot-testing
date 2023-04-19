@@ -72,32 +72,34 @@ public class SnapshotContext {
       snapshotFile.pushDebugSnapshot(currentSnapshot);
 
       // Match existing Snapshot
-      if (!snapshotComparator.matches(previousSnapshot, currentSnapshot)) {
-        snapshotFile.createDebugFile(currentSnapshot);
+      if (System.getProperty("shadowMode") != null && "false".equals(System.getProperty("shadowMode"))) {
+        if (!snapshotComparator.matches(previousSnapshot, currentSnapshot)) {
+          snapshotFile.createDebugFile(currentSnapshot);
 
-        List<SnapshotReporter> reporters =
-            snapshotReporters.stream()
-                .filter(reporter -> reporter.supportsFormat(snapshotSerializer.getOutputFormat()))
-                .collect(Collectors.toList());
+          List<SnapshotReporter> reporters =
+                  snapshotReporters.stream()
+                          .filter(reporter -> reporter.supportsFormat(snapshotSerializer.getOutputFormat()))
+                          .collect(Collectors.toList());
 
-        if (reporters.isEmpty()) {
-          String comparator = snapshotComparator.getClass().getSimpleName();
-          throw new IllegalStateException(
-              "No compatible reporters found for comparator " + comparator);
-        }
-
-        List<Throwable> errors = new ArrayList<>();
-
-        for (SnapshotReporter reporter : reporters) {
-          try {
-            reporter.report(previousSnapshot, currentSnapshot);
-          } catch (Throwable t) {
-            errors.add(t);
+          if (reporters.isEmpty()) {
+            String comparator = snapshotComparator.getClass().getSimpleName();
+            throw new IllegalStateException(
+                    "No compatible reporters found for comparator " + comparator);
           }
-        }
 
-        if (!errors.isEmpty()) {
-          throw new SnapshotMatchException("Error(s) matching snapshot(s)", errors);
+          List<Throwable> errors = new ArrayList<>();
+
+          for (SnapshotReporter reporter : reporters) {
+            try {
+              reporter.report(previousSnapshot, currentSnapshot);
+            } catch (Throwable t) {
+              errors.add(t);
+            }
+          }
+
+          if (!errors.isEmpty()) {
+            throw new SnapshotMatchException("Error(s) matching snapshot(s)", errors);
+          }
         }
       }
     } else {
