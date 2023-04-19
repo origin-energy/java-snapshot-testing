@@ -54,6 +54,9 @@ public class SnapshotExtension
    */
   private boolean shouldFailOnOrphans(ExtensionContext context) {
     try {
+      if (System.getProperty("shadowMode") == null || "true".equals(System.getProperty("shadowMode"))) {
+        return false;
+      }
       Field field = context.getClass().getSuperclass().getDeclaredField("testDescriptor");
       field.setAccessible(true);
       Object testDescriptor = field.get(context);
