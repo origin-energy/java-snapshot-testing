@@ -1,0 +1,3 @@
+*.snap
+*.debug
+src/test/java/au/com/origin/snapshots/__snapshots__/
