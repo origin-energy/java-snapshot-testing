@@ -7,7 +7,7 @@
   tags:
     - backend-docker-large
 
-image: docker.phonepe.com:5000/pp-maven:3.8.4-openjdk-11
+image: docker.phonepe.com:5000/pp-maven:3.8.4-openjdk-17
 
 stages:
   - build
