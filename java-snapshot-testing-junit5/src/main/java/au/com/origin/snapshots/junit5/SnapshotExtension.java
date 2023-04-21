@@ -47,6 +47,7 @@ public class SnapshotExtension
         return new PropertyResolvingSnapshotConfig();
     }
 
+    // don't fail tests if any test is deleted.
     private boolean shouldFailOnOrphans() {
         return false;
     }
