@@ -12,3 +12,13 @@ gradle-app.setting
 
 # IDE
 .idea
+
+target
+*.ipr
+*.iml
+*.iws
+dependency-reduced-pom.xml
+.DS_Store
+phonepe-messages/*
+.m2/
+.mvn/
