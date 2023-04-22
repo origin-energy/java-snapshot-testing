@@ -1,7 +1,7 @@
 package au.com.origin.snapshots.spock
 
 import au.com.origin.snapshots.Expect
-import au.com.origin.snapshots.ReflectionUtils
+import au.com.origin.snapshots.utils.ReflectionUtils
 import au.com.origin.snapshots.SnapshotVerifier
 import au.com.origin.snapshots.logging.LoggingHelper
 import org.slf4j.LoggerFactory

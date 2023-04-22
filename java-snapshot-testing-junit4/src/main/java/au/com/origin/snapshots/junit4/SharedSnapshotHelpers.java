@@ -4,6 +4,7 @@ import au.com.origin.snapshots.*;
 import au.com.origin.snapshots.config.PropertyResolvingSnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfigInjector;
+import au.com.origin.snapshots.utils.ReflectionUtils;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import org.junit.runner.Description;

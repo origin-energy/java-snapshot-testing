@@ -1,4 +1,4 @@
-package au.com.origin.snapshots;
+package au.com.origin.snapshots.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

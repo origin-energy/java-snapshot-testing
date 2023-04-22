@@ -1,13 +1,13 @@
 package au.com.origin.snapshots.junit5;
 
 import au.com.origin.snapshots.Expect;
-import au.com.origin.snapshots.ReflectionUtils;
 import au.com.origin.snapshots.SnapshotVerifier;
 import au.com.origin.snapshots.config.PropertyResolvingSnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfigInjector;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.logging.LoggingHelper;
+import au.com.origin.snapshots.utils.ReflectionUtils;
 import java.lang.reflect.Field;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.AfterAllCallback;
