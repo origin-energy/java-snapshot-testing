@@ -1,12 +1,11 @@
 package au.com.origin.snapshots.spock
 
 import au.com.origin.snapshots.Expect
+import au.com.origin.snapshots.utils.ReflectionUtils
 import au.com.origin.snapshots.SnapshotVerifier
 import au.com.origin.snapshots.logging.LoggingHelper
-import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.spockframework.runtime.extension.AbstractMethodInterceptor
-import org.spockframework.runtime.extension.IMethodInterceptor
 import org.spockframework.runtime.extension.IMethodInvocation
 
 import java.lang.reflect.Method
@@ -40,13 +39,16 @@ class SnapshotMethodInterceptor extends AbstractMethodInterceptor {
     }
 
     private void updateInstanceVariable(Object testInstance, Method testMethod) {
-        testInstance.class.declaredFields
-            .find { it.getType() == Expect.class }
-            ?.with {
-                Expect expect = Expect.of(snapshotVerifier, testMethod)
-                it.setAccessible(true)
-                it.set(testInstance, expect)
-            }
+        ReflectionUtils.findFieldByPredicate(testInstance.class, { field -> field.getType() == Expect.class })
+            .ifPresent({ field ->
+                Expect expect = Expect.of(snapshotVerifier, testMethod);
+                ReflectionUtils.makeAccessible(field);
+                try {
+                    field.set(testInstance, expect);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            });
     }
 
     @Override

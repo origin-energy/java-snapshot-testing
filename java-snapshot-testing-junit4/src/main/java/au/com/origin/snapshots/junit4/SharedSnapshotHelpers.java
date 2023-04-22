@@ -4,6 +4,7 @@ import au.com.origin.snapshots.*;
 import au.com.origin.snapshots.config.PropertyResolvingSnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfigInjector;
+import au.com.origin.snapshots.utils.ReflectionUtils;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import org.junit.runner.Description;
@@ -14,13 +15,13 @@ class SharedSnapshotHelpers implements SnapshotConfigInjector {
 
   public void injectExpectInstanceVariable(
       SnapshotVerifier snapshotVerifier, Method testMethod, Object testInstance) {
-    Arrays.stream(testInstance.getClass().getDeclaredFields())
-        .filter(it -> it.getType() == Expect.class)
-        .findFirst()
+
+    ReflectionUtils.findFieldByPredicate(
+            testInstance.getClass(), (field) -> field.getType() == Expect.class)
         .ifPresent(
-            field -> {
+            (field) -> {
               Expect expect = Expect.of(snapshotVerifier, testMethod);
-              field.setAccessible(true);
+              ReflectionUtils.makeAccessible(field);
               try {
                 field.set(testInstance, expect);
               } catch (IllegalAccessException e) {
