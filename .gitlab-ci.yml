@@ -20,7 +20,6 @@ build_snapshot:
   <<: *default
   <<: *default_tag
   script:
-    - echo "The user and password are with overwrite $USER $PASSWORD"
     - mvn clean package -U -Doverwrite=$OVERWRITE -DskipTests=true
 
 
