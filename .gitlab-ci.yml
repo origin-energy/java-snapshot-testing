@@ -29,8 +29,6 @@ build_snapshot:
   when: manual
   allow_failure: false
   script:
-    - echo $PWD
-    - tree -L 2
     - mvn verify -U -Dproject.version='CI-TEST-${CI_JOB_ID}-SNAPSHOT'
   artifacts:
     reports:
