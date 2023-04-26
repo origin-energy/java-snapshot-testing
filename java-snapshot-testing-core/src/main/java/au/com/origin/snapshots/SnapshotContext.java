@@ -79,10 +79,7 @@ public class SnapshotContext {
         }
 
         if (previousSnapshot != null) {
-            // generate debug files only when not running in shadowMode
-            if (System.getProperty("shadowMode") != null && "false".equals(System.getProperty("shadowMode"))) {
                 snapshotFile.pushDebugSnapshot(currentSnapshot);
-
                 // Match existing Snapshot
                 if (!snapshotComparator.matches(previousSnapshot, currentSnapshot)) {
                     snapshotFile.createDebugFile(currentSnapshot);
@@ -112,7 +109,6 @@ public class SnapshotContext {
                         throw new SnapshotMatchException("Error(s) matching snapshot(s)", errors);
                     }
                 }
-            }
         } else {
             if (this.isCI) {
                 log.error(
