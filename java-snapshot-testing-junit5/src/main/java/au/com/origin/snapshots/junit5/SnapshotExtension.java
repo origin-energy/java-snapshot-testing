@@ -26,16 +26,16 @@ public class SnapshotExtension
 
     private SnapshotVerifier snapshotVerifier;
 
-    @Override
-    public void beforeAll(ExtensionContext context) {
-        // don't fail if a test is run alone from the IDE for example
-        boolean failOnOrphans = shouldFailOnOrphans();
-        Class<?> testClass =
-                context
-                        .getTestClass()
-                        .orElseThrow(() -> new SnapshotMatchException("Unable to locate Test class"));
-        this.snapshotVerifier = new SnapshotVerifier(getSnapshotConfig(), testClass, failOnOrphans);
-    }
+  @Override
+  public void beforeAll(ExtensionContext context) {
+    // don't fail if a test is run alone from the IDE for example
+    boolean failOnOrphans = shouldFailOnOrphans(context);
+    Class<?> testClass =
+        context
+            .getTestClass()
+            .orElseThrow(() -> new SnapshotMatchException("Unable to locate Test class"));
+    this.snapshotVerifier = new SnapshotVerifier(getSnapshotConfig(), testClass, failOnOrphans);
+  }
 
     @Override
     public void afterAll(ExtensionContext context) {
@@ -47,10 +47,37 @@ public class SnapshotExtension
         return new PropertyResolvingSnapshotConfig();
     }
 
-    // don't fail tests if any test is deleted.
-    private boolean shouldFailOnOrphans() {
-        return false;
+  /**
+   * FIXME This is a hack until I find the correct way to determine if a test run is individual or
+   * as part of a class
+   *
+   * @param context
+   * @return
+   */
+  private boolean shouldFailOnOrphans(ExtensionContext context) {
+    try {
+      Field field = context.getClass().getSuperclass().getDeclaredField("testDescriptor");
+      field.setAccessible(true);
+      Object testDescriptor = field.get(context);
+      if (testDescriptor instanceof ClassTestDescriptor) { // Junit 5.3.2
+        ClassTestDescriptor classTestDescriptor = (ClassTestDescriptor) testDescriptor;
+        return classTestDescriptor.getChildren().size() > 1;
+      } else if (testDescriptor instanceof ClassBasedTestDescriptor) { // Junit 5.7.2
+        ClassBasedTestDescriptor classTestDescriptor = (ClassBasedTestDescriptor) testDescriptor;
+        return classTestDescriptor.getChildren().size() > 1;
+      }
+    } catch (Exception e) {
+      log.error(
+          "FAILED: (Java Snapshot Testing) Unable to get JUnit5 ClassTestDescriptor or ClassBasedTestDescriptor!\n"
+              + "Ensure you are using Junit5 >= 5.3.2\n"
+              + "This may be due to JUnit5 changing their private api as we use reflection to access it\n"
+              + "Log a support ticket https://github.com/origin-energy/java-snapshot-testing/issues and supply your JUnit5 version\n"
+              + "Setting failOnOrphans=true as this is the safest option."
+              + "This means that running a test alone (say from the IDE) will fail the snapshot, you need to run the entire class.",
+          e);
     }
+    return true;
+  }
 
     @Override
     public boolean supportsParameter(
