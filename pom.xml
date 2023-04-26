@@ -22,16 +22,14 @@
 
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <lombok.version>1.18.24</lombok.version>
+        <lombok.version>1.18.26</lombok.version>
         <maven.deploy.plugin.version>2.8.2</maven.deploy.plugin.version>
         <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
         <maven.release.version>17</maven.release.version>
-        <jackson.version>2.12.1</jackson.version>
-        <mockito.version>4.1.0</mockito.version>
-        <junit.jupiter.version>5.8.2</junit.jupiter.version>
+        <jackson.version>2.15.0</jackson.version>
+        <mockito.version>5.3.1</mockito.version>
+        <junit.jupiter.version>5.9.2</junit.jupiter.version>
     </properties>
 
     <dependencies>
@@ -46,7 +44,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.3.0</version>
+            <version>5.3.1</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
@@ -151,11 +149,6 @@
                         <configuration>
                             <rules>
                                 <banDuplicatePomDependencyVersions />
-                                <bannedDependencies>
-                                    <excludes>
-                                        <exclude>com.phonepe.platform:dropwizard-requestinfo-bundle</exclude>
-                                    </excludes>
-                                </bannedDependencies>
                             </rules>
                         </configuration>
                     </execution>
@@ -164,7 +157,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <version>3.0.0</version>
                 <configuration>
                     <!--Make it dynamic-->
                     <properties>
