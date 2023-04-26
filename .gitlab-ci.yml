@@ -20,7 +20,22 @@ build_snapshot:
   <<: *default
   <<: *default_tag
   script:
-    - mvn clean package -U -Doverwrite=$OVERWRITE -DskipTests=true
+    - mvn clean package -U -DskipTests=true
+
+"Test Cases":
+  stage: merge
+  <<: *default
+  <<: *default_tag
+  when: manual
+  allow_failure: false
+  script:
+    - echo $PWD
+    - tree -L 2
+    - mvn verify -U -Dproject.version='CI-TEST-${CI_JOB_ID}-SNAPSHOT'
+  artifacts:
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
 
 
 deploy_snapshot:
