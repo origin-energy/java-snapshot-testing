@@ -40,7 +40,7 @@ deploy_snapshot:
   stage: build
   <<: *default_tag
   <<: *default
-  allow_failure: false
+  allow_failure: True
   script:
     - mvn deploy -U -DskipTests=true
   when: manual
