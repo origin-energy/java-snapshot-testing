@@ -1,0 +1,34 @@
+plugins {
+    id 'groovy'
+}
+
+apply from: "../gradle/publishing.gradle"
+apply from: "../gradle/spotless-groovy.gradle"
+
+dependencies {
+    implementation project(':java-snapshot-testing-core')
+
+    // User supplied Spock Version
+    compileOnly 'org.codehaus.groovy:groovy-all:2.5.8'
+    compileOnly 'org.spockframework:spock-core:1.3-groovy-2.5'
+
+    // Testing
+    testImplementation 'org.slf4j:slf4j-simple:2.0.0-alpha0'
+    testImplementation 'org.codehaus.groovy:groovy-all:2.5.8'
+    testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5'
+    testImplementation 'org.assertj:assertj-core:3.11.1'
+
+    // Required java-snapshot-testing peer dependencies
+    testImplementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+}
+
+publishing {
+    publications {
+        myPublication(MavenPublication) {
+            artifact shadowJar
+            groupId 'io.github.origin-energy'
+            artifactId 'java-snapshot-testing-spock'
+        }
+    }
+}

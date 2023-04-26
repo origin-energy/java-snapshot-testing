@@ -1,0 +1,3 @@
+rootProject.name = 'java-snapshot-testing'
+
+include 'java-snapshot-testing-core', 'java-snapshot-testing-junit4', 'java-snapshot-testing-junit5', 'java-snapshot-testing-spock', 'java-snapshot-testing-plugin-jackson'

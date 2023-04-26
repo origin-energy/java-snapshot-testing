@@ -1,0 +1,8 @@
+au.com.origin.snapshots.UpdateSnapshotPropertyTest.shouldNotUpdateSnapshot=[
+FakeObject(id=ERROR, value=1, name=anyName1, fakeObject=null)
+]
+
+
+au.com.origin.snapshots.UpdateSnapshotPropertyTest.shouldUpdateSnapshot=[
+FakeObject(id=ERROR, value=1, name=anyName2, fakeObject=null)
+]

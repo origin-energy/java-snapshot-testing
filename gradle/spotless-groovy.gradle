@@ -1,0 +1,10 @@
+apply plugin: 'com.diffplug.spotless'
+
+// Code formatting
+spotless {
+    groovy {
+        importOrder()
+        excludeJava()
+        greclipse()
+    }
+}

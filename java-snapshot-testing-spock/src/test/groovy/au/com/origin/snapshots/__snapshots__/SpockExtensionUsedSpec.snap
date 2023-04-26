@@ -1,0 +1,38 @@
+DataTable example 1[letter A]=[
+A
+]
+
+
+DataTable example 1[letter B]=[
+B
+]
+
+
+DataTable example 1[letter C]=[
+C
+]
+
+
+DataTable example 2[letter]=[
+A
+]
+
+
+DataTable example 2[number]=[
+1
+]
+
+
+Should use extension again=[
+Hello World
+]
+
+
+Should use extension via instance variable=[
+Hello World
+]
+
+
+Should use extension=[
+Hello World
+]
