@@ -29,7 +29,10 @@ au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializ
       "g"
     ],
     "date": "2020-10-19T22:21:07.103+00:00",
-    "emptyOptional": null,
+    "emptyOptional": {
+      "empty": true,
+      "present": false
+    },
     "hashMap": {
       "a": 97,
       "b": 98,
@@ -106,7 +109,10 @@ au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializ
     ],
     "localDate": "2020-10-19",
     "localDateTime": "2020-10-19T22:21:07.103",
-    "presentOptional": "Hello World",
+    "presentOptional": {
+      "empty": false,
+      "present": true
+    },
     "string": "Hello World",
     "stringArray": [
       "f",
