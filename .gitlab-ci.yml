@@ -30,10 +30,6 @@ build_snapshot:
   allow_failure: false
   script:
     - mvn verify -U -Dproject.version='CI-TEST-${CI_JOB_ID}-SNAPSHOT'
-  artifacts:
-    reports:
-      junit:
-        - target/surefire-reports/TEST-*.xml
 
 
 deploy_snapshot:
