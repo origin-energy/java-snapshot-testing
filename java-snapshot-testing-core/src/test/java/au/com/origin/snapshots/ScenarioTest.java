@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
+import au.com.origin.snapshots.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
@@ -36,6 +37,7 @@ class ScenarioTest {
 
   @Test
   void cannotTakeDifferentSnapshotsAtDefaultLevel(TestInfo testInfo) {
+    System.setProperty(Constants.SHADOW_MODE, "false");
     SnapshotVerifier snapshotVerifier =
         new SnapshotVerifier(DEFAULT_CONFIG, testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
@@ -45,6 +47,7 @@ class ScenarioTest {
 
   @Test
   void cannotTakeDifferentSnapshotsAtScenarioLevel(TestInfo testInfo) {
+    System.setProperty(Constants.SHADOW_MODE, "false");
     SnapshotVerifier snapshotVerifier =
         new SnapshotVerifier(DEFAULT_CONFIG, testInfo.getTestClass().get());
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());

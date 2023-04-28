@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import au.com.origin.snapshots.util.Constants;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -80,7 +81,7 @@ public class SnapshotContext {
 
         if (previousSnapshot != null) {
             // generate debug files only when not running in shadowMode
-            if (System.getProperty("shadowMode") != null && "false".equals(System.getProperty("shadowMode"))) {
+            if (System.getProperty(Constants.SHADOW_MODE) != null && "false".equals(System.getProperty(Constants.SHADOW_MODE))) {
                 snapshotFile.pushDebugSnapshot(currentSnapshot);
 
                 // Match existing Snapshot
