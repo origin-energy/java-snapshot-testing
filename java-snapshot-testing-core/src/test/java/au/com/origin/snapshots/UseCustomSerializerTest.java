@@ -3,6 +3,7 @@ package au.com.origin.snapshots;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.serializers.UppercaseToStringSerializer;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,11 @@ public class UseCustomSerializerTest {
   @BeforeAll
   static void beforeEach() {
     SnapshotUtils.copyTestSnapshots();
+  }
+
+  @AfterAll
+  static void afterAll() {
+    SnapshotUtils.deleteTestSnapshots();
   }
 
   @DisplayName("@SnapshotSerializer on a method via new instance")

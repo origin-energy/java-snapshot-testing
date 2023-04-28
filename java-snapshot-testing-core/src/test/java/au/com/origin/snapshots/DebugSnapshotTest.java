@@ -9,6 +9,8 @@ import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import au.com.origin.snapshots.util.Constants;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +35,11 @@ public class DebugSnapshotTest {
   @BeforeAll
   static void beforeAll() {
     SnapshotUtils.copyTestSnapshots();
+  }
+
+  @AfterAll
+  static void afterAll() {
+    SnapshotUtils.deleteTestSnapshots();
   }
 
   @SneakyThrows
@@ -90,6 +97,7 @@ public class DebugSnapshotTest {
   @DisplayName("Existing debug file should not be deleted once snapshots match")
   @Test
   void debugFileCreatedSnapshotMatch(TestInfo testInfo) {
+    System.setProperty(Constants.SHADOW_MODE, "false");
     assertTrue(Files.exists(Paths.get(SNAPSHOT_FILE_PATH)));
     Files.createFile(Paths.get(DEBUG_FILE_PATH));
     assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
@@ -98,8 +106,7 @@ public class DebugSnapshotTest {
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     expect.toMatchSnapshot(new TestObjectGood());
 
-    // debug file won't be created in shadow mode
-    assertFalse(Files.exists(Paths.get(DEBUG_FILE_PATH)));
+    assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
   }
 
   private static class TestObjectBad {

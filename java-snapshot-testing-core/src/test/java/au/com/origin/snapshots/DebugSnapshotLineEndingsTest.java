@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +36,11 @@ class DebugSnapshotLineEndingsTest {
   @BeforeAll
   static void beforeAll() {
     SnapshotUtils.copyTestSnapshots();
+  }
+
+  @AfterAll
+  static void afterAll() {
+    SnapshotUtils.deleteTestSnapshots();
   }
 
   @SneakyThrows

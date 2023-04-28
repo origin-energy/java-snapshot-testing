@@ -30,6 +30,7 @@ public class SnapshotIntegrationTest {
   @AfterAll
   static void afterAll() {
     snapshotVerifier.validateSnapshots();
+    SnapshotUtils.deleteTestSnapshots();
   }
 
   @Test

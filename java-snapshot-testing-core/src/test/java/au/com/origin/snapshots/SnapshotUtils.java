@@ -102,4 +102,13 @@ public class SnapshotUtils {
       throw new RuntimeException("Can't move files to __snapshots__ folder");
     }
   }
+
+  public static void deleteTestSnapshots() {
+    try {
+      FileUtils.deleteDirectory(Paths.get("src/test/java/au/com/origin/snapshots/__snapshots__").toFile());
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new RuntimeException("Can't delete __snapshots__ folder");
+    }
+  }
 }

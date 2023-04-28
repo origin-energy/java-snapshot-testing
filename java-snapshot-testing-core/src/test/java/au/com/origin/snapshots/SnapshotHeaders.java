@@ -28,6 +28,7 @@ public class SnapshotHeaders {
   @AfterAll
   static void afterAll() {
     snapshotVerifier.validateSnapshots();
+    SnapshotUtils.deleteTestSnapshots();
   }
 
   @Test

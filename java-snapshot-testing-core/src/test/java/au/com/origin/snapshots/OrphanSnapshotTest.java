@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,11 @@ public class OrphanSnapshotTest {
   @BeforeAll
   static void beforeAll() {
     SnapshotUtils.copyTestSnapshots();
+  }
+
+  @AfterAll
+  static void afterAll() {
+    SnapshotUtils.deleteTestSnapshots();
   }
 
   @DisplayName("should fail the build when failOnOrphans=true")

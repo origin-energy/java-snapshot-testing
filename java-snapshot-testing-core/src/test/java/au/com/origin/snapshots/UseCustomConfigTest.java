@@ -4,6 +4,7 @@ import au.com.origin.snapshots.annotations.UseSnapshotConfig;
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.config.ToStringSnapshotConfig;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -19,6 +20,11 @@ public class UseCustomConfigTest {
   @BeforeAll
   static void beforeAll() {
     SnapshotUtils.copyTestSnapshots();
+  }
+
+  @AfterAll
+  static void afterAll() {
+    SnapshotUtils.deleteTestSnapshots();
   }
 
   @Test

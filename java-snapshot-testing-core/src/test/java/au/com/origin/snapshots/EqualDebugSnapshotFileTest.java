@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import au.com.origin.snapshots.config.ToStringSnapshotConfig;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,11 @@ public class EqualDebugSnapshotFileTest {
   @BeforeAll
   static void beforeAll() {
     SnapshotUtils.copyTestSnapshots();
+  }
+
+  @AfterAll
+  static void afterAll() {
+    SnapshotUtils.deleteTestSnapshots();
   }
 
   @DisplayName("Should remove equal debug snapshots")
