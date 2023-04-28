@@ -122,28 +122,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
-                <configuration>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>3.0.0-M2</version>
@@ -155,7 +133,7 @@
                         </goals>
                         <configuration>
                             <rules>
-                                <banDuplicatePomDependencyVersions />
+                                <banDuplicatePomDependencyVersions/>
                             </rules>
                         </configuration>
                     </execution>
@@ -166,21 +144,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
-                    <!--Make it dynamic-->
-                    <properties>
-                        <configurationParameters>
-                            junit.jupiter.execution.parallel.enabled = false
-                            junit.jupiter.execution.parallel.config.strategy = fixed
-                            junit.jupiter.execution.parallel.config.fixed.parallelism = 8
-                            junit.jupiter.execution.parallel.mode.default = same_thread
-                            junit.jupiter.execution.parallel.mode.classes.default = concurrent
-                        </configurationParameters>
-                    </properties>
-
                     <excludedGroups>integration</excludedGroups>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-    
+
 </project>
