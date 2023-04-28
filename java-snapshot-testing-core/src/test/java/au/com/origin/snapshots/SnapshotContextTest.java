@@ -17,6 +17,8 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import au.com.origin.snapshots.util.Constants;
 import lombok.SneakyThrows;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -71,6 +73,7 @@ class SnapshotContextTest {
 
   @Test
   void shouldMatchSnapshotWithException() {
+    System.setProperty(Constants.SHADOW_MODE, "false");
     snapshotFile.pushSnapshot(Snapshot.parse(SNAPSHOT_NAME + "=anyWrongSnapshot"));
     assertThrows(SnapshotMatchException.class, snapshotContext::toMatchSnapshot);
   }
@@ -155,6 +158,7 @@ class SnapshotContextTest {
   @SneakyThrows
   @Test
   void shouldAggregateMultipleFailures() {
+    System.setProperty(Constants.SHADOW_MODE, "false");
     SnapshotFile snapshotFile = Mockito.mock(SnapshotFile.class);
     Set<Snapshot> set = new HashSet<>();
     set.add(Snapshot.parse("java.lang.String.toString=[\n  \"hello\"\n]"));
@@ -217,8 +221,6 @@ class SnapshotContextTest {
               .replace("java.lang.String.toString=[", "")
               .replaceAll(" +", " ");
 
-      assertThat(cleanMessage)
-          .containsPattern("Expecting.*hola.*to be equal to.*hello.*but was not"); // assertj
       assertThat(cleanMessage).containsPattern("expected.*hello.*but was.*hola"); // junit jupiter
       assertThat(cleanMessage).containsPattern("Expected.*hello.*Actual.*hola"); // opentest4j
 

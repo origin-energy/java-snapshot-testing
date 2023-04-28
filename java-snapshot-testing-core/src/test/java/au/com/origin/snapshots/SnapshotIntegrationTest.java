@@ -6,6 +6,7 @@ import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfig;
 import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.serializers.UppercaseToStringSerializer;
+import au.com.origin.snapshots.util.Constants;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -63,6 +64,7 @@ public class SnapshotIntegrationTest {
 
   @Test
   void shouldThrowSnapshotMatchException(TestInfo testInfo) {
+    System.setProperty(Constants.SHADOW_MODE, "false");
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     assertThrows(
         SnapshotMatchException.class,

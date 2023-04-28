@@ -11,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import au.com.origin.snapshots.util.Constants;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -75,6 +77,7 @@ public class UpdateSnapshotPropertyTest {
 
   @Test
   void shouldNotUpdateSnapshot(TestInfo testInfo) {
+    System.setProperty(Constants.SHADOW_MODE, "false");
     SnapshotVerifier snapshotVerifier =
         new SnapshotVerifier(new BaseSnapshotConfig(), testInfo.getTestClass().get(), false);
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
