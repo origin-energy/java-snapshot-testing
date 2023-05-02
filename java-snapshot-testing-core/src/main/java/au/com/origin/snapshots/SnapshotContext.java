@@ -81,7 +81,7 @@ public class SnapshotContext {
 
         if (previousSnapshot != null) {
             // generate debug files only when not running in shadowMode
-            if (System.getProperty(Constants.SHADOW_MODE) != null && "false".equals(System.getProperty(Constants.SHADOW_MODE))) {
+            if (System.getProperty(Constants.SHADOW_MODE) == null || "false".equals(System.getProperty(Constants.SHADOW_MODE))) {
                 snapshotFile.pushDebugSnapshot(currentSnapshot);
 
                 // Match existing Snapshot
