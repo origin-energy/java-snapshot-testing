@@ -43,6 +43,7 @@ public class DebugSnapshotTest {
   @SneakyThrows
   @BeforeEach
   public void beforeEach() {
+    System.setProperty(Constants.SHADOW_MODE, "false");
     Files.deleteIfExists(Paths.get(DEBUG_FILE_PATH));
   }
 
@@ -118,8 +119,7 @@ public class DebugSnapshotTest {
     assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)));
     expect.toMatchSnapshot(new TestObjectGood());
 
-    // no debug file will be created in shadow mode
-//    assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
+    assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
   }
 
   @SneakyThrows
