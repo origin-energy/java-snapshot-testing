@@ -1,10 +1,13 @@
 package au.com.origin.snapshots;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import au.com.origin.snapshots.config.BaseSnapshotConfig;
 import au.com.origin.snapshots.config.SnapshotConfig;
+import au.com.origin.snapshots.exceptions.SnapshotMatchException;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import au.com.origin.snapshots.serializers.ToStringSnapshotSerializer;
 import java.nio.file.Files;
@@ -59,10 +62,46 @@ public class DebugSnapshotTest {
     assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)));
 
     // in shadow mode no exception will be thrown
-//    assertThrows(SnapshotMatchException.class, () -> expect.toMatchSnapshot(new TestObjectBad()));
+    assertThrows(SnapshotMatchException.class, () -> expect.toMatchSnapshot(new TestObjectBad()));
 
     // this assertion won't get passed since we have removed debug file generation in shadow mode
-//    assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
+    assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
+  }
+
+  @DisplayName("Debug file should be created when snapshots don't match and shadowMode is false")
+  @Test
+  void testDebugFileGeneratedWhenSnapshotsDoesNotMatch(TestInfo testInfo) {
+    System.setProperty(Constants.SHADOW_MODE, "false");
+    assertTrue(Files.exists(Paths.get(SNAPSHOT_FILE_PATH)));
+
+    SnapshotVerifier snapshotVerifier =
+            new SnapshotVerifier(DEFAULT_CONFIG, testInfo.getTestClass().get());
+    Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
+    assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)));
+
+    // in shadow mode no exception will be thrown
+    assertThrows(SnapshotMatchException.class, () -> expect.toMatchSnapshot(new TestObjectBad()));
+
+    // this assertion won't get passed since we have removed debug file generation in shadow mode
+    assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
+  }
+
+  @DisplayName("Debug file should not be created when snapshots don't match and shadow mode is true")
+  @Test
+  void testDebugFileNotGeneratedWhenSnapshotsDoesNotMatchInShadowMode(TestInfo testInfo) {
+    System.setProperty(Constants.SHADOW_MODE, "true");
+    assertTrue(Files.exists(Paths.get(SNAPSHOT_FILE_PATH)));
+
+    SnapshotVerifier snapshotVerifier =
+            new SnapshotVerifier(DEFAULT_CONFIG, testInfo.getTestClass().get());
+    Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
+    assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)));
+
+    // in shadow mode no exception will be thrown
+    assertDoesNotThrow( () -> expect.toMatchSnapshot(new TestObjectBad()));
+
+    // this assertion won't get passed since we have removed debug file generation in shadow mode
+    assertFalse(Files.exists(Paths.get(DEBUG_FILE_PATH)));
   }
 
   @DisplayName("Debug file should be created when snapshots match for a new snapshot")

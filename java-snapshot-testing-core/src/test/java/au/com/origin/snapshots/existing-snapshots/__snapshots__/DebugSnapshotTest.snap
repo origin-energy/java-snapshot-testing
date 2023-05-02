@@ -11,3 +11,13 @@ Good Snapshot
 au.com.origin.snapshots.DebugSnapshotTest.debugFileCreatedExistingSnapshot=[
 Good Snapshot
 ]
+
+
+au.com.origin.snapshots.DebugSnapshotTest.testDebugFileNotGeneratedWhenSnapshotsDoesNotMatchInShadowMode=[
+Good Snapshot
+]
+
+
+au.com.origin.snapshots.DebugSnapshotTest.testDebugFileGeneratedWhenSnapshotsDoesNotMatch=[
+Good Snapshot
+]

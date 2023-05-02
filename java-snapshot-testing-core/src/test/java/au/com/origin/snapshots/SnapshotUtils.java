@@ -104,11 +104,12 @@ public class SnapshotUtils {
   }
 
   public static void deleteTestSnapshots() {
-    try {
-      FileUtils.deleteDirectory(Paths.get("src/test/java/au/com/origin/snapshots/__snapshots__").toFile());
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException("Can't delete __snapshots__ folder");
-    }
+    return;
+//    try {
+//      FileUtils.deleteDirectory(Paths.get("src/test/java/au/com/origin/snapshots/__snapshots__").toFile());
+//    } catch (Exception e) {
+//      e.printStackTrace();
+//      throw new RuntimeException("Can't delete __snapshots__ folder");
+//    }
   }
 }
