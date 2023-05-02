@@ -17,11 +17,6 @@ public class SnapshotNameAnnotationTest {
     SnapshotUtils.copyTestSnapshots();
   }
 
-  @AfterAll
-  static void afterAll() {
-    SnapshotUtils.deleteTestSnapshots();
-  }
-
   @SnapshotName("can_use_snapshot_name")
   @Test
   void canUseSnapshotNameAnnotation(TestInfo testInfo) {

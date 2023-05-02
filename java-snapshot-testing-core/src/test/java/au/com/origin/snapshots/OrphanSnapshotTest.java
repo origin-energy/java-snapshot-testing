@@ -26,11 +26,6 @@ public class OrphanSnapshotTest {
     SnapshotUtils.copyTestSnapshots();
   }
 
-  @AfterAll
-  static void afterAll() {
-    SnapshotUtils.deleteTestSnapshots();
-  }
-
   @DisplayName("should fail the build when failOnOrphans=true")
   @Test
   void orphanSnapshotsShouldFailTheBuild(TestInfo testInfo) throws IOException {

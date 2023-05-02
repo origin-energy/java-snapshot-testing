@@ -38,11 +38,6 @@ class DebugSnapshotLineEndingsTest {
     SnapshotUtils.copyTestSnapshots();
   }
 
-  @AfterAll
-  static void afterAll() {
-    SnapshotUtils.deleteTestSnapshots();
-  }
-
   @SneakyThrows
   @BeforeEach
   void beforeEach() {

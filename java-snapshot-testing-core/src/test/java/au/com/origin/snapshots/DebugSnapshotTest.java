@@ -40,11 +40,6 @@ public class DebugSnapshotTest {
     SnapshotUtils.copyTestSnapshots();
   }
 
-  @AfterAll
-  static void afterAll() {
-    SnapshotUtils.deleteTestSnapshots();
-  }
-
   @SneakyThrows
   @BeforeEach
   public void beforeEach() {

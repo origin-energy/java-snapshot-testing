@@ -19,11 +19,6 @@ public class EmptySnapshotFileTest {
     SnapshotUtils.copyTestSnapshots();
   }
 
-  @AfterAll
-  static void afterAll() {
-    SnapshotUtils.deleteTestSnapshots();
-  }
-
   @DisplayName("Should remove empty snapshots")
   @Test
   public void shouldRemoveEmptySnapshots(TestInfo testInfo) {

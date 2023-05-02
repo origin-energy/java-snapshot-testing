@@ -21,11 +21,6 @@ public class UseCustomSerializerTest {
     SnapshotUtils.copyTestSnapshots();
   }
 
-  @AfterAll
-  static void afterAll() {
-    SnapshotUtils.deleteTestSnapshots();
-  }
-
   @DisplayName("@SnapshotSerializer on a method via new instance")
   @Test
   public void canUseSnapshotSerializerAnnotationAtMethodLevelUsingNewInstance(TestInfo testInfo) {

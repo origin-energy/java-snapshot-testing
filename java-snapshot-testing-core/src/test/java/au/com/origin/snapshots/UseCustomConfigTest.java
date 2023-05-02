@@ -22,11 +22,6 @@ public class UseCustomConfigTest {
     SnapshotUtils.copyTestSnapshots();
   }
 
-  @AfterAll
-  static void afterAll() {
-    SnapshotUtils.deleteTestSnapshots();
-  }
-
   @Test
   void canUseSnapshotConfigAnnotationAtClassLevel(TestInfo testInfo) {
     SnapshotVerifier snapshotVerifier =

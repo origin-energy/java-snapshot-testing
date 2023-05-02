@@ -24,11 +24,6 @@ public class EqualDebugSnapshotFileTest {
     SnapshotUtils.copyTestSnapshots();
   }
 
-  @AfterAll
-  static void afterAll() {
-    SnapshotUtils.deleteTestSnapshots();
-  }
-
   @DisplayName("Should remove equal debug snapshots")
   @Test
   public void shouldRemoveEmptySnapshots(TestInfo testInfo) {
