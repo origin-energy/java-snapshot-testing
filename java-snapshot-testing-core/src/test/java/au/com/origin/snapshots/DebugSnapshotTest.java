@@ -56,10 +56,8 @@ public class DebugSnapshotTest {
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)));
 
-    // in shadow mode no exception will be thrown
     assertThrows(SnapshotMatchException.class, () -> expect.toMatchSnapshot(new TestObjectBad()));
 
-    // this assertion won't get passed since we have removed debug file generation in shadow mode
     assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
   }
 
@@ -74,10 +72,8 @@ public class DebugSnapshotTest {
     Expect expect = Expect.of(snapshotVerifier, testInfo.getTestMethod().get());
     assertTrue(Files.notExists(Paths.get(DEBUG_FILE_PATH)));
 
-    // in shadow mode no exception will be thrown
     assertThrows(SnapshotMatchException.class, () -> expect.toMatchSnapshot(new TestObjectBad()));
 
-    // this assertion won't get passed since we have removed debug file generation in shadow mode
     assertTrue(Files.exists(Paths.get(DEBUG_FILE_PATH)));
   }
 
@@ -95,7 +91,6 @@ public class DebugSnapshotTest {
     // in shadow mode no exception will be thrown
     assertDoesNotThrow( () -> expect.toMatchSnapshot(new TestObjectBad()));
 
-    // this assertion won't get passed since we have removed debug file generation in shadow mode
     assertFalse(Files.exists(Paths.get(DEBUG_FILE_PATH)));
   }
 
