@@ -1,0 +1,61 @@
+.default: &default
+  only:
+    - merge_requests
+    - web
+
+.default_tag: &default_tag
+  tags:
+    - backend-docker-large
+
+image: docker.phonepe.com:5000/pp-maven:3.8.4-openjdk-17
+
+stages:
+  - build
+  - deploy
+  - merge
+  - release
+
+build_snapshot:
+  stage: build
+  <<: *default
+  <<: *default_tag
+  script:
+    - mvn clean package -U -DskipTests=true
+
+"Test Cases":
+  stage: merge
+  <<: *default
+  <<: *default_tag
+  when: manual
+  allow_failure: false
+  script:
+    - mvn verify -U -Dproject.version='CI-TEST-${CI_JOB_ID}-SNAPSHOT'
+
+
+deploy_snapshot:
+  stage: build
+  <<: *default_tag
+  <<: *default
+  allow_failure: True
+  script:
+    - mvn deploy -U -DskipTests=true
+  when: manual
+
+
+"Release":
+  <<: *default_tag
+  stage: release
+  script:
+    - git remote set-url origin "git@gitlab.phonepe.com:${CI_PROJECT_PATH}.git"
+    - git fetch --all
+    - git checkout master
+    - git pull origin master
+    - git checkout develop
+    - git pull origin develop
+    - mvn -U jgitflow:release-start jgitflow:release-finish -Dsonar.skip=true
+    - git push --all
+    - git push --tags origin
+  when: manual
+  only:
+    refs:
+      - develop

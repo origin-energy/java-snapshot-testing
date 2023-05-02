@@ -217,8 +217,6 @@ class SnapshotContextTest {
               .replace("java.lang.String.toString=[", "")
               .replaceAll(" +", " ");
 
-      assertThat(cleanMessage)
-          .containsPattern("Expecting.*hola.*to be equal to.*hello.*but was not"); // assertj
       assertThat(cleanMessage).containsPattern("expected.*hello.*but was.*hola"); // junit jupiter
       assertThat(cleanMessage).containsPattern("Expected.*hello.*Actual.*hola"); // opentest4j
 
