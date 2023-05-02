@@ -1,0 +1,28 @@
+au.com.origin.snapshots.ScenarioTest.canTakeMultipleSnapshotsUsingScenario=[
+Default Snapshot
+]
+
+
+au.com.origin.snapshots.ScenarioTest.canTakeMultipleSnapshotsUsingScenario[additional]=[
+Additional Snapshot
+]
+
+
+au.com.origin.snapshots.ScenarioTest.canTakeTheSameSnapshotTwice=[
+Default Snapshot
+]
+
+
+au.com.origin.snapshots.ScenarioTest.canTakeTheSameSnapshotTwice[scenario]=[
+Scenario Snapshot
+]
+
+
+au.com.origin.snapshots.ScenarioTest.cannotTakeDifferentSnapshotsAtDefaultLevel=[
+Default Snapshot
+]
+
+
+au.com.origin.snapshots.ScenarioTest.cannotTakeDifferentSnapshotsAtScenarioLevel[scenario]=[
+Default Snapshot
+]

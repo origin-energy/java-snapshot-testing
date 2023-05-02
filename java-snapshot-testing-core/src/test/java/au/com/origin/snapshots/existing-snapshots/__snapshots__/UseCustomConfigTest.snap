@@ -1,0 +1,4 @@
+au.com.origin.snapshots.UseCustomConfigTest.canUseSnapshotConfigAnnotationAtClassLevel=This is a snapshot of the toString() method
+
+
+au.com.origin.snapshots.UseCustomConfigTest.canUseSnapshotConfigAnnotationAtMethodLevel=THIS IS A SNAPSHOT OF THE TOSTRING() METHOD

@@ -1,0 +1,146 @@
+au.com.origin.snapshots.jackson.serializers.DeterministicJacksonSnapshotSerializerTest.shouldSerializeDifferentTypes=[
+  {
+    "aBoolean": true,
+    "aByte": 65,
+    "aChar": "A",
+    "aDouble": 1.123456789123456,
+    "aFloat": 0.1234567,
+    "aLong": 9223372036854775807,
+    "aShort": 32767,
+    "anEnum": "A",
+    "anEnumArray": [
+      "F",
+      "A",
+      "D",
+      "E",
+      "G",
+      "B",
+      "C"
+    ],
+    "anInt": 2147483647,
+    "anObject": { },
+    "arrayList": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g"
+    ],
+    "date": "2020-10-19T22:21:07.103+00:00",
+    "emptyOptional": {
+      "empty": true,
+      "present": false
+    },
+    "hashMap": {
+      "a": 97,
+      "b": 98,
+      "c": 99,
+      "d": 100,
+      "e": 101,
+      "f": 102,
+      "g": 103
+    },
+    "hashSet": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g"
+    ],
+    "linkedHashMap": {
+      "a": 97,
+      "b": 98,
+      "c": 99,
+      "d": 100,
+      "e": 101,
+      "f": 102,
+      "g": 103
+    },
+    "linkedHashSet": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g"
+    ],
+    "linkedList": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g"
+    ],
+    "listOfCollections": [
+      {
+        "a": 97,
+        "b": 98,
+        "c": 99,
+        "d": 100,
+        "e": 101,
+        "f": 102,
+        "g": 103
+      },
+      [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g"
+      ],
+      [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g"
+      ]
+    ],
+    "localDate": "2020-10-19",
+    "localDateTime": "2020-10-19T22:21:07.103",
+    "presentOptional": {
+      "empty": false,
+      "present": true
+    },
+    "string": "Hello World",
+    "stringArray": [
+      "f",
+      "a",
+      "d",
+      "e",
+      "g",
+      "b",
+      "c"
+    ],
+    "treeMap": {
+      "a": 97,
+      "b": 98,
+      "c": 99,
+      "d": 100,
+      "e": 101,
+      "f": 102,
+      "g": 103
+    },
+    "treeSet": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g"
+    ],
+    "zonedDateTime": "2020-04-19T22:21:07.103+10:00[Australia/Melbourne]"
+  }
+]

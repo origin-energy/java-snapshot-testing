@@ -1,0 +1,10 @@
+au.com.origin.snapshots.UseCustomSerializerTest.canUseSnapshotSerializerAnnotationAtClassLevel=this is a snapshot of the tostring() method
+
+
+au.com.origin.snapshots.UseCustomSerializerTest.canUseSnapshotSerializerAnnotationAtMethodLevel=THIS IS A SNAPSHOT OF THE TOSTRING() METHOD
+
+
+au.com.origin.snapshots.UseCustomSerializerTest.canUseSnapshotSerializerAnnotationAtMethodLevelUsingClassName=THIS IS A SNAPSHOT OF THE TOSTRING() METHOD
+
+
+au.com.origin.snapshots.UseCustomSerializerTest.canUseSnapshotSerializerAnnotationAtMethodLevelUsingNewInstance=THIS IS A SNAPSHOT OF THE TOSTRING() METHOD
