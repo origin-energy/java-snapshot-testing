@@ -8,9 +8,6 @@ import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.PrettyPrinter;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.core.util.Separators;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.util.Arrays;
@@ -18,28 +15,7 @@ import java.util.List;
 
 public class JacksonSnapshotSerializer implements SnapshotSerializer {
 
-  private final PrettyPrinter pp =
-      new DefaultPrettyPrinter("") {
-        {
-          Indenter lfOnlyIndenter = new DefaultIndenter("  ", "\n");
-          this.indentArraysWith(lfOnlyIndenter);
-          this.indentObjectsWith(lfOnlyIndenter);
-        }
-
-        // It's a requirement
-        // @see https://github.com/FasterXML/jackson-databind/issues/2203
-        public DefaultPrettyPrinter createInstance() {
-          return new DefaultPrettyPrinter(this);
-        }
-
-        @Override
-        public DefaultPrettyPrinter withSeparators(Separators separators) {
-          this._separators = separators;
-          this._objectFieldValueSeparatorWithSpaces =
-              separators.getObjectFieldValueSeparator() + " ";
-          return this;
-        }
-      };
+  private final PrettyPrinter pp = new SnapshotPrettyPrinter();
   private final ObjectMapper objectMapper =
       new ObjectMapper() {
         {
