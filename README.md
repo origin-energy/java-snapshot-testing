@@ -459,7 +459,7 @@ This file allows you to conveniently setup global defaults
 |snapshot-dir      | Name of sub-folder holding your snapshots                                                                                                                          |
 |output-dir        | Base directory of your test files (although it can be a different directory if you want)                                                                           |
 |ci-env-var        | Name of environment variable used to detect if we are running on a Build Server                                                                                    |
-|update-snapshot   | Similar to `--updateSnapshot` in [Jest](https://jestjs.io/docs/en/snapshot-testing#updating-snapshots) <br/>[all]=update all snapsohts<br/>[none]=update no snapshots<br/>[MyTest1,MyTest2]=update snapshots in these classes only<br/><br/>*Note: must be set to [none] on CI |
+|update-snapshot   | Similar to `--updateSnapshot` in [Jest](https://jestjs.io/docs/en/snapshot-testing#updating-snapshots) <br/>[all]=update all snapshots<br/>[none]=update no snapshots<br/>[MyTest1,MyTest2]=update snapshots in these classes only<br/><br/>*Note: must be set to [none] on CI |
 
 For example:
 
