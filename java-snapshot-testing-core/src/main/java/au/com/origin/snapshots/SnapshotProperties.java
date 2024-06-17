@@ -16,7 +16,8 @@ public enum SnapshotProperties {
 
   SnapshotProperties() {
     try {
-      InputStream in = SnapshotProperties.class.getResourceAsStream("/snapshot.properties");
+      InputStream in =
+          SnapshotProperties.class.getClassLoader().getResourceAsStream("snapshot.properties");
       snapshotProperties.load(in);
     } catch (Exception e) {
       // It's ok, if the SnapshotConfig implementation attempts to get a property they will receive
