@@ -7,12 +7,6 @@ import static org.assertj.core.api.Assertions.entry;
 
 class SnapshotTest {
 
-    /*
-     name[scenario]={
-        "header-key": "header-value"
-      }body
-     */
-
     @Test
     public void shouldParseSnapshot() {
         Snapshot snapshot = Snapshot.parse(Snapshot.builder()
