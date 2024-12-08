@@ -29,7 +29,8 @@ public class Snapshot implements Comparable<Snapshot> {
   }
 
   public static Snapshot parse(String rawText) {
-    String regex = "^(?<name>.*?)(\\[(?<scenario>[^]]*)])?=(?<header>\\{[^}]*?})?(?<snapshot>(.*)$)";
+    String regex =
+        "^(?<name>.*?)(\\[(?<scenario>[^]]*)])?=(?<header>\\{[^}]*?})?(?<snapshot>(.*)$)";
     Pattern p = Pattern.compile(regex, Pattern.DOTALL);
     Matcher m = p.matcher(rawText);
     boolean found = m.find();
