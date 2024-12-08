@@ -86,7 +86,6 @@ class SnapshotTest {
                 .body("[xxx]=yyy")
                 .build()
                 .raw());
-    System.out.println(snapshot.raw());
     assertThat(snapshot.getIdentifier()).isEqualTo("au.com.origin.snapshots.Test[scenario]");
     assertThat(snapshot.getName()).isEqualTo("au.com.origin.snapshots.Test");
     assertThat(snapshot.getHeader()).isEmpty();
