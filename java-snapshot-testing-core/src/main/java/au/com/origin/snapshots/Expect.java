@@ -4,10 +4,14 @@ import au.com.origin.snapshots.comparators.SnapshotComparator;
 import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -22,6 +26,7 @@ public class Expect {
   private String scenario;
 
   private final Map<String, String> headers = new HashMap<>();
+  private final List<UnaryOperator<String>> masks = new ArrayList<>();
 
   public static Expect of(SnapshotVerifier snapshotVerifier, Method method) {
     return new Expect(snapshotVerifier, method);
@@ -51,10 +56,35 @@ public class Expect {
       snapshotContext.setScenario(scenario);
     }
     snapshotContext.header.putAll(headers);
+    snapshotContext.setMasks(new ArrayList<>(masks));
 
     snapshotContext.checkValidContext();
 
     snapshotContext.toMatchSnapshot();
+  }
+
+  /**
+   * Mask all matches of a regular expression in the serialized snapshot body.
+   *
+   * <p>Masks are applied in registration order, after serialization and before saving or comparing
+   * the snapshot. Snapshot names, scenarios and headers are not masked.
+   *
+   * <p>The replacement follows {@link java.util.regex.Matcher#replaceAll(String)} semantics,
+   * including capture-group references. Use {@link
+   * java.util.regex.Matcher#quoteReplacement(String)} for literal replacements containing dollar
+   * signs or backslashes.
+   *
+   * @param regex regular expression to match
+   * @param replacement replacement for each match
+   * @return this
+   * @throws java.util.regex.PatternSyntaxException if the regular expression is invalid
+   * @throws NullPointerException if regex or replacement is null
+   */
+  public Expect mask(String regex, String replacement) {
+    Pattern pattern = Pattern.compile(regex);
+    Objects.requireNonNull(replacement, "replacement");
+    masks.add(body -> pattern.matcher(body).replaceAll(replacement));
+    return this;
   }
 
   /**

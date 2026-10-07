@@ -10,6 +10,7 @@ import au.com.origin.snapshots.reporters.SnapshotReporter;
 import au.com.origin.snapshots.serializers.SnapshotSerializer;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +34,7 @@ public class SnapshotContext {
   @Setter private SnapshotSerializer snapshotSerializer;
   @Setter private SnapshotComparator snapshotComparator;
   @Setter private List<SnapshotReporter> snapshotReporters;
+  @Setter private List<UnaryOperator<String>> masks = Collections.emptyList();
 
   @Setter @Getter String scenario;
 
@@ -145,7 +147,20 @@ public class SnapshotContext {
 
   private Snapshot takeSnapshot() {
     SnapshotSerializerContext sg = SnapshotSerializerContext.from(this);
-    return snapshotSerializer.apply(current, sg);
+    Snapshot snapshot = snapshotSerializer.apply(current, sg);
+    if (masks.isEmpty()) {
+      return snapshot;
+    }
+    String body = snapshot.getBody();
+    for (UnaryOperator<String> mask : masks) {
+      body = mask.apply(body);
+    }
+    return Snapshot.builder()
+        .name(snapshot.getName())
+        .scenario(snapshot.getScenario())
+        .header(snapshot.getHeader())
+        .body(body)
+        .build();
   }
 
   String resolveSnapshotIdentifier() {
