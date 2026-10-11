@@ -11,7 +11,7 @@ plugins {
 }
 
 ext {
-    junit5Version = '5.10.2'
+    junit5Version = '6.1.1'
     lombokVersion = '1.18.20'
     slf4jVersion = '2.0.0-alpha0'
     assertjVersion = '3.11.1'
