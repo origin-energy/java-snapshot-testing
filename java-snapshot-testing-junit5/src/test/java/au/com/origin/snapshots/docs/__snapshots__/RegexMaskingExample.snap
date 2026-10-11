@@ -1,0 +1,16 @@
+au.com.origin.snapshots.docs.RegexMaskingExample.maskDates=[
+Created on **-**-****
+]
+
+
+au.com.origin.snapshots.docs.RegexMaskingExample.maskJson=[
+  {
+    "createdAt": "<DATE>",
+    "name": "John Doe"
+  }
+]
+
+
+au.com.origin.snapshots.docs.RegexMaskingExample.maskMultipleValues=[
+Created on **-**-****, ID: MASKED
+]

@@ -135,6 +135,47 @@ Hello World
 ]
 ```
 
+## Masking non-deterministic values
+
+Use `.mask(regex, replacement)` to replace changing values such as dates or IDs in the serialized
+snapshot body before it is saved or compared. For example, both calls below match the same snapshot:
+
+```java
+expect.mask("\\d{2}-\\d{2}-\\d{4}", "**-**-****")
+    .toMatchSnapshot("Created on 07-10-2026");
+expect.toMatchSnapshot("Created on 08-10-2026");
+```
+
+You can chain multiple masks. They are applied in the order they are registered, so later masks see
+the result of earlier replacements:
+
+```java
+expect.mask("\\d{2}-\\d{2}-\\d{4}", "**-**-****")
+    .mask("ID: \\d+", "ID: MASKED")
+    .toMatchSnapshot("Created on 07-10-2026, ID: 123");
+```
+
+Masks also work with custom serializers, including JSON:
+
+```java
+Map<String, Object> response = new HashMap<>();
+response.put("name", "John Doe");
+response.put("createdAt", "2026-10-07");
+
+expect.serializer("json")
+    .mask("\\d{4}-\\d{2}-\\d{2}", "<DATE>")
+    .toMatchSnapshot(response);
+```
+
+Snapshot names, scenarios and headers are not masked. Masks belong to the `Expect` instance and
+remain active for its subsequent calls. Patterns use Java regular expressions, including inline
+flags such as `(?m)` for multiline matching. Replacements follow `Matcher.replaceAll` semantics,
+including capture-group references such as `$1`; use `Matcher.quoteReplacement` for literal
+replacements containing `$` or `\`. Invalid patterns are rejected when `.mask(...)` is called.
+
+When adding masks to an existing test, update and review its snapshots so they contain the masked
+values. Runnable examples are in `RegexMaskingExample.java` under the JUnit 5 module's `docs` package.
+
 ## Advantages of Snapshot Testing
 
 - Great for testing JSON interfaces ensuring you don't break clients
